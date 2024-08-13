@@ -41,15 +41,15 @@ urlpatterns = [
         name='group_retrieve_update_delete'
     ),
     path(
-        'permisisons/',
+        'permissions/',
         PermissionListCreateAPIView.as_view(),
         name='permission_list_create'
     ),
-    path(
-        'permisisons/<int:id>/',
-        PermissionRetrieveUpdateDestroyAPIView.as_view(),
-        name='permission_retrieve_update_delete'
-    ),
+    # path(
+    #     'permisisons/<int:id>/',
+    #     PermissionRetrieveUpdateDestroyAPIView.as_view(),
+    #     name='permission_retrieve_update_delete'
+    # ),
     path(
         'update-info',
         update_own_profile_info,

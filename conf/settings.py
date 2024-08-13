@@ -59,7 +59,7 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     # check user authentication
-    "apps.common.middleware.LoginRequiredMiddleware",
+    # "apps.common.middleware.LoginRequiredMiddleware",
     # this will expose request object to rbac.models
     "apps.common.middleware.RequestExposerMiddleware",
     "auditlog.middleware.AuditlogMiddleware",

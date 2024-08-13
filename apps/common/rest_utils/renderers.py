@@ -7,13 +7,14 @@ class APIJSONRenderer(JSONRenderer):
     failure_format = {"success": False}
 
     def set_error_response(self, data):
+        code = data.get("code")
         errors = data.get("errors")
         message = data.get("message")
 
         if not errors:
             errors = data
 
-        self.failure_format.update(message=message, error=errors)
+        self.failure_format.update(code=code, message=message, error=errors)
 
     def get_proper_response(self, data):
         meta = {}

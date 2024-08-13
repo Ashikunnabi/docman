@@ -23,7 +23,10 @@ class User(AbstractUser):
     password_updated_at = models.DateTimeField(null=True, blank=True)
     is_user_locked = models.BooleanField(null=False, blank=False, default=False)
     user_locked_at = models.DateTimeField(null=True, blank=True)
-    unsuccessful_attempts = models.IntegerField(null=False, blank=False, default=0)
+    last_unsuccessful_login = models.DateTimeField(null=True, blank=True)
+    unsuccessful_login_attempts = models.IntegerField(null=False, blank=False, default=0)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
     history = AuditlogHistoryField()
 
     @property

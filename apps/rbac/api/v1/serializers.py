@@ -18,10 +18,31 @@ class UserInputSerializer(serializers.ModelSerializer):
 class UserOutputSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = "__all__"
-        extra_kwargs = {
-            "password": {"write_only": True},
-        }
+        fields = [
+            "uuid",
+            "username",
+            "name",
+            "email",
+            "phone",
+            "first_name",
+            "last_name",
+            "is_active",
+            "is_staff",
+            "is_superuser",
+            "groups",
+            "user_permissions",
+            "last_login",
+            "date_joined",
+            "created_at",
+            "updated_at",
+            "is_password_change_required",
+            "password_updated_at",
+            "is_user_locked",
+            "user_locked_at",
+            "last_login",
+            "last_unsuccessful_login",
+            "unsuccessful_login_attempts",
+        ]
 
 
 class GroupInputSerializer(serializers.Serializer):
