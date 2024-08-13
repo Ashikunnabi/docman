@@ -1,0 +1,300 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <title>Invoice</title>
+
+    <style>
+
+        @import url(https://fonts.googleapis.com/css?family=Roboto:100,300,400,900,700,500,300,100);
+
+        * {
+            margin: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+        }
+
+        ::selection {
+            background: #f31544;
+            color: #FFF;
+        }
+
+
+        h1 {
+            font-size: 1.5em;
+            color: #222;
+        }
+
+        h2 {
+            font-size: .9em;
+        }
+
+        h3 {
+            font-size: 1.2em;
+            font-weight: 300;
+            line-height: 2em;
+        }
+
+        p {
+            font-size: .7em;
+            color: #666;
+            line-height: 1.2em;
+        }
+
+        #invoiceholder {
+            width: 100%;
+            height: 100%;
+        }
+
+        #invoice {
+            position: relative;
+            margin: 0 auto;
+            background: #FFF;
+        }
+
+        [id*='invoice-'] { /* Targets all id with 'col-' */
+            border-bottom: 1px solid #EEE;
+            padding: 30px;
+        }
+
+        #invoice-top {
+            min-height: 120px;
+        }
+
+        #invoice-mid {
+            min-height: 150px;
+        }
+
+        #invoice-bot {
+            min-height: 250px;
+        }
+
+        #invoice-logo {
+            border: none;
+            padding: 0 30px;
+        }
+
+        .logo {
+            margin: 0 auto;
+            height: 100px;
+            width: 200px;
+            background: url("{% static 'base/company/img/logo.png' %}") no-repeat;
+            background-size: 200px 100px;
+        }
+
+        .branding_text {
+            text-align: center;
+            padding: 10px;
+            color: white;
+            background-color: grey;
+            margin: 10px 0px;
+        }
+
+        .info {
+            width: 40%;
+            display: block;
+            float: left;
+        }
+
+        .title {
+            float: right;
+        }
+
+        .title p {
+            text-align: right;
+        }
+
+        #project {
+            width: 40%;
+            float: right;
+            text-align: right;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        td {
+            padding: 5px 0 5px 15px;
+            border: 1px solid #EEE
+        }
+
+        .tabletitle {
+            padding: 5px;
+            background: #EEE;
+        }
+
+        .service {
+            border: 1px solid #EEE;
+        }
+
+        .itemtext {
+            font-size: .9em;
+        }
+
+        #legalcopy {
+            margin-top: 30px;
+        }
+
+        form {
+            float: right;
+            margin-top: 30px;
+            text-align: right;
+        }
+
+
+        .effect2 {
+            position: relative;
+        }
+
+        .legal {
+            width: 70%;
+        }
+
+        .order_status {
+            color: red;
+            font-size: 15px;
+            font-weight: bolder;
+            line-height: 30px;
+        }
+    </style>
+</head>
+
+<body>
+<div id="invoiceholder">
+
+    <div id="invoice" class="effect2">
+
+        <div id="invoice-logo">
+            <div class="logo"></div>
+            <p class="branding_text">Distributor of Tools, HVAC & Hardware Equipments</p>
+        </div><!--End InvoiceTop-->
+
+        <div id="invoice-top">
+            <div class="info">
+                <h2>From</h2>
+                <hr>
+                <h5>inventoryWholesale</h5>
+                <p> support@inventory.wholesale.com <br>
+                    1-855-965-8800
+                </p>
+            </div><!--End Info-->
+            <div class="title">
+                <h1>Invoice #140{{ data.id }}</h1>
+                <p>Issued: {{ data.created_date }}<br>
+                    <!--Payment Due: June 27, 2015-->
+                    {% if data.is_delivered %}
+                        Status: <span class="order_status">DELIVERED</span>
+                    {% endif %}
+                    {% if data.is_cancelled %}
+                        Status: <spanp class="order_status">CANCELLED</spanp>
+                    {% endif %}
+                </p>
+            </div><!--End Title-->
+        </div><!--End InvoiceTop-->
+
+
+        <div id="invoice-mid">
+            <div class="info">
+                <h2>Bill To</h2>
+                <hr>
+                <h5>{{ data.billing_full_name }}</h5>
+                <p>{{ data.billing_email }}<br>
+                    {{ data.billing_phone }}<br>
+                </p>
+                <p>{{ data.billing_address }}, <br>
+                    {{ data.billing_city }}, {{ billing_state }}, {{ data.billing_postal_code }}<br>
+                </p>
+            </div>
+
+            <div id="project">
+                <h2>Ship To</h2>
+                <hr>
+                <!--<h5>Client Name</h5>-->
+                <h5>{{ data.shipping_full_name }}</h5>
+                <p>{{ data.shipping_email }}<br>
+                    {{ data.shipping_phone }}<br>
+                </p>
+                <p>{{ data.delivery_address }}, <br>
+                    {{ data.shipping_city }}, {{ shipping_state }}, {{ data.shipping_postal_code }}<br>
+                </p>
+            </div>
+        </div><!--End Invoice Mid-->
+
+        <div id="invoice-bot">
+
+            <div id="table">
+                <table>
+                    <tr class="tabletitle">
+                        <td class="item"><h2>SL</h2></td>
+                        <td class="item"><h2>Part</h2></td>
+                        <td class="item"><h2>Description</h2></td>
+                        <td class="Hours"><h2>Quantity</h2></td>
+                        <td class="Rate"><h2>Unit Price</h2></td>
+                        <td class="subtotal"><h2>Total</h2></td>
+                    </tr>
+                    {% for cart in data.carts.all %}
+                        <tr class="service">
+                            <td class="tableitem"><p class="itemtext">1</p>
+                            </td>
+                            <td class="tableitem"><p
+                                    class="itemtext">{{ cart.product.part_no }}</p>
+                            </td>
+                            <td class="tableitem"><p
+                                    class="itemtext">{{ cart.product.description }}</p>
+                            </td>
+                            <td class="tableitem"><p
+                                    class="itemtext">{{ cart.quantity }}</p>
+                            </td>
+                            <td class="tableitem"><p class="itemtext">
+                                ${{ cart.unit_price }}</p></td>
+                            <td class="tableitem"><p class="itemtext">
+                                ${{ cart.total_price }}</p>
+                            </td>
+                        </tr>
+                    {% endfor %}
+
+
+                    <tr class="tabletitle">
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td class="Rate"><h2>Total</h2></td>
+                        <td class="payment"><h2>${{ data.total_price }}</h2>
+                        </td>
+                    </tr>
+
+                </table>
+            </div><!--End Table-->
+
+            <!--<form action="https://www.paypal.com/cgi-bin/webscr" method="post"
+                  target="_top">
+                <input type="hidden" name="cmd" value="_s-xclick">
+                <input type="hidden" name="hosted_button_id"
+                       value="QRZ7QTM9XRPJ6">
+                <input type="image"
+                       src="http://michaeltruong.ca/images/paypal.png"
+                       border="0" name="submit"
+                       alt="PayPal - The safer, easier way to pay online!">
+            </form>
+
+
+            <div id="legalcopy">
+                <p class="legal"><strong>Thank you for your business!</strong> 
+                    Payment is expected within 31 days; please process this
+                    invoice within that time. There will be a 5% interest
+                    charge per month on late invoices.
+                </p>
+            </div>-->
+
+        </div><!--End InvoiceBot-->
+    </div><!--End Invoice-->
+</div><!-- End Invoice Holder-->
+</body>
+</html>

@@ -1,0 +1,80 @@
+{% extends 'authentication/base.html' %}
+{% load static %}
+{% block css %}
+    <link rel="stylesheet" href="{% static 'authentication/css/style.css' %}">
+{% endblock %}
+
+
+{% block content %}
+
+    <!-- catg header banner section -->
+    <section id="aa-catg-head-banner">
+        <!-- <img src="img/fashion/fashion-header-bg-8.jpg" alt="fashion img"> -->
+        <img src="https://1120distributing.com/wp-content/uploads/2019/08/Off-Road-bg-2.jpg"
+             alt="fashion img" width="1900" style="height: 100vh;">
+
+{#        LOADING #}
+        <div id="account_activation_loading" class="aa-catg-head-banner-area">
+            <div class="container">
+                <div class="aa-catg-head-banner-content">
+                    <h2>Please wait</h2>
+                    <ol class="breadcrumb">
+                        <!-- <li><a href="/index">Home</a></li>  -->
+                        <li class="text-yellow">Verifying your request.
+                        </li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+
+{#        SUCCESS #}
+        <div id="account_activation_success" class="aa-catg-head-banner-area">
+            <div class="container">
+                <div class="aa-catg-head-banner-content">
+                    <h2>Congratulations</h2>
+                    <ol class="breadcrumb">
+                        <!-- <li><a href="/index">Home</a></li>  -->
+                        <li class="text-yellow">Account activation successful.
+                        </li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+
+{#            FAILED #}
+        <div id="account_activation_failed" class="aa-catg-head-banner-area">
+            <div class="container">
+                <div class="aa-catg-head-banner-content">
+                    <h2>OOPS!</h2>
+                    <ol class="breadcrumb">
+                        <!-- <li><a href="/index">Home</a></li>  -->
+                        <li class="text-yellow">Invalid request. Check your email or contact with our support team.
+                        </li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+
+    </section>
+    <!-- / catg header banner section -->
+
+
+    <!-- footer -->
+    {% include 'authentication/footer.html' %}
+    <!-- / footer -->
+{% endblock %}
+
+{% block js %}
+    <script>
+        const login_api_url = "{% url 'apps:authentication:api:v1:login' %}";
+        const registration_api_url = "{% url 'apps:authentication:api:v1:registration' %}";
+        const account_activation_api_url = "{% url 'apps:rbac:api:v1:active_account_by_activation_url' %}";
+        const rt = "{{ rt }}";
+        const au = "{{ au }}";
+        const account_activation_page = true;
+    </script>
+
+    <!-- Authentication JS -->
+    <script src="{% static 'authentication/js/authentication.js' %}?v={{JS_VERSION}}"></script>
+{% endblock %}
+

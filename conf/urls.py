@@ -1,0 +1,22 @@
+from django.conf import settings
+from django.conf.urls.static import static
+from django.urls import include, path
+
+urlpatterns = [
+    path("admin/", include("apps.admin.urls")),
+    path("", include("apps.urls")),
+]
+
+# static and media url controll
+if settings.DEBUG:
+    urlpatterns = urlpatterns + static(
+        settings.STATIC_URL, document_root=settings.STATIC_ROOT, show_indexes=True
+    )
+    urlpatterns = urlpatterns + static(
+        settings.MEDIA_URL, document_root=settings.MEDIA_ROOT, show_indexes=True
+    )
+
+handler400 = "apps.common.views.handler400"
+handler403 = "apps.common.views.handler403"
+handler404 = "apps.common.views.handler404"
+handler500 = "apps.common.views.handler500"

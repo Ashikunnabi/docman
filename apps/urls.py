@@ -1,0 +1,15 @@
+from django.urls import include, path
+
+app_name = "apps"
+
+fe_urlpatterns = []
+
+dashboard_urlpatterns = [
+    path("", include("apps.authentication.urls")),
+    path("", include("apps.common.urls")),
+    path("", include("apps.rbac.urls")),
+    path("", include("apps.email.urls")),
+    # path("", include("apps.menu.urls")),
+]
+
+urlpatterns = fe_urlpatterns + dashboard_urlpatterns

@@ -1,0 +1,34 @@
+upstream inventory_web {
+    server web:8080;
+}
+
+server {
+    listen 80;
+    location = /favicon.ico { access_log off; log_not_found off; }
+    
+    location /static/ {
+        root /var/www/html;
+    }
+
+    location /media/  {
+        alias /var/www/html/media/;
+    }
+
+    location / {
+        # include proxy_params;
+        proxy_pass http://inventory_web;         
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header Host $host;
+        proxy_redirect off;  
+    }
+}
+
+# server {
+
+#     location /.well-known/acme-challenge/ {
+#         root /var/www/certbot;
+#     }
+
+#     server_name web:8080;
+#     listen 80;
+# }

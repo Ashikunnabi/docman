@@ -1,0 +1,181 @@
+{% extends 'admin_base/base.html' %}
+{% load static %}
+{% block css %}
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+
+    <!-- Page Heading -->
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">User</h1>
+        <!-- <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">
+            <i class="fas fa-download fa-sm text-white-50"></i> Generate
+                Report
+        </a> -->
+    </div>
+    <p class="mb-4">
+        Users are valuable. See list of Registered user.
+        Only active staff can be an admin of this system.
+    </p>
+
+
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">User Edit</h6>
+        </div>
+        <div class="card-body">
+            <form id="user_edit" data-parsley-validate enctype="multipart/form-data" autocomplete="off">
+                {% csrf_token %}
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="name">Username: <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="username" name="username"
+                                data-parsley-maxlength="256" placeholder="Enter username here (max 256 chars)."
+                                required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="name">Name: <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="name" name="name" data-parsley-maxlength="256"
+                                placeholder="Enter name here (max 256 chars)." required>
+                        </div>
+
+                        <!-- <div class="form-group">
+                            <label for="password">Password: <span class="text-danger">*</span></label>
+                            <input type="password" class="form-control" id="password" name="password"
+                                placeholder="Enter password here." required>
+                        </div> -->
+                    </div>
+                    <div class="col-md-6">
+
+                        <div class="form-group">
+                            <label for="email">Email: <span class="text-danger">*</span></label>
+                            <input type="email" class="form-control" id="email" name="email"
+                                placeholder="Enter email address here." required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="phone">Phone: <span class="text-danger">*</span></label>
+                            <input type="number" class="form-control" id="phone" name="phone" data-parsley-maxlength="12"
+                                placeholder="Enter phone number here (max 12 chars)." required>
+                        </div>
+
+                        <!-- <div class="form-group">
+                            <label for="password1">Confirm Password: <span class="text-danger">*</span></label>
+                            <input type="password" class="form-control" id="password1" name="password1"
+                                placeholder="Retype password here." data-parsley-equalto="#password"
+                                data-parsley-trigger="change" required>
+                        </div> -->
+                    </div>
+                </div>
+
+                <hr>
+                <div class="text-center">
+                    <span class="text-primary">Upload Documents</span>
+                </div>
+                <hr>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="company_application_document">Image 1: (<a href="#" target="_blank" id="editCompanyApplicationDocument">Current
+                                    File</a>)</label>
+                            <input type="file" class="form-control" id="company_application_document"
+                                name="company_application_document">
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="company_store_front">Image 2:
+                                (<a href="#" target="_blank" id="editCompanyStoreFront">Current File</a>)</label>
+                            <input type="file" class="form-control" id="company_store_front" name="company_store_front">
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="company_commercial_location">Image 3: (<a href="#" target="_blank" id="editCompanyCommercialLocation">Current
+                                    File</a>)</label>
+                            <input type="file" class="form-control" id="company_commercial_location"
+                                name="company_commercial_location">
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="company_reseller_permit">Image 4: (<a href="#" target="_blank" id="editCompanyResellerPermit">Current
+                                    File</a>)</label>
+                            <input type="file" class="form-control" id="company_reseller_permit"
+                                name="company_reseller_permit">
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="company_retail_sales_floor">Image 5: (<a href="#" target="_blank" id="editCompanyRetailSalesFloor">Current
+                                    File</a>)</label>
+                            <input type="file" class="form-control" id="company_retail_sales_floor"
+                                name="company_retail_sales_floor">
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="custom-control custom-checkbox small">
+                        <input type="checkbox" class="custom-control-input" id="is_staff" name="is_staff">
+                        <label class="custom-control-label" for="is_staff">Staff (can access admin panel)</label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="custom-control custom-checkbox small">
+                        <input type="checkbox" class="custom-control-input" id="is_active" name="is_active">
+                        <label class="custom-control-label" for="is_active">Active (can access the system)</label>
+                    </div>
+                </div>
+
+                <div class="failed"></div>
+
+                <input type="submit" class="btn btn-primary float-right">
+            </form>
+        </div>
+    </div>
+
+    <!-- <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Actions</h6>
+        </div>
+        <div class="card-body">
+            <button id="send_account_activation_email" class="btn btn-success btn-icon-split">
+                <span class="icon text-white-50">
+                    <i class="fas fa-envelope"></i>
+                </span>
+                <span class="text">Send Account Activation Email</span>
+            </button>
+            <span class="text" id="last_email_sent_at"></span>
+            <br>
+            <br> -->
+            <!-- <label for="sales_reps">Sales Reps</label>
+            <select id="sales_reps" name="sales_reps" multiple="multiple" style="width: 200px">
+            </select>
+            <button id="sales_reps_save_btn" class="btn btn-dark">Save</button> -->
+        <!-- </div>
+    </div> -->
+</div>
+{% endblock %}
+
+
+{% block js %}
+<script>
+    const user_api_url = "{% url 'apps:rbac:api:v1:user_retrieve_update_delete' uuid %}";
+    const user_list_url = "{% url 'admin:admin_rbac:user_list' %}";
+    const account_activation_email_send_api_url = "{% url 'apps:send_email:api:v1:send_account_activation_email_to_user' %}";
+    const last_account_activation_sent_at_api_url = "{% url 'apps:rbac:api:v1:last_account_activation_email_sent_at' %}";
+    const uuid = "{{ uuid }}";
+</script>
+
+<!-- user JS -->
+<script src="{% static 'admin_rbac/js/user.js' %}?v={{JS_VERSION}}"></script>
+{% endblock %}

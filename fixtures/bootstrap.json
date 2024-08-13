@@ -1,0 +1,17 @@
+[
+    {
+        "model": "rbac.user",
+        "pk": 1,
+        "fields": {
+            "username": "admin@admin.com",
+            "password": "pbkdf2_sha256$600000$9e54FKup9Ds13NKvFBaFfC$delQkeWfpNVgt79UYdIb9HOCWAS4q+ynVgRdfGPFg3s=",
+            "first_name": "admin",
+            "last_name": "admin",
+            "email": "admin@admin.com",
+            "is_active": true,
+            "is_staff": true,
+            "is_superuser": true,
+            "is_password_change_required": true
+        }
+    }
+]

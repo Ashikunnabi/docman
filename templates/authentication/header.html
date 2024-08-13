@@ -1,0 +1,42 @@
+<header id="aa-header">
+    <!-- start header top  -->
+    <div class="aa-header-top">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="aa-header-top-area">
+                        <!-- start header top left -->
+                        <div class="aa-header-top-left">
+                            <!-- start cellphone -->
+                            <div class="cellphone hidden-xs">
+                                <p><span class="fa fa-phone"></span>{{ COMPANY_PHONE }}
+                                </p>
+                            </div>
+                            <!-- / cellphone -->
+                            <!-- start email -->
+                            <div class="cellphone hidden-xs">
+                                <p>
+                                    <span class="fa fa-envelope"></span>{{ COMPANY_EMAIL }}
+                                </p>
+                            </div>
+                            <!-- / email -->
+                        </div>
+                        <!-- / header top left -->
+                        <div class="aa-header-top-right">
+                            <ul class="aa-head-top-nav-right">
+                                <li>
+                                    <a href="{% url 'apps:authentication:registration' %}">registration</a>
+                                </li>
+                                <li>
+                                    <a id="login_modal_trigger_button"
+                                        href="{% url 'apps:authentication:login' %}">Login</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- / header top  -->
+</header>

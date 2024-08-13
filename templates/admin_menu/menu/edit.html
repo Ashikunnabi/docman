@@ -1,0 +1,130 @@
+{% extends 'admin_base/base.html' %}
+{% load static %}
+{% block css %}
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+
+    <!-- Page Heading -->
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Menu</h1>
+        <!-- <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
+                class="fas fa-download fa-sm text-white-50"></i> Generate
+            Report</a> -->
+    </div>
+    <p class="mb-4">
+        <!-- Only active menu will be shown in home page.
+            Menus are awesome for user experience.
+            Please make sure you have full HD menu images. -->
+    </p>
+
+
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Menu Edit</h6>
+        </div>
+        <div class="card-body">
+            <nav>
+                <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                    <a class="nav-item nav-link active" id="nav-info-tab" data-toggle="tab" href="#nav-info" role="tab"
+                        aria-controls="nav-info" aria-selected="true">Basic Info</a>
+                    <a class="nav-item nav-link" id="nav-documents-tab" data-toggle="tab" href="#nav-documents"
+                        role="tab" aria-controls="nav-documents" aria-selected="false">Documents</a>
+                    <a class="nav-item nav-link" id="nav-items-tab" data-toggle="tab" href="#nav-items" role="tab"
+                        aria-controls="nav-items" aria-selected="false">Items</a>
+                </div>
+            </nav>
+
+            <div class="tab-content" id="nav-tabContent">
+                <div class="tab-pane fade show active" id="nav-info" role="tabpanel" aria-labelledby="nav-info-tab">
+                    <form id="menu_edit" data-parsley-validate enctype="multipart/form-data">
+                        <div class="form-menu">
+                            <label for="name">Name: <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="name" name="name" data-parsley-maxlength="50"
+                                placeholder="Enter menu name here (max 50 chars)." required>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-4">
+                                <label for="type">Type: <span class="text-danger">*</span></label>
+                                <select class="form-control" id="type_uuid" name="type_uuid" required></select>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="form-menu col-4">
+                                <label for="start_at">Start At: <span class="text-danger">*</span></label>
+                                <input type="date" class="form-control" id="start_at" name="start_at" required>
+                            </div>
+
+                            <div class="form-menu col-4">
+                                <label for="end_at">End At: <span class="text-danger">*</span></label>
+                                <input type="date" class="form-control" id="end_at" name="end_at" required>
+                            </div>
+                        </div>
+
+                        <div class="form-menu">
+                            <div class="custom-control custom-checkbox small">
+                                <input type="checkbox" class="custom-control-input" id="is_active" name="is_active">
+                                <label class="custom-control-label" for="is_active">Active</label>
+                            </div>
+                        </div>
+
+                        <div class="form-menu">
+                            <div class="custom-control custom-checkbox small">
+                                <input type="checkbox" class="custom-control-input" id="is_pinned" name="is_pinned">
+                                <label class="custom-control-label" for="is_pinned">Is Pinned?</label>
+                                <span><small>Pin it to show in home page</small></span>
+                            </div>
+                        </div>
+
+                        <input type="submit" class="btn btn-primary float-right">
+                    </form>
+                </div>
+
+                <div class="tab-pane fade" id="nav-documents" role="tabpanel" aria-labelledby="nav-documents-tab">
+                    <br>
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-hover row-select" id="dataTableMenuDocument"
+                            style="width: 100%;">
+                        </table>
+                    </div>
+                </div>
+
+                <div class="tab-pane fade" id="nav-items" role="tabpanel" aria-labelledby="nav-items-tab">
+                    <br>
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-hover row-select" id="dataTableMenuItem"
+                            style="width: 100%;">
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+
+</div>
+{% endblock %}
+
+
+{% block js %}
+<script>
+    const page_type = "edit";
+    const uuid = "{{ uuid }}";
+    const api_urls = {
+        "menu_list": "{% url 'apps:menu:dashboard_api:v1:dashboard_menu_list_create' %}",
+        "menu_type_list": "{% url 'apps:menu:dashboard_api:v1:dashboard_menu_type_list_create' %}",
+        "menu_item_list": "{% url 'apps:menu:dashboard_api:v1:dashboard_menu_item_list_create' menu_uuid=uuid %}",
+        "product_list": "{% url 'apps:inventory:dashboard_api:v1:dashboard_product_list_create'  %}",
+        "menu_document_list": "{% url 'apps:menu:dashboard_api:v1:dashboard_menu_document_list_create' menu_uuid=uuid %}",
+        "dashboard_menu_document_upload": "{% url 'apps:menu:dashboard_api:v1:dashboard_menu_document_upload' menu_uuid=uuid %}",
+    }
+    const menu_list_url = "{% url 'admin:admin_menu:menu_list' %}";
+</script>
+
+<!-- Menu JS -->
+<script type="module" src="{% static 'admin_menu/js/menu.js' %}?v={{JS_VERSION}}"></script>
+{% endblock %}
