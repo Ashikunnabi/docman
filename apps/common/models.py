@@ -82,3 +82,19 @@ class BaseModel(models.Model):
             if self.is_soft_deleted:
                 self.soft_deleted_at = datetime.datetime.now()
         super().save(*args, **kwargs)
+
+    @property
+    def created_by_name(self):
+        return (
+            f"{self.created_by.name} ({self.created_by.username})"
+            if self.created_by
+            else ""
+        )
+
+    @property
+    def updated_by_name(self):
+        return (
+            f"{self.updated_by.name} ({self.updated_by.username})"
+            if self.updated_by
+            else ""
+        )

@@ -25,3 +25,8 @@ class ObjectAlreadyExistsException(BaseException):
     code = "OBJECT_ALREADY_EXISTS"
     status_code = status.HTTP_400_BAD_REQUEST
     message = "Object already exists"
+
+class ObjectNotFoundException(BaseException):
+    code = "OBJECT_NOT_FOUND"
+    status_code = status.HTTP_400_BAD_REQUEST
+    message = "Object not found"
