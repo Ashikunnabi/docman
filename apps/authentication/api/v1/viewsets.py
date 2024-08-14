@@ -2,48 +2,82 @@ from django.conf import settings
 from django.contrib.auth import authenticate, get_user_model
 from django.contrib.auth import login as auth_login
 from django.core.files.storage import default_storage
+from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.exceptions import InvalidToken
+from rest_framework_simplejwt.tokens import (
+    BlacklistedToken,
+    OutstandingToken,
+    RefreshToken,
+)
 
-from apps.authentication.exceptions import InvalidCredentialsException
-from apps.rbac.api.v1.serializers import UserInputSerializer
 from apps.email.api.v1.viewsets import (
     new_user_notify_email_to_owner,
     recover_password_email,
 )
+from apps.rbac.api.v1.serializers import UserInputSerializer
 
+from ...exceptions import InvalidCredentialsException
 from .serializers import LoggedInUserOutputSerializer, LoginInputSerializer
 
 
 @api_view(["POST"])
 def login(request):
-    data = request.data
-
-    serializer = LoginInputSerializer(data=data)
+    # Deserialize input data
+    serializer = LoginInputSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
-
-    users = get_user_model().objects.filter(username=data.get("username"))
-
-    if not users.exists():
-        raise InvalidCredentialsException
+    username = serializer.validated_data.get("username")
+    password = serializer.validated_data.get("password")
 
     # activating session based authentication
-    user = authenticate(
-        username=request.data["username"], password=request.data["password"]
-    )
+    user = authenticate(username=username, password=password)
 
     if not user:
         raise InvalidCredentialsException
 
     auth_login(request, user)
+
+    # Generate JWT tokens
+    try:
+        refresh = RefreshToken.for_user(user)
+        access = refresh.access_token
+    except InvalidToken as e:
+        return Response({"detail": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
     token = {
         "user": LoggedInUserOutputSerializer(user).data,
-        "refresh": str(RefreshToken.for_user(users.first())),
-        "access": str(RefreshToken.for_user(users.first()).access_token),
+        "refresh": str(refresh),
+        "access": str(access),
     }
-    print(token)
     return Response(token, status=200)
+
+
+@api_view(["POST"])
+def logout(request):
+    """
+    Logout the user by blacklisting the JWT token.
+    """
+    if request.user and request.auth:
+        try:
+            # Blacklist the token
+            outstanding_token = OutstandingToken.objects.get(
+                token=request.data["refresh"]
+            )
+            BlacklistedToken.objects.create(token=outstanding_token)
+            outstanding_token.delete()
+            return Response(
+                {"detail": "Successfully logged out."},
+                status=status.HTTP_205_RESET_CONTENT,
+            )
+        except OutstandingToken.DoesNotExist:
+            return Response(
+                {"detail": "Token not found."}, status=status.HTTP_400_BAD_REQUEST
+            )
+    else:
+        return Response(
+            {"detail": "User not authenticated."}, status=status.HTTP_400_BAD_REQUEST
+        )
 
 
 @api_view(["POST"])

@@ -15,18 +15,33 @@ router = DefaultRouter()
 # router.Register(r'dealer', DealerViewSet, basename='dealer')
 
 urlpatterns = [
-    path("users/", UserListCreateAPIView.as_view(), name="user_list_create"),
     path(
-        "users/<uuid:uuid>/",
-        UserRetrieveUpdateDestroyAPIView.as_view(),
-        name="user_retrieve_update_delete",
+        "users/",
+        include(
+            [
+                path(
+                    "",
+                    UserListCreateAPIView.as_view(),
+                    name="user_list_create",
+                ),
+                path(
+                    "<uuid:uuid>/",
+                    UserRetrieveUpdateDestroyAPIView.as_view(),
+                    name="user_retrieve_update_delete",
+                ),
+                path(
+                    "<uuid:uuid>/permissions/",
+                    UserPermissionListAPIView.as_view(),
+                    name="user_permission_list",
+                ),
+                path(
+                    "staffs/",
+                    StaffListAPIView.as_view(),
+                    name="staff-list",
+                ),
+            ]
+        ),
     ),
-    path(
-        "users/<uuid:uuid>/permissions/",
-        UserPermissionListAPIView.as_view(),
-        name="user_permission_list",
-    ),
-    path("users/staffs/", StaffListAPIView.as_view(), name="staff-list"),
     path("groups/", GroupListCreateAPIView.as_view(), name="group_list_create"),
     path(
         "groups/<int:id>/",

@@ -20,4 +20,5 @@ class LoggedInUserOutputSerializer(serializers.ModelSerializer):
             "is_active",
             "date_joined",
             "is_password_change_required",
+            "last_login",
         )
