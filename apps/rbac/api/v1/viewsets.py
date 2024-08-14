@@ -11,6 +11,7 @@ from apps.common.custom_pagination import LargeResultsSetPagination
 from apps.common.custom_viewset import (
     BaseListAPIView,
     BaseListCreateAPIView,
+    BaseRetrieveAPIView,
     BaseRetrieveUpdateDestroyAPIView,
 )
 from apps.common.utils.basic import *
@@ -20,6 +21,7 @@ from apps.rbac.api.v1.serializers import (  # UserActivityLogSerializer,
     PermissionSerializer,
     UserInputSerializer,
     UserOutputSerializer,
+    UserPermissionOutputSerializer,
 )
 from apps.rbac.models import User
 from apps.rbac.services import GroupService, UserService
@@ -34,7 +36,9 @@ class UserListCreateAPIView(BaseListCreateAPIView):
 
     def list(self, request, *args, **kwargs):
         service = self.service_class()
-        search = {"search": request.GET.get("search[value]", request.GET.get("q", None))}
+        search = {
+            "search": request.GET.get("search[value]", request.GET.get("q", None))
+        }
         queryset = service.list(**search)
 
         page = self.paginate_queryset(queryset)
@@ -90,13 +94,27 @@ class UserRetrieveUpdateDestroyAPIView(BaseRetrieveUpdateDestroyAPIView):
         )
 
 
+class UserPermissionListAPIView(BaseListAPIView):
+    service_class = UserService
+    input_serializer_class = UserInputSerializer
+    output_serializer_class = UserPermissionOutputSerializer
+
+    def list(self, request, *args, **kwargs):
+        instance = self.get_object()
+        permissions = self.service_class().get_user_permissions(user=instance)
+        serializer = self.get_output_serializer(permissions, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
 class StaffListAPIView(BaseListAPIView):
     service_class = UserService
     output_serializer_class = UserOutputSerializer
 
     def list(self, request, *args, **kwargs):
         service = self.service_class()
-        search = {"search": request.GET.get("search[value]", request.GET.get("q", None))}
+        search = {
+            "search": request.GET.get("search[value]", request.GET.get("q", None))
+        }
         queryset = service.get_staffs(**search)
 
         page = self.paginate_queryset(queryset)
@@ -331,7 +349,9 @@ class GroupListCreateAPIView(BaseListCreateAPIView):
 
     def list(self, request, *args, **kwargs):
         service = self.service_class()
-        search = {"search": request.GET.get("search[value]", request.GET.get("q", None))}
+        search = {
+            "search": request.GET.get("search[value]", request.GET.get("q", None))
+        }
         queryset = service.list(**search)
 
         page = self.paginate_queryset(queryset)

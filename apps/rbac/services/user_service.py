@@ -63,3 +63,15 @@ class UserService(BaseModelService):
         )
 
         return staffs
+
+    def get_user_permissions(self, user):
+        # all_permissions = user.get_all_permissions()
+        group_permissions = set()
+        user_groups = user.groups.all()
+        user_permissions = set(user.user_permissions.all())
+
+        for group in user_groups:
+            group_permissions.update(group.permissions.all())
+
+        permissions = user_permissions.union(group_permissions)
+        return permissions

@@ -13,7 +13,7 @@ from apps.email.api.v1.viewsets import (
     recover_password_email,
 )
 
-from .serializers import LoginInputSerializer
+from .serializers import LoggedInUserOutputSerializer, LoginInputSerializer
 
 
 @api_view(["POST"])
@@ -38,7 +38,7 @@ def login(request):
 
     auth_login(request, user)
     token = {
-        "user_id": user.uuid,
+        "user": LoggedInUserOutputSerializer(user).data,
         "refresh": str(RefreshToken.for_user(users.first())),
         "access": str(RefreshToken.for_user(users.first()).access_token),
     }
