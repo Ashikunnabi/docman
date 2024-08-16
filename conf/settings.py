@@ -43,7 +43,7 @@ LOCAL_APPS = [
     "apps.document",
     "apps.rbac",
     "apps.email",
-    # "apps.menu",
+    "apps.category",
     # admin
     "apps.admin.admin_base",
     "apps.admin.admin_rbac",

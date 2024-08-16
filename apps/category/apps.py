@@ -1,6 +1,6 @@
 from django.apps import AppConfig
 
 
-class MenuConfig(AppConfig):
+class CategoryConfig(AppConfig):
     default_auto_field = 'django.db.models.AutoField'
-    name = 'apps.menu'
+    name = 'apps.category'

@@ -79,8 +79,6 @@ class BaseModel(models.Model):
             except Exception:
                 self.updated_by_id = 1  # Request from management command
 
-            if self.is_soft_deleted:
-                self.soft_deleted_at = datetime.datetime.now()
         super().save(*args, **kwargs)
 
     @property

@@ -1,6 +1,6 @@
 from apps.common.service import BaseModelService
 from apps.common.utils.basic import datetime_now
-from apps.menu.services.menu_service import MenuService
+from apps.category.services.category_service import MenuService
 
 from ..models.menu_item import MenuItem
 
