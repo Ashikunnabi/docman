@@ -35,6 +35,7 @@ THIRD_PARTY_APPS = [
     "rest_framework_simplejwt.token_blacklist",
     "django_extensions",
     "auditlog",  # https://django-auditlog.readthedocs.io/en/latest/installation.html
+    "django_filters",  # https://django-filter.readthedocs.io/en/stable/guide/install.html
 ]
 
 LOCAL_APPS = [

@@ -231,7 +231,6 @@ class BaseModelService:
 
     def search_queryset(self, queryset, **kwargs):
         search_logic = []
-        print(kwargs)
         search_value = kwargs.get("search", None)
         if not search_value:
             return queryset

@@ -5,7 +5,6 @@ from ..models.category import Category
 
 class CategoryService(BaseModelService):
     model = Category
-    search_keywords = ["name"]
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

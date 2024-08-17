@@ -1,5 +1,5 @@
 from django.contrib.auth import get_user_model
-from rest_framework import status
+from rest_framework import filters, status
 from rest_framework.response import Response
 
 from apps.common.custom_pagination import LargeResultsSetPagination
@@ -10,7 +10,11 @@ from apps.common.custom_viewset import (
 from apps.common.utils.basic import *
 
 from ...services import CategoryService
-from .serializers import CategoryInputSerializer, CategoryOutputSerializer, SimpleCategoryOutputSerializer
+from .serializers import (
+    CategoryInputSerializer,
+    CategoryOutputSerializer,
+    SimpleCategoryOutputSerializer,
+)
 
 User = get_user_model()
 
@@ -21,13 +25,13 @@ class CategoryListCreateAPIView(BaseListCreateAPIView):
     output_serializer_class = CategoryOutputSerializer
     simple_output_serializer_class = SimpleCategoryOutputSerializer
     pagination_class = LargeResultsSetPagination
+    filter_backends = [filters.SearchFilter]
+    search_fields = ["name"]
 
     def list(self, request, *args, **kwargs):
         service = self.service_class()
-        search = {
-            "search": request.GET.get("search[value]", request.GET.get("q", None))
-        }
-        queryset = service.list(**search)
+        queryset = service.list()
+        queryset = self.filter_queryset(queryset)
 
         page = self.paginate_queryset(queryset)
         if page is not None:
