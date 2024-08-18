@@ -11,6 +11,7 @@ dashboard_urlpatterns = [
     path("", include("apps.rbac.urls")),
     path("", include("apps.email.urls")),
     path("", include("apps.category.urls")),
+    path("", include("apps.metadata.urls")),
 ]
 
 urlpatterns = fe_urlpatterns + dashboard_urlpatterns

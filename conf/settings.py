@@ -165,6 +165,7 @@ SIMPLE_JWT = {
 # creating a log folder in basedir if not exists
 if not os.path.exists(os.path.join(BASE_DIR, "log")):
     os.mkdir(os.path.join(BASE_DIR, "log"))
+
 # Log config
 LOGGING = {
     "version": 1,

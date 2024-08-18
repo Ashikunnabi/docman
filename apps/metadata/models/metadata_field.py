@@ -9,6 +9,13 @@ from ..constants import MetadataFieldType
 class MetadataField(BaseModel):
     validators = [ScreenMethodValidator]
 
+    metadata = models.ForeignKey(
+        "Metadata",
+        on_delete=models.CASCADE,
+        related_name="fields",
+        help_text="The metadata the field belongs to.",
+    )
+
     name = models.CharField(
         default="",
         blank=True, 
@@ -48,7 +55,7 @@ class MetadataField(BaseModel):
 
     def screen_unique_name_and_field_type(self):
         if (
-            self.__class__.objects.filter(name=self.name, field_type=self.parent)
+            self.__class__.objects.filter(name=self.name, field_type=self.field_type)
             .exclude(id=self.id)
             .exists()
         ):

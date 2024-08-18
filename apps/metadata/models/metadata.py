@@ -8,9 +8,6 @@ class Metadata(BaseModel):
     validators = [ScreenMethodValidator]
 
     name = models.CharField(max_length=500, blank=True, default="")
-    fields = models.ManyToManyField(
-        "metadata.MetadataField", related_name="metadata"
-    )
 
     class Meta:
         constraints = [

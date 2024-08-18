@@ -1,55 +1,56 @@
+from apps.metadata.models.metadata_field import MetadataField
+from apps.metadata.models.metadata_value import MetadataValue
 from rest_framework import serializers
 
 from ...models import Metadata
 
 
-class MetadataInputSerializer(serializers.ModelSerializer):
-    parent_uuid = serializers.UUIDField(required=False)
-
+class MetadataFieldInputSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Metadata
+        model = MetadataField
         fields = [
             "name",
-            "parent_uuid",
-        ]
-
-
-class SimpleMetadataOutputSerializer(serializers.ModelSerializer):
-    parent = serializers.SerializerMethodField()
-
-    class Meta:
-        model = Metadata
-        fields = [
-            "uuid",
-            "name",
-            "parent",
+            "placeholder",
+            "field_type",
+            "is_required",
+            "is_unique",
             "is_active",
         ]
 
-    def get_parent(self, obj):
-        if obj.parent:
-            return {
-                "uuid": obj.parent.uuid,
-                "name": obj.parent.name,
-                "parent": obj.parent.parent.uuid if obj.parent.parent else None,
-                "is_active": obj.parent.is_active,
-            }
-        return None
+
+class MetadataFieldOutputSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = MetadataField
+        fields = [
+            "uuid",
+            "name",
+            "placeholder",
+            "field_type",
+            "is_required",
+            "is_unique",
+            "is_active",
+        ]
+
+
+class MetadataInputSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Metadata
+        fields = [
+            "name",
+            "is_active",
+        ]
 
 
 class MetadataOutputSerializer(serializers.ModelSerializer):
-    parent = serializers.SerializerMethodField()
+    fields = MetadataFieldOutputSerializer(many=True)
 
     class Meta:
         model = Metadata
         fields = [
             "uuid",
             "name",
-            "parent",
             "is_active",
+            "fields",
         ]
-
-    def get_parent(self, obj):
-        if obj.parent:
-            return MetadataOutputSerializer(obj.parent).data
-        return None
