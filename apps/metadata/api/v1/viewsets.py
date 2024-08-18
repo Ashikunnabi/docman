@@ -1,0 +1,88 @@
+from django.contrib.auth import get_user_model
+from rest_framework import filters, status
+from rest_framework.response import Response
+
+from apps.common.custom_pagination import LargeResultsSetPagination
+from apps.common.custom_viewset import (
+    BaseListCreateAPIView,
+    BaseRetrieveUpdateDestroyAPIView,
+)
+from apps.common.utils.basic import *
+
+from ...services import MetadataService
+from .serializers import (
+    MetadataInputSerializer,
+    MetadataOutputSerializer,
+    SimpleMetadataOutputSerializer,
+)
+
+User = get_user_model()
+
+
+class MetadataListCreateAPIView(BaseListCreateAPIView):
+    service_class = MetadataService
+    input_serializer_class = MetadataInputSerializer
+    output_serializer_class = MetadataOutputSerializer
+    simple_output_serializer_class = SimpleMetadataOutputSerializer
+    pagination_class = LargeResultsSetPagination
+    filter_backends = [filters.SearchFilter]
+    search_fields = ["name"]
+
+    def list(self, request, *args, **kwargs):
+        service = self.service_class()
+        queryset = service.list()
+        queryset = self.filter_queryset(queryset)
+
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_output_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = self.simple_output_serializer_class(queryset, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def create(self, request, *args, **kwargs):
+        data = request.data
+
+        serializer = self.get_input_serializer(data=data)
+        serializer.is_valid(raise_exception=True)
+
+        service = self.service_class()
+        instance = service.create_metadata(**serializer.validated_data)
+        serializer = self.get_output_serializer(instance)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+
+class MetadataRetrieveUpdateDestroyAPIView(BaseRetrieveUpdateDestroyAPIView):
+    service_class = MetadataService
+    input_serializer_class = MetadataInputSerializer
+    output_serializer_class = MetadataOutputSerializer
+
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = self.get_output_serializer(instance)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def update(self, request, *args, **kwargs):
+        data = request.data
+        instance = self.get_object()
+
+        serializer = self.get_input_serializer(
+            instance=instance, data=data, partial=True
+        )
+        serializer.is_valid(raise_exception=True)
+
+        service = self.service_class()
+        instance = service.update_metadata(
+            instance=instance, **serializer.validated_data
+        )
+        serializer = self.get_output_serializer(instance)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        service = self.service_class()
+        service.delete(instance=instance)
+        response = Response(status=status.HTTP_204_NO_CONTENT)
+        response["Content-Length"] = 0
+        return response

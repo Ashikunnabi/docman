@@ -45,6 +45,7 @@ LOCAL_APPS = [
     "apps.rbac",
     "apps.email",
     "apps.category",
+    "apps.metadata",
     # admin
     "apps.admin.admin_base",
     "apps.admin.admin_rbac",

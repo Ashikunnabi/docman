@@ -9,6 +9,14 @@ class Category(BaseModel):
 
     name = models.CharField(max_length=256)
     parent = models.ForeignKey("self", on_delete=models.CASCADE, null=True, blank=True)
+    metadata = models.ManyToManyField(
+        "metadata.Metadata",
+        related_name="categories",
+        blank=True,
+        null=True,
+        default=None,
+        help_text="The metadata of the category.",
+    )
 
     class Meta:
         constraints = [
@@ -29,5 +37,5 @@ class Category(BaseModel):
             return "Category with this name already exists."
 
     def screen_self_at_parent(self):
-        if (self.id == self.parent_id):
+        if self.id == self.parent_id:
             return "Parent category cannot be the same as the category itself."
