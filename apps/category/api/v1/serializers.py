@@ -1,3 +1,4 @@
+from apps.metadata.api.v1.serializers import MetadataOutputSerializer
 from rest_framework import serializers
 
 from ...models import Category
@@ -5,12 +6,16 @@ from ...models import Category
 
 class CategoryInputSerializer(serializers.ModelSerializer):
     parent_uuid = serializers.UUIDField(required=False)
+    metadata_uuids = serializers.ListField(
+        child=serializers.UUIDField(), required=False
+    )
 
     class Meta:
         model = Category
         fields = [
             "name",
             "parent_uuid",
+            "metadata_uuids",
         ]
 
 
@@ -39,6 +44,7 @@ class SimpleCategoryOutputSerializer(serializers.ModelSerializer):
 
 class CategoryOutputSerializer(serializers.ModelSerializer):
     parent = serializers.SerializerMethodField()
+    metadata = MetadataOutputSerializer(many=True)
 
     class Meta:
         model = Category
@@ -47,6 +53,7 @@ class CategoryOutputSerializer(serializers.ModelSerializer):
             "name",
             "parent",
             "is_active",
+            "metadata",
         ]
 
     def get_parent(self, obj):

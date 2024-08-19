@@ -240,3 +240,14 @@ class MetadataValue(BaseModel):
             self.value_color.startswith("#") and len(self.value_color) == 7
         ):
             return "Invalid color hex value"
+
+    def screen_document_and_field(self):
+        """
+        Validate that the metadata value does not already exist
+        """
+        if (
+            self.__class__.objects.filter(document=self.document, field=self.field)
+            .exclude(id=self.id)
+            .exists()
+        ):
+            return "Metadata value already exists"
