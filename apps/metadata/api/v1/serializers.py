@@ -54,3 +54,38 @@ class MetadataOutputSerializer(serializers.ModelSerializer):
             "is_active",
             "fields",
         ]
+
+
+class MetadataValueOutputSerializer(serializers.ModelSerializer):
+    field = MetadataFieldOutputSerializer()
+
+    class Meta:
+        model = MetadataValue
+        fields = [
+            "uuid",
+            "field",
+            "value_text",
+            "value_integer",
+            "value_decimal",
+            "value_boolean",
+            "value_date",
+            "value_datetime",
+            "value_time",
+            "value_url",
+            "value_email",
+            "value_phone",
+            "value_image",
+            "value_file",
+            "value_html",
+            "value_markdown",
+            "value_color",
+            "value_color_hex",
+            "value_password",
+            "value_secret",
+            "value_percentage",
+            "value_rating",
+            "value_country",
+            "value_language",
+            "value_timezone",
+            "value_currency_code",
+        ]

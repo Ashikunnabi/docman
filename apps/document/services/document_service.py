@@ -5,6 +5,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from apps.common.exceptions import ObjectNotFoundException
 from apps.common.service import BaseModelService
 
+from apps.metadata.services.metadata_value_service import MetadataValueService
 from ..exceptions import FileRequiredException
 from ..models import Document
 
@@ -15,6 +16,10 @@ class DocumentService(BaseModelService):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+    
+    @property
+    def metadata_value_service(self):
+        return MetadataValueService()
 
     def read_by_uuid(self, uuid_value, **kwargs):
         try:
@@ -43,4 +48,10 @@ class DocumentService(BaseModelService):
     def create(self, **kwargs):
         kwargs, m2m_data = self.validated_data(**kwargs)
         instance = super().create(**kwargs)
+        return instance
+
+    def update_metadata_values(self, instance, metadata_values, **kwargs):
+        for metadata_value in metadata_values:
+            metadata_value["document_uuid"] = instance.uuid
+        self.metadata_value_service.create_or_update(metadata_values)
         return instance

@@ -1,5 +1,4 @@
 from apps.common.service import BaseModelService
-from apps.document.services import DocumentService
 
 from ..models import MetadataValue
 from ..services.metadata_field_service import MetadataFieldService
@@ -13,6 +12,7 @@ class MetadataValueService(BaseModelService):
 
     @property
     def document_service(self):
+        from apps.document.services import DocumentService
         return DocumentService()
 
     @property
@@ -54,3 +54,15 @@ class MetadataValueService(BaseModelService):
         kwargs, m2m_data = self.validated_data(**kwargs)
         instance = self.update_model_instance(instance, **kwargs)
         return instance
+
+    def create_or_update(self, metadata_values, **kwargs):
+        for metadata_value in metadata_values:
+            kwargs, m2m_data = self.validated_data(**metadata_value)
+            instance = self.list(
+                document_id=kwargs["document_id"],
+                field_id=kwargs["field_id"],
+            ).first()
+            if instance:
+                self.update_metadata_value(instance, **kwargs)
+            else:
+                instance = self.create_metadata_value(**kwargs)

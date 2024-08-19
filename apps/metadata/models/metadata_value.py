@@ -210,7 +210,7 @@ class MetadataValue(BaseModel):
         return None
 
     def __str__(self):
-        return f"{self.document.title} - {self.field.name}: {self.get_value()}"
+        return f"{self.document.name} - {self.field.name}: {self.get_value()}"
 
     def screen_unique_type_and_value(self):
         """
