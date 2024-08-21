@@ -6,17 +6,39 @@ from apps.common.exceptions import ObjectNotFoundException
 from apps.common.service import BaseModelService
 
 from apps.metadata.services.metadata_value_service import MetadataValueService
-from ..exceptions import FileRequiredException
+from ..exceptions import (
+    FileExtensionNotAllowedException,
+    FileRequiredException,
+    FileSizeExceededException,
+)
 from ..models import Document
 
 
 class DocumentService(BaseModelService):
     model = Document
     search_keywords = []
+    FILE_SIZE_IN_MB = 500
+    FILE_SIZE_IN_KB = FILE_SIZE_IN_MB * 1000
+    FILE_SIZE_IN_BYTES = FILE_SIZE_IN_KB * 1000
+    FILE_EXTENSIONS = [
+        "pdf",
+        "doc",
+        "docx",
+        "xls",
+        "xlsx",
+        "ppt",
+        "pptx",
+        "txt",
+        "jpg",
+        "jpeg",
+        "png",
+        "gif",
+        "csv",
+    ]
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-    
+
     @property
     def metadata_value_service(self):
         return MetadataValueService()
@@ -27,6 +49,18 @@ class DocumentService(BaseModelService):
         except ObjectDoesNotExist:
             raise ObjectNotFoundException("Document not found")
         return instance
+
+    def validate_file_size(self, file):
+        if file.size > self.FILE_SIZE_IN_BYTES:
+            current_file_size_in_mb = round(file.size / 1000000, 2)
+            message = f"File size exceeded {current_file_size_in_mb} MB. Maximum file size allowed is {self.FILE_SIZE_IN_MB} MB"
+            raise FileSizeExceededException(message=message)
+
+    def validate_file_extension(self, file):
+        extension = Path(file.name).suffix[1:]
+        if extension not in self.FILE_EXTENSIONS:
+            message = f"File format not allowed. Allowed formats are {', '.join(self.FILE_EXTENSIONS)}."
+            raise FileExtensionNotAllowedException(message=message)
 
     def validated_data(self, **kwargs):
         m2m_data = {}
@@ -42,6 +76,8 @@ class DocumentService(BaseModelService):
         kwargs["name"] = kwargs["file"].name
         kwargs["extension"] = kwargs["file"].name.split(".")[-1]
         kwargs["size"] = kwargs["file"].size
+        self.validate_file_size(kwargs["file"])
+        self.validate_file_extension(kwargs["file"])
 
         return kwargs, m2m_data
 
