@@ -28,15 +28,7 @@ class LoginRequiredMiddleware(MiddlewareMixin):
                 logout(request)
                 if not any(m.match(path) for m in EXEMPT_URLS):
                     return redirect(settings.LOGIN_URL)
-            if request.user.is_staff:
-                if (
-                    not path.startswith("admin")
-                    and not any(m.match(path) for m in EXEMPT_URLS)
-                    and not path.startswith("logout")
-                    and not path.startswith("media")
-                ):
-                    return redirect("/admin/" + path)
-            if not request.user.is_staff and path.startswith("admin"):
+            if not request.user.is_superuser and path.startswith("admin"):
                 return redirect("/")
 
 
