@@ -1,10 +1,12 @@
 from django.conf import settings
 from django.conf.urls.static import static
+from django.contrib import admin
 from django.urls import include, path
 
 urlpatterns = [
-    path("admin/", include("apps.admin.urls")),
-    path("", include("apps.urls")),
+    path("admin/", admin.site.urls, name="admin"),
+    path("dashboard/", include("apps.admin.urls", namespace="dashboard")),
+    path("", include("apps.urls", namespace="apis")),
 ]
 
 # static and media url controll

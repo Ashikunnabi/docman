@@ -26,6 +26,7 @@ class SimpleCategoryOutputSerializer(serializers.ModelSerializer):
         model = Category
         fields = [
             "uuid",
+            "code",
             "name",
             "parent",
             "is_active",
@@ -35,6 +36,7 @@ class SimpleCategoryOutputSerializer(serializers.ModelSerializer):
         if obj.parent:
             return {
                 "uuid": obj.parent.uuid,
+                "code": obj.parent.code,
                 "name": obj.parent.name,
                 "parent": obj.parent.parent.uuid if obj.parent.parent else None,
                 "is_active": obj.parent.is_active,
@@ -50,6 +52,7 @@ class CategoryOutputSerializer(serializers.ModelSerializer):
         model = Category
         fields = [
             "uuid",
+            "code",
             "name",
             "parent",
             "is_active",

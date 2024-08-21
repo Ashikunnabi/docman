@@ -38,18 +38,25 @@ class CategoryService(BaseModelService):
         return kwargs, m2m_data
 
     def create_category(self, **kwargs):
-        remove_keys = []
+        remove_keys = ["code"]
 
         for key in remove_keys:
-            del kwargs[key]
+            kwargs.pop(key, None)
 
         kwargs, m2m_data = self.validated_data(**kwargs)
         instance = self.create(**kwargs)
-        instance.metadata.set(m2m_data["metadata_ids"])
+        if m2m_data:
+            instance.metadata.set(m2m_data["metadata_ids"])
         return instance
 
     def update_category(self, instance, **kwargs):
+        remove_keys = ["code"]
+
+        for key in remove_keys:
+            kwargs.pop(key, None)
+
         kwargs, m2m_data = self.validated_data(**kwargs)
         instance = self.update_model_instance(instance, **kwargs)
-        instance.metadata.set(m2m_data["metadata_ids"])
+        if m2m_data:
+            instance.metadata.set(m2m_data["metadata_ids"])
         return instance

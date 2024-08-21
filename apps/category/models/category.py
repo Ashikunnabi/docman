@@ -1,4 +1,5 @@
 from django.db import models
+from apps.common.utils.basic import random_hex_code
 from apps.common.validators import ScreenMethodValidator
 
 from apps.common.models import BaseModel
@@ -7,13 +8,19 @@ from apps.common.models import BaseModel
 class Category(BaseModel):
     validators = [ScreenMethodValidator]
 
+    code = models.CharField(max_length=256, unique=True, default=random_hex_code)
     name = models.CharField(max_length=256)
-    parent = models.ForeignKey("self", on_delete=models.CASCADE, null=True, blank=True)
+    parent = models.ForeignKey(
+        "self",
+        null=True,
+        blank=True,
+        on_delete=models.PROTECT,
+        related_name="subcategories",
+    )
     metadata = models.ManyToManyField(
         "metadata.Metadata",
         related_name="categories",
         blank=True,
-        null=True,
         default=None,
         help_text="The metadata of the category.",
     )
@@ -23,6 +30,9 @@ class Category(BaseModel):
             models.UniqueConstraint(
                 fields=["name", "parent"], name="unique_category_name_parent"
             )
+        ]
+        indexes = [
+            models.Index(fields=["code"], name="category_code_idx"),
         ]
 
     def __str__(self):
@@ -35,7 +45,3 @@ class Category(BaseModel):
             .exists()
         ):
             return "Category with this name already exists."
-
-    def screen_self_at_parent(self):
-        if self.id == self.parent_id:
-            return "Parent category cannot be the same as the category itself."

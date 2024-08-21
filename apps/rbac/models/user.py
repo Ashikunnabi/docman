@@ -1,5 +1,6 @@
 import uuid
 
+from apps.category.models.category_group_permission import CategoryGroupPermission
 from auditlog.models import AuditlogHistoryField
 from django.contrib.auth.models import AbstractUser
 from django.db import models
@@ -24,7 +25,9 @@ class User(AbstractUser):
     is_user_locked = models.BooleanField(null=False, blank=False, default=False)
     user_locked_at = models.DateTimeField(null=True, blank=True)
     last_unsuccessful_login = models.DateTimeField(null=True, blank=True)
-    unsuccessful_login_attempts = models.IntegerField(null=False, blank=False, default=0)
+    unsuccessful_login_attempts = models.IntegerField(
+        null=False, blank=False, default=0
+    )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     history = AuditlogHistoryField()
@@ -32,3 +35,14 @@ class User(AbstractUser):
     @property
     def name(self):
         return f"{self.first_name} {self.last_name}"
+
+    def get_category_permissions(self):
+        permission_codes = (
+            CategoryGroupPermission.objects.filter(group__in=self.groups.all())
+            .values_list("permission__code", flat=True)
+            .distinct()
+        )
+        return list(permission_codes)
+
+    def has_category_permission(self, permission_code):
+        return permission_code in self.get_category_permissions()
