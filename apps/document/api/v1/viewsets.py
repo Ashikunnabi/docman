@@ -1,4 +1,4 @@
-from rest_framework import status
+from rest_framework import filters, status
 from rest_framework.response import Response
 
 from apps.common.custom_viewset import (
@@ -21,6 +21,8 @@ class DocumentListCreateAPIView(BaseListCreateAPIView):
     input_serializer_class = DocumentInputSerializer
     output_serializer_class = DocumentOutputSerializer
     simpleoutput_serializer_class = DocumentSimpleOutputSerializer
+    filter_backends = [filters.SearchFilter]
+    search_fields = ["name", "metadata_values__value_text"]
 
     def list(self, request, *args, **kwargs):
         service = self.get_service()

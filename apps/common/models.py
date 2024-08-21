@@ -1,4 +1,3 @@
-import datetime
 import re
 import uuid
 
@@ -69,13 +68,13 @@ class BaseModel(models.Model):
             # Only set added_by during the first save.
             try:
                 # exposed_request comes from RequestExposerMiddleware
-                self.created_by = exposed_request.user
+                self.created_by = models.exposed_request.user
             except Exception:
                 self.created_by_id = 1  # Request from management command
             self.updated_by = self.created_by
         else:
             try:
-                self.updated_by = exposed_request.user
+                self.updated_by = models.exposed_request.user
             except Exception:
                 self.updated_by_id = 1  # Request from management command
 

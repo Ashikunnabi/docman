@@ -6,7 +6,7 @@ from django.http import JsonResponse
 from django.shortcuts import redirect
 from django.utils.deprecation import MiddlewareMixin
 
-from apps.rbac import models
+from .models import models
 
 EXEMPT_URLS = [compile(settings.LOGIN_URL.lstrip("/"))]
 
