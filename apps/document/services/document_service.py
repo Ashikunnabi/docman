@@ -2,6 +2,7 @@ from pathlib import Path
 
 from django.core.exceptions import ObjectDoesNotExist
 
+from apps.category.services.category_permission_service import CategoryPermissionService
 from apps.category.services.category_service import CategoryService
 from apps.common.exceptions import ObjectNotFoundException
 from apps.common.service import BaseModelService
@@ -44,6 +45,10 @@ class DocumentService(BaseModelService):
     @property
     def metadata_value_service(self):
         return MetadataValueService()
+
+    @property
+    def category_permission_service(self):
+        return CategoryPermissionService(user=self.user)
 
     def read_by_uuid(self, uuid_value, **kwargs):
         try:
@@ -94,24 +99,10 @@ class DocumentService(BaseModelService):
         self.metadata_value_service.create_or_update(metadata_values)
         return instance
 
-    def category_with_view_permissions(self):
-        permission_suffix = ".view_document"
-        view_permissions = set(
-            map(
-                lambda x: x.replace(permission_suffix, ""),
-                filter(
-                    lambda x: permission_suffix in x,
-                    self.user.get_category_permissions(),
-                ),
-            )
-        )
-        categories = CategoryService().list().filter(code__in=view_permissions)
-        return categories
-
     def search(self, **kwargs):
-        allowed_category_ids = self.category_with_view_permissions().values_list(
-            "id", flat=True
+        viewable_category_codes = (
+            self.category_permission_service.category_code_permissions()
         )
         queryset = self.list(**kwargs)
-        queryset = queryset.filter(category_id__in=allowed_category_ids)
+        queryset = queryset.filter(category__code__in=viewable_category_codes)
         return queryset

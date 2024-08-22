@@ -59,6 +59,7 @@ class DocumentOutputSerializer(serializers.ModelSerializer):
             "size",
             "is_active",
             "is_encrypted",
+            "category",
             "created_at",
             "updated_at",
             "created_by_name",

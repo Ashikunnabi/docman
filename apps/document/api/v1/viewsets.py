@@ -56,8 +56,9 @@ class DocumentRetrieveUpdateDestroyAPIView(BaseRetrieveUpdateDestroyAPIView):
 
     def get_object(self):
         instance = super().get_object()
-        permitted_category_uuids = self.request.user.get_permitted_category_uuids()
-        if instance.category and instance.category.uuid not in permitted_category_uuids:
+        service = self.get_service(user=self.request.user)
+        viewable_category_codes = service.category_permission_service.category_code_permissions()
+        if instance.category and instance.category.code not in viewable_category_codes:
             raise ObjectNotFoundException("Document not found")
         return instance
 
