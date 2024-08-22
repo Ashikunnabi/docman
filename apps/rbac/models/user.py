@@ -37,6 +37,7 @@ class User(AbstractUser):
         return f"{self.first_name} {self.last_name}"
 
     def get_category_permissions(self):
+        """List of category permission codes for the user."""
         permission_codes = (
             CategoryGroupPermission.objects.filter(group__in=self.groups.all())
             .values_list("permission__code", flat=True)
@@ -46,3 +47,11 @@ class User(AbstractUser):
 
     def has_category_permission(self, permission_code):
         return permission_code in self.get_category_permissions()
+
+    def get_permitted_category_uuids(self):
+        category_uuids = (
+            CategoryGroupPermission.objects.filter(group__in=self.groups.all())
+            .values_list("category__uuid", flat=True)
+            .distinct()
+        )
+        return list(category_uuids)
