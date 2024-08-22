@@ -36,8 +36,9 @@ class DocumentService(BaseModelService):
         "csv",
     ]
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, user=None, **kwargs):
         super().__init__(*args, **kwargs)
+        self.user = user
 
     @property
     def metadata_value_service(self):
@@ -91,3 +92,9 @@ class DocumentService(BaseModelService):
             metadata_value["document_uuid"] = instance.uuid
         self.metadata_value_service.create_or_update(metadata_values)
         return instance
+
+    def search(self, **kwargs):
+        permitted_category_uuids = self.user.get_permitted_category_uuids()
+        queryset = self.list(**kwargs)
+        queryset = queryset.filter(category__uuid__in=permitted_category_uuids)
+        return queryset

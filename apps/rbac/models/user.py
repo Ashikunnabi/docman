@@ -51,7 +51,8 @@ class User(AbstractUser):
     def get_permitted_category_uuids(self):
         category_uuids = (
             CategoryGroupPermission.objects.filter(group__in=self.groups.all())
-            .values_list("category__uuid", flat=True)
+            .values_list("permission__category__uuid", flat=True)
             .distinct()
+            .prefetch_related("category")
         )
         return list(category_uuids)

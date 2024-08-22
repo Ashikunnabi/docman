@@ -1,7 +1,9 @@
+from apps.common.exceptions import ObjectNotFoundException
 from rest_framework import filters, status
 from rest_framework.response import Response
 
 from apps.common.custom_viewset import (
+    BaseListAPIView,
     BaseListCreateAPIView,
     BaseRetrieveUpdateAPIView,
     BaseRetrieveUpdateDestroyAPIView,
@@ -21,12 +23,11 @@ class DocumentListCreateAPIView(BaseListCreateAPIView):
     input_serializer_class = DocumentInputSerializer
     output_serializer_class = DocumentOutputSerializer
     simpleoutput_serializer_class = DocumentSimpleOutputSerializer
-    filter_backends = [filters.SearchFilter]
-    search_fields = ["name", "metadata_values__value_text"]
 
     def list(self, request, *args, **kwargs):
         service = self.get_service()
-        queryset = service.list()
+        # only list documents created by the user and does not have a category
+        queryset = service.list(**{"created_by": request.user, "category": None})
         queryset = self.filter_queryset(queryset)
 
         page = self.paginate_queryset(queryset)
@@ -52,6 +53,13 @@ class DocumentRetrieveUpdateDestroyAPIView(BaseRetrieveUpdateDestroyAPIView):
     input_serializer_class = DocumentInputSerializer
     output_serializer_class = DocumentOutputSerializer
     http_method_names = ["get", "delete"]
+
+    def get_object(self):
+        instance = super().get_object()
+        permitted_category_uuids = self.request.user.get_permitted_category_uuids()
+        if instance.category and instance.category.uuid not in permitted_category_uuids:
+            raise ObjectNotFoundException("Document not found")
+        return instance
 
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()
@@ -81,3 +89,25 @@ class DocumentMetadataValueUpdateAPIView(BaseRetrieveUpdateAPIView):
         document = service.update_metadata_values(instance, metadata_values)
         output_serializer = self.get_output_serializer(document)
         return Response(output_serializer.data, status=status.HTTP_200_OK)
+
+
+class DocumentSearchAPIView(BaseListAPIView):
+    service_class = DocumentService
+    input_serializer_class = DocumentInputSerializer
+    output_serializer_class = DocumentOutputSerializer
+    simpleoutput_serializer_class = DocumentSimpleOutputSerializer
+    filter_backends = [filters.SearchFilter]
+    search_fields = ["name", "metadata_values__value_text"]
+
+    def list(self, request, *args, **kwargs):
+        service = self.get_service(**{"user": request.user})
+        queryset = service.search()
+        queryset = self.filter_queryset(queryset)
+
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.simpleoutput_serializer_class(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = self.simpleoutput_serializer_class(queryset, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
