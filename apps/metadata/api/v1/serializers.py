@@ -9,6 +9,7 @@ class MetadataFieldInputSerializer(serializers.ModelSerializer):
     class Meta:
         model = MetadataField
         fields = [
+            "code",
             "name",
             "placeholder",
             "field_type",
@@ -24,6 +25,7 @@ class MetadataFieldOutputSerializer(serializers.ModelSerializer):
         model = MetadataField
         fields = [
             "uuid",
+            "code",
             "name",
             "placeholder",
             "field_type",
