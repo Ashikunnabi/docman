@@ -1,6 +1,5 @@
 from rest_framework import generics
 from rest_framework.views import APIView
-from rest_framework import permissions
 
 from apps.common.exceptions import (
     InputSerializerNotFoundException,
@@ -18,7 +17,6 @@ from .api_mixins import (
 
 class BaseGenericAPIView:
     lookup_field = "uuid"  # Individual object will be found by this field
-    permission_classes = [permissions.IsAuthenticated]
 
     def get_serializer_class(self):
         if (

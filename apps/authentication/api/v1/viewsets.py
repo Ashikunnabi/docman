@@ -3,7 +3,7 @@ from django.contrib.auth import authenticate, get_user_model
 from django.contrib.auth import login as auth_login
 from django.core.files.storage import default_storage
 from rest_framework import status
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework_simplejwt.exceptions import InvalidToken
 from rest_framework_simplejwt.tokens import (
@@ -23,6 +23,7 @@ from .serializers import LoggedInUserOutputSerializer, LoginInputSerializer
 
 
 @api_view(["POST"])
+@permission_classes([])
 def login(request):
     # Deserialize input data
     serializer = LoginInputSerializer(data=request.data)
@@ -120,6 +121,7 @@ def registration(request):
 
 
 @api_view(["POST"])
+@permission_classes([])
 def recover_password(request):
     email = request.data.get("email", None)
     if not email:
@@ -140,6 +142,7 @@ def recover_password(request):
 
 
 @api_view(["POST"])
+@permission_classes([])
 def recover_password_now(request):
     data = request.data
     uuid = data.get("uuid", None)
