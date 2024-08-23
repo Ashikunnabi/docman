@@ -48,7 +48,10 @@ class UserOutputSerializer(serializers.ModelSerializer):
 class PermissionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Permission
-        fields = "__all__"
+        fields = [
+            "name",
+            "codename",
+        ]
 
 
 class GroupInputSerializer(serializers.Serializer):
