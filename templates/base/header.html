@@ -1,221 +1,240 @@
 {% load static %}
-<header id="aa-header">
-    <!-- start header top  -->
-    <div class="aa-header-top">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="aa-header-top-area">
-                        <!-- start header top left -->
-                        <div class="aa-header-top-left">
-                            <!-- start language -->
-{#                            <div class="aa-language">#}
-{#                                <div class="dropdown">#}
-                                    {#                <a class="btn dropdown-toggle" href="#" type="button" id="dropdownMenu1" data-toggle="dropdown"#}
-                                    {#                  aria-haspopup="true" aria-expanded="true">#}
-                                    {#                  <img src="{% static 'base/img/flag/english.jpg' %}" alt="english flag">ENGLISH#}
-                                    <!--                      <span class="caret"></span>-->
-                                    {#                </a>#}
-                                    <!--                    <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">-->
-                                    <!--                      <li><a href="#"><img src="img/flag/french.jpg" alt="">FRENCH</a></li>-->
-                                    <!--                      <li><a href="#"><img src="img/flag/english.jpg" alt="">ENGLISH</a></li>-->
-                                    <!--                    </ul>-->
-{#                                </div>#}
-{#                            </div>#}
-                            <!-- / language -->
+<nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
 
-                            <!-- start currency -->
-{#                            <div class="aa-currency">#}
-{#                                <div class="dropdown">#}
-{#                                    <a class="btn dropdown-toggle" href="#"#}
-{#                                       type="button" id="dropdownMenu1"#}
-{#                                       data-toggle="dropdown"#}
-{#                                       aria-haspopup="true"#}
-{#                                       aria-expanded="true">#}
-                                        {#                  <i class="fa fa-usd"></i>USD#}
-                                        <!--                      <span class="caret"></span>-->
-{#                                    </a>#}
-                                    <!--                    <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">-->
-                                    <!--                      <li><a href="#"><i class="fa fa-euro"></i>EURO</a></li>-->
-                                    <!--                      <li><a href="#"><i class="fa fa-jpy"></i>YEN</a></li>-->
-                                    <!--                    </ul>-->
-{#                                </div>#}
-{#                            </div>#}
-                            <!-- / currency -->
-                            <!-- start cellphone -->
-                            <div class="cellphone hidden-xs">
-                                <p>
-                                    <a href="/contact-us/"style="color: #ff6666">Questions?</a>
-                                    <a href="tel:{{ COMPANY_PHONE }}">{{ COMPANY_PHONE }}</a>
-                                </p>
-                            </div>
-                            <!-- / cellphone -->
-                            <!-- start cellphone -->
-                            <div class="cellphone hidden-xs">
-                                <p>
-                                    <a href="mailto:{{ COMPANY_EMAIL }}">{{ COMPANY_EMAIL }}</a>
-                                </p>
-                            </div>
-                            <!-- / cellphone -->
-                            <!-- start tagline -->
-                            <div class="cellphone hidden-xs">
-                                <p style="background-color: gold;">Distributor of Tools, HVAC & Hardware Equipments</p>
-                            </div>
-                            <!-- / tagline -->
-                            <!-- start email -->
-                            <div class="cellphone hidden-xs">
-                                {#              <p><span class="fa fa-envelope"></span>{{ COMPANY_EMAIL }}</p>#}
-                            </div>
-                            <!-- / email -->
-                        </div>
-                        <!-- / header top left -->
+    <!-- Sidebar Toggle (Topbar) -->
+    <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
+        <i class="fa fa-bars"></i>
+    </button>
 
-                        <div class="aa-header-top-right">
-                            
-                            <ul class="aa-head-top-nav-right">
-                                <li><a href="#"><i class="fa fa-user"></i>&nbsp;Welcome, {{ request.user.name }}
-                                </a></li>
-                                <li>
-                                    <a href="{% url 'apps:user_panel:my_account' %}">My
-                                        Account</a></li>
-                                {#              <li class="hidden-xs"><a href="">Wishlist</a></li>#}
-                                {#              <li class="hidden-xs"><a href="">My Cart</a></li>#}
-                                {#              <li class="hidden-xs"><a href="">Checkout</a></li>#}
-                                <li>
-{#                                    <a href="{% url 'apps:authentication:logout' %}">Logout</a>#}
-                                </li>
-                            </ul>
-                           
-
-                            <!-- start need help -->
-                            <div class="aa-language" style="float: left">
-                                <div class="dropdown">
-                                    <a class="btn dropdown-toggle" href="#"
-                                       type="button" id="dropdownMenu1"
-                                       data-toggle="dropdown"
-                                       aria-haspopup="true" aria-expanded="true">
-                                        Need Help?
-                                        <span class="caret"></span>
-                                    </a>
-                                    <ul class="dropdown-menu"
-                                        aria-labelledby="dropdownMenu1">
-                                        <li>
-                                            <a href="/contact-us/">Contact Us</a>
-                                        </li>
-                                        <li>
-                                            <a href="/faq/">FAQ</a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                            <!-- / need help -->
-                            <!-- start my account -->
-                            <div class="aa-language" style="float: left">
-                                <div class="dropdown">
-                                    <a class="btn dropdown-toggle" href="#"
-                                       type="button" id="dropdownMenu2"
-                                       data-toggle="dropdown"
-                                       aria-haspopup="true" aria-expanded="true">
-                                        <i class="fa fa-user"></i>&nbsp;Welcome, {{ request.user.name }}
-                                        <span class="caret"></span>
-                                    </a>
-                                    <ul class="dropdown-menu"
-                                        aria-labelledby="dropdownMenu2">
-                                        <li>
-                                            <a href="{% url 'apps:user_panel:my_account' %}">My
-                                    Account</a>
-                                        </li>
-                                        <li>
-                                            <a href="{% url 'apps:authentication:logout' %}">Logout</a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                            <!-- / need my account -->
-                        </div>
-                    </div>
-                </div>
+    <!-- Topbar Search -->
+    {% comment %}<form class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
+        <div class="input-group">
+            <input type="text" class="form-control bg-light border-0 small" placeholder="Search for..."
+                aria-label="Search" aria-describedby="basic-addon2">
+            <div class="input-group-append">
+                <button class="btn btn-primary" type="button">
+                    <i class="fas fa-search fa-sm"></i>
+                </button>
             </div>
         </div>
-    </div>
-    <!-- / header top  -->
+    </form>{% endcomment %}
 
-    <!-- start header bottom  -->
-    <div class="aa-header-bottom">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="aa-header-bottom-area">
-                        <!-- logo  -->
-                        <div class="aa-logo">
-                            <!-- Text based logo -->
-                            <!--                <a href="/index">-->
-                            <!--                  <span class="fa fa-cart-plus"></span>-->
-                            <!--                  <p>daily<strong>Shop</strong> <span>Your Shopping Partner</span></p>-->
-                            <!--                </a>-->
-                            <!-- img based logo -->
-                            <a href="/"><img
-                                    src="{% static COMPANY_NAME_ICON_URL %}"
-                                    alt="inventorylogo"
-                                    style="width: 4em; border-radius:.5em"></a>
+    <!-- Topbar Navbar -->
+    <ul class="navbar-nav ml-auto">
+
+        <!-- Nav Item - Search Dropdown (Visible Only XS) -->
+        <li class="nav-item dropdown no-arrow d-sm-none">
+            <a class="nav-link dropdown-toggle" href="#" id="searchDropdown" role="button" data-toggle="dropdown"
+                aria-haspopup="true" aria-expanded="false">
+                <i class="fas fa-search fa-fw"></i>
+            </a>
+            <!-- Dropdown - Messages -->
+            <div class="dropdown-menu dropdown-menu-right p-3 shadow animated--grow-in"
+                aria-labelledby="searchDropdown">
+                <form class="form-inline mr-auto w-100 navbar-search">
+                    <div class="input-group">
+                        <input type="text" class="form-control bg-light border-0 small" placeholder="Search for..."
+                            aria-label="Search" aria-describedby="basic-addon2">
+                        <div class="input-group-append">
+                            <button class="btn btn-primary" type="button">
+                                <i class="fas fa-search fa-sm"></i>
+                            </button>
                         </div>
-                        <!-- / logo  -->
-                        <!-- cart box -->
-                        <div class="aa-cartbox">
-                            <!-- <a class="aa-cart-link" href="{% url 'apps:user_panel:my_cart' %}">
-                                <span class="fa fa-cart-plus" style="font-size:40px;"></span>
-                                <span class="aa-cart-title">CART</span>
-{#                                <span class="aa-cart-notify">2</span>#}
-                            </a> -->
-{#                            <div class="aa-cartbox-summary">#}
-{#                                <ul>#}
-{#                                    <li>#}
-{#                                        <a class="aa-cartbox-img" href="#"><img#}
-{#                                                src="img/woman-small-2.jpg"#}
-{#                                                alt="img"></a>#}
-{#                                        <div class="aa-cartbox-info">#}
-{#                                            <h4><a href="#">Product Name</a>#}
-{#                                            </h4>#}
-{#                                            <p>1 x $250</p>#}
-{#                                        </div>#}
-{#                                        <a class="aa-remove-product"#}
-{#                                           href="#"><span#}
-{#                                                class="fa fa-times"></span></a>#}
-{#                                    </li>#}
-{#                                    <li>#}
-{#                                        <a class="aa-cartbox-img" href="#"><img#}
-{#                                                src="img/woman-small-1.jpg"#}
-{#                                                alt="img"></a>#}
-{#                                        <div class="aa-cartbox-info">#}
-{#                                            <h4><a href="#">Product Name</a>#}
-{#                                            </h4>#}
-{#                                            <p>1 x $250</p>#}
-{#                                        </div>#}
-{#                                        <a class="aa-remove-product"#}
-{#                                           href="#"><span#}
-{#                                                class="fa fa-times"></span></a>#}
-{#                                    </li>#}
-{#                                    <li>#}
-{#                                          <span class="aa-cartbox-total-title">#}
-{#                                            Total#}
-{#                                          </span>#}
-{#                                        <span class="aa-cartbox-total-price">#}
-{#                                            $500#}
-{#                                          </span>#}
-{#                                    </li>#}
-{#                                </ul>#}
-{#                                <a class="aa-cartbox-checkout aa-primary-btn"#}
-{#                                   href="checkout.html">Checkout</a>#}
-{#                            </div>#}
-                        </div>
-                        <!-- / cart box -->
-                        <!-- search box -->
-                        {% include 'base/search.html' %}
-                        <!-- / search box -->
                     </div>
-                </div>
+                </form>
             </div>
-        </div>
-    </div>
-    <!-- / header bottom  -->
-</header>
+        </li>
+
+        <!-- Nav Item - Alerts -->
+        {% comment %}<li class="nav-item dropdown no-arrow mx-1">
+            <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button" data-toggle="dropdown"
+                aria-haspopup="true" aria-expanded="false">
+                <i class="fas fa-bell fa-fw"></i>
+                <!-- Counter - Alerts -->
+                <span class="badge badge-danger badge-counter">3+</span>
+            </a>
+            <!-- Dropdown - Alerts -->
+            <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in"
+                aria-labelledby="alertsDropdown">
+                <h6 class="dropdown-header">
+                    Alerts Center
+                </h6>
+                <a class="dropdown-item d-flex align-items-center" href="#">
+                    <div class="mr-3">
+                        <div class="icon-circle bg-primary">
+                            <i class="fas fa-file-alt text-white"></i>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="small text-gray-500">December 12, 2019
+                        </div>
+                        <span class="font-weight-bold">A new monthly report is ready to download!</span>
+                    </div>
+                </a>
+                <a class="dropdown-item d-flex align-items-center" href="#">
+                    <div class="mr-3">
+                        <div class="icon-circle bg-success">
+                            <i class="fas fa-donate text-white"></i>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="small text-gray-500">December 7, 2019</div>
+                        $290.29 has been deposited into your account!
+                    </div>
+                </a>
+                <a class="dropdown-item d-flex align-items-center" href="#">
+                    <div class="mr-3">
+                        <div class="icon-circle bg-warning">
+                            <i class="fas fa-exclamation-triangle text-white"></i>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="small text-gray-500">December 2, 2019</div>
+                        Spending Alert: We've noticed unusually high spending
+                        for
+                        your account.
+                    </div>
+                </a>
+                <a class="dropdown-item text-center small text-gray-500" href="#">Show
+                    All Alerts</a>
+            </div>
+        </li>
+
+        <!-- Nav Item - Messages -->
+        <li class="nav-item dropdown no-arrow mx-1">
+            <a class="nav-link dropdown-toggle" href="#" id="messagesDropdown" role="button" data-toggle="dropdown"
+                aria-haspopup="true" aria-expanded="false">
+                <i class="fas fa-envelope fa-fw"></i>
+                <!-- Counter - Messages -->
+                <span class="badge badge-danger badge-counter">7</span>
+            </a>
+            <!-- Dropdown - Messages -->
+            <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in"
+                aria-labelledby="messagesDropdown">
+                <h6 class="dropdown-header">
+                    Message Center
+                </h6>
+                <a class="dropdown-item d-flex align-items-center" href="#">
+                    <div class="dropdown-list-image mr-3">
+                        <img class="rounded-circle" src="img/undraw_profile_1.svg" alt="">
+                        <div class="status-indicator bg-success"></div>
+                    </div>
+                    <div class="font-weight-bold">
+                        <div class="text-truncate">Hi there! I am wondering if
+                            you
+                            can help me with a
+                            problem I've been having.
+                        </div>
+                        <div class="small text-gray-500">Emily Fowler · 58m
+                        </div>
+                    </div>
+                </a>
+                <a class="dropdown-item d-flex align-items-center" href="#">
+                    <div class="dropdown-list-image mr-3">
+                        <img class="rounded-circle" src="{% static 'base/img/undraw_profile_2.svg' %}" alt="">
+                        <div class="status-indicator"></div>
+                    </div>
+                    <div>
+                        <div class="text-truncate">I have the photos that you
+                            ordered last month, how
+                            would you like them sent to you?
+                        </div>
+                        <div class="small text-gray-500">Jae Chun · 1d</div>
+                    </div>
+                </a>
+                <a class="dropdown-item d-flex align-items-center" href="#">
+                    <div class="dropdown-list-image mr-3">
+                        <img class="rounded-circle" src="img/undraw_profile_3.svg" alt="">
+                        <div class="status-indicator bg-warning"></div>
+                    </div>
+                    <div>
+                        <div class="text-truncate">Last month's report looks
+                            great,
+                            I am very happy with
+                            the progress so far, keep up the good work!
+                        </div>
+                        <div class="small text-gray-500">Morgan Alvarez · 2d
+                        </div>
+                    </div>
+                </a>
+                <a class="dropdown-item d-flex align-items-center" href="#">
+                    <div class="dropdown-list-image mr-3">
+                        <img class="rounded-circle" src="https://source.unsplash.com/Mv9hjnEUHR4/60x60" alt="">
+                        <div class="status-indicator bg-success"></div>
+                    </div>
+                    <div>
+                        <div class="text-truncate">Am I a good boy? The reason
+                            I
+                            ask is because someone
+                            told me that people say this to all dogs, even if
+                            they
+                            aren't good...
+                        </div>
+                        <div class="small text-gray-500">Chicken the Dog · 2w
+                        </div>
+                    </div>
+                </a>
+                <a class="dropdown-item text-center small text-gray-500" href="#">Read
+                    More Messages</a>
+            </div>
+        </li>{% endcomment %}
+
+        <!-- Nav Item - POR -->
+        <!-- <li class="nav-item no-arrow mx-1">
+            <a class="nav-link" href="{% url 'admin:admin_por:product_image_list' %}">
+                <i class="fa fa-shopping-bag" aria-hidden="true" style="color:#4e73df;font-size:25px"
+                    title="Point of Receive (POR)"></i>
+            </a>
+        </li> -->
+
+        <!-- Nav Item - POS -->
+        <!-- <li class="nav-item no-arrow mx-1">
+            <a class="nav-link" href="{% url 'admin:admin_pos:product_image_list' %}">
+                <i class="fa fa-truck" aria-hidden="true" style="color:#4e73df;font-size:25px"
+                    title="SO - Point of Sale (POS)"></i>
+            </a>
+        </li> -->
+
+        <!-- Nav Item - Shop POS -->
+        <!-- <li class="nav-item no-arrow mx-1">
+            <a class="nav-link" href="{% url 'admin:admin_shop:shop_pos' %}">
+                <i class="fa fa-th" aria-hidden="true" style="color:#4e73df;font-size:25px" title="Point of Sale (POS)"></i>
+            </a>
+        </li> -->
+
+        <div class="topbar-divider d-none d-sm-block"></div>
+
+        <!-- Nav Item - User Information -->
+        <li class="nav-item dropdown no-arrow">
+            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown"
+                aria-haspopup="true" aria-expanded="false">
+                <span class="mr-2 d-none d-lg-inline text-gray-600 small">{{ request.user.name }}</span>
+                <img class="img-profile rounded-circle" src="{% static 'base/img/undraw_profile.svg' %}">
+            </a>
+            <!-- Dropdown - User Information -->
+            <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
+                <a class="dropdown-item" href="{% url 'admin:admin_rbac:user_edit' uuid=request.user.uuid %}">
+                    <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
+                    Profile
+                </a>
+                <!-- <a class="dropdown-item" href="#">
+                    <i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
+                    Settings
+                </a> -->
+                {% if "activity_log" in CURRENT_USER_PERMISSIONS %}
+                <a class="dropdown-item" href="{% url 'admin:admin_rbac:user_activity_log_list' %}">
+                    <i class="fas fa-list fa-sm fa-fw mr-2 text-gray-400"></i>
+                    Activity Log
+                </a>
+                {% endif %}
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
+                    <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
+                    Logout
+                </a>
+            </div>
+        </li>
+
+    </ul>
+
+</nav>

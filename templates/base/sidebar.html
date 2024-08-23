@@ -1,0 +1,361 @@
+{% load static %}
+
+<ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+
+    <!-- Sidebar - Brand -->
+    <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{% url 'admin:admin_base:index' %}">
+        <!-- <div class="sidebar-brand-icon rotate-n-15">
+            <i class="fas fa-laugh-wink"></i>
+        </div> -->
+
+
+        <div class="sidebar-brand-text mx-3">
+            <br>
+            <img src="{% static COMPANY_NAME_ICON_URL %}" alt="logo" width="80px"><br>
+            {{ COMPANY_NAME }}
+        </div>
+    </a><br>
+
+    <!-- Divider -->
+    <hr class="sidebar-divider my-0">
+
+    <!-- Nav Item - Dashboard -->
+    <li class="nav-item active">
+        <a class="nav-link" href="{% url 'admin:admin_base:index' %}">
+            <i class="fas fa-fw fa-tachometer-alt"></i>
+            <span>Dashboard</span></a>
+    </li>
+
+    <!-- Divider -->
+    <hr class="sidebar-divider">
+
+    <!-- Heading -->
+    <div class="sidebar-heading">
+        Interface
+    </div>
+
+    <!-- Nav Item - Pages Collapse Menu -->
+    {% if "tab_home_page" in CURRENT_USER_PERMISSIONS %}
+    <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" id="sidebar_option_home_page_a"
+            data-target="#sidebar_option_home_page_options" aria-expanded="false" aria-controls="collapseTwo">
+            <i class="fas fa-fw fa-home"></i>
+            <span>Home Page</span>
+        </a>
+        <div id="sidebar_option_home_page_options" class="collapse" aria-labelledby="headingTwo"
+            data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <h6 class="collapse-header">Design Components:</h6>
+                {% if "sub_tab_home_page_carousel" in CURRENT_USER_PERMISSIONS %}
+                <a class="collapse-item" href="{% url 'admin:admin_home:carousel_list' %}"
+                    id="sidebar_option_carousel">Carousel</a>
+                {% endif %}
+                {% if "sub_tab_home_page_promo_section" in CURRENT_USER_PERMISSIONS %}
+                <a class="collapse-item" href="{% url 'admin:admin_home:promo_section_list' %}"
+                    id="sidebar_option_promo_section">Promo Section</a>
+                {% endif %}
+                {% if "sub_tab_home_page_page" in CURRENT_USER_PERMISSIONS %}
+                <a class="collapse-item" href="{% url 'admin:admin_home:page_list' %}" id="sidebar_option_page">Page</a>
+                {% endif %}
+                {% if "sub_tab_home_page_banner" in CURRENT_USER_PERMISSIONS %}
+                <a class="collapse-item" href="{% url 'admin:admin_home:banner_list' %}"
+                    id="sidebar_option_banner">Banner</a>
+                {% endif %}
+                {% if "sub_tab_home_page_flyer" in CURRENT_USER_PERMISSIONS %}
+                <a class="collapse-item" href="{% url 'admin:admin_home:flyer_list' %}"
+                    id="sidebar_option_flyer">Flyer</a>
+                {% endif %}
+                {% if "sub_tab_home_page_navcategory" in CURRENT_USER_PERMISSIONS %}
+                <a class="collapse-item" href="{% url 'admin:admin_home:nav_category_list' %}"
+                    id="sidebar_option_nav_category">NavCategory</a>
+                {% endif %}
+                {% if "sub_tab_home_page_notice" in CURRENT_USER_PERMISSIONS %}
+                <a class="collapse-item" href="{% url 'admin:admin_home:notice_list' %}"
+                    id="sidebar_option_notice">Notice</a>
+                {% endif %}
+                {% if "sub_tab_home_page_event" in CURRENT_USER_PERMISSIONS %}
+                <a class="collapse-item" href="{% url 'admin:admin_home:event_list' %}"
+                    id="sidebar_option_event">Event</a>
+                {% endif %}
+                {% if "sub_tab_home_page_useful_link" in CURRENT_USER_PERMISSIONS %}
+                <a class="collapse-item" href="{% url 'admin:admin_home:useful_link_list' %}"
+                    id="sidebar_option_useful_link">Useful Link</a>
+                {% endif %}
+            </div>
+        </div>
+    </li>
+    {% endif %}
+
+
+    {% if "tab_stock_management" in CURRENT_USER_PERMISSIONS %}
+    <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" id="sidebar_option_stock_management_a"
+            data-target="#sidebar_option_stock_management_options" aria-expanded="false" aria-controls="collapseTwo">
+            <i class="fas fa-chart-bar"></i>
+            <span>Stock Management</span>
+        </a>
+        <div id="sidebar_option_stock_management_options" class="collapse" aria-labelledby="headingTwo"
+            data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <h6 class="collapse-header">Control stocks:</h6>
+                {% if "sub_tab_stock_management_sales_order" in CURRENT_USER_PERMISSIONS %}
+                <a class="collapse-item" href="{% url 'admin:admin_stock_management:sales_order_list' %}"
+                    id="sidebar_option_stock_management_sales_order">Sales Order</a>
+                {% endif %}
+                {% if "sub_tab_stock_management_purchase_order" in CURRENT_USER_PERMISSIONS %}
+                <a class="collapse-item" href="{% url 'admin:admin_stock_management:purchase_order_list' %}"
+                    id="sidebar_option_stock_management_purchase_order">Purchase Order</a>
+                {% endif %}
+                {% if "sub_tab_stock_management_stock_transaction" in CURRENT_USER_PERMISSIONS %}
+                <a class="collapse-item" href="{% url 'admin:admin_stock_management:stock_transaction_list' %}"
+                    id="sidebar_option_stock_management_stock_transaction">Stock Transaction</a>
+                {% endif %}
+            </div>
+        </div>
+    </li>
+    {% endif %}
+
+    {% if "inventory.view_product" in CURRENT_USER_PERMISSIONS %}
+    <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" id="sidebar_option_inventory_a"
+            data-target="#sidebar_option_inventory_options" aria-expanded="false" aria-controls="collapseTwo">
+            <i class="fas fa-fw fa-hamburger"></i>
+            <span>Inventory</span>
+        </a>
+        <div id="sidebar_option_inventory_options" class="collapse" aria-labelledby="headingTwo"
+            data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <h6 class="collapse-header">Control Inventory:</h6>
+                <!-- {% if "inventory.view_attributegroup" in CURRENT_USER_PERMISSIONS %}
+                <a class="collapse-item" href="{% url 'admin:admin_inventory:attribute_group_list' %}"
+                    id="sidebar_option_inventory_attribute_group">Attribute Group</a>
+                {% endif %}
+                {% if "inventory.view_attribute" in CURRENT_USER_PERMISSIONS %}
+                <a class="collapse-item" href="{% url 'admin:admin_inventory:attribute_list' %}"
+                    id="sidebar_option_inventory_attribute">Attribute</a>
+                {% endif %} -->
+                {% if "inventory.view_brand" in CURRENT_USER_PERMISSIONS %}
+                <a class="collapse-item" href="{% url 'admin:admin_inventory:brand_list' %}"
+                    id="sidebar_option_inventory_brand">Brand</a>
+                {% endif %}
+                {% if "inventory.view_document" in CURRENT_USER_PERMISSIONS %}
+                <a class="collapse-item" href="{% url 'admin:admin_inventory:document_list' %}"
+                    id="sidebar_option_inventory_document">Document</a>
+                {% endif %}
+                {% if "inventory.view_group" in CURRENT_USER_PERMISSIONS %}
+                <a class="collapse-item" href="{% url 'admin:admin_inventory:group_list' %}"
+                    id="sidebar_option_inventory_group">Group</a>
+                {% endif %}
+                {% if "inventory.view_product" in CURRENT_USER_PERMISSIONS %}
+                <a class="collapse-item" href="{% url 'admin:admin_inventory:product_list' %}"
+                    id="sidebar_option_inventory_product">Product</a>
+                {% endif %}
+                <!-- {% if "inventory.view_product" in CURRENT_USER_PERMISSIONS %}
+                <a class="collapse-item" href="{% url 'admin:admin_inventory:supplier_list' %}"
+                    id="sidebar_option_inventory_supplier">Supplier</a>
+                {% endif %} -->
+                {% if "inventory.view_type" in CURRENT_USER_PERMISSIONS %}
+                <a class="collapse-item" href="{% url 'admin:admin_inventory:type_list' %}"
+                    id="sidebar_option_inventory_type">Type</a>
+                {% endif %}
+                {% if "inventory.view_unit" in CURRENT_USER_PERMISSIONS %}
+                <a class="collapse-item" href="{% url 'admin:admin_inventory:unit_list' %}"
+                    id="sidebar_option_inventory_unit">Unit</a>
+                {% endif %}
+                {% if "inventory.view_vat" in CURRENT_USER_PERMISSIONS %}
+                <a class="collapse-item" href="{% url 'admin:admin_inventory:vat_list' %}"
+                    id="sidebar_option_inventory_vat">Vat</a>
+                {% endif %}
+                <!-- {% if "inventory.view_warehouse" in CURRENT_USER_PERMISSIONS %}
+                <a class="collapse-item" href="{% url 'admin:admin_inventory:warehouse_list' %}"
+                    id="sidebar_option_inventory_warehouse">Warehouse</a>
+                {% endif %} -->
+            </div>
+        </div>
+    </li>
+    {% endif %}
+
+    {% if "menu.view_menu" in CURRENT_USER_PERMISSIONS %}
+    <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" id="sidebar_option_menu_a"
+            data-target="#sidebar_option_menu_options" aria-expanded="false" aria-controls="collapseTwo">
+            <i class="fas fa-fw fa-hamburger"></i>
+            <span>Menu</span>
+        </a>
+        <div id="sidebar_option_menu_options" class="collapse" aria-labelledby="headingTwo"
+            data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <h6 class="collapse-header">Control Menu:</h6>
+                {% if "menu.view_menutype" in CURRENT_USER_PERMISSIONS %}
+                <a class="collapse-item" href="{% url 'admin:admin_menu:menu_type_list' %}"
+                    id="sidebar_option_menu_type">Menu Type</a>
+                {% endif %}
+                {% if "menu.view_menu" in CURRENT_USER_PERMISSIONS %}
+                <a class="collapse-item" href="{% url 'admin:admin_menu:menu_list' %}" id="sidebar_option_menu">Menu</a>
+                {% endif %}
+            </div>
+        </div>
+    </li>
+    {% endif %}
+
+    {% if "order.view_order" in CURRENT_USER_PERMISSIONS %}
+    <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" id="sidebar_option_order_management_a"
+            data-target="#sidebar_option_order_management_options" aria-expanded="false" aria-controls="collapseTwo">
+            <i class="fas fa-cubes"></i>
+            <span>Order Management</span>
+        </a>
+        <div id="sidebar_option_order_management_options" class="collapse" aria-labelledby="headingTwo"
+            data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <h6 class="collapse-header">Control orders:</h6>
+                {% if "order.view_order" in CURRENT_USER_PERMISSIONS %}
+                <a class="collapse-item" href="{% url 'admin:admin_order:order_list' %}"
+                    id="sidebar_option_order_management_order">Orders</a>
+                {% endif %}
+                {% if "sub_tab_order_management_finale_invoice" in CURRENT_USER_PERMISSIONS %}
+                <a class="collapse-item" href="{% url 'admin:admin_order:finale_invoice_list' %}"
+                    id="sidebar_option_order_management_finale_invoice">Finale Invoice</a>
+                {% endif %}
+                {% if "sub_tab_order_management_manufacturer_invoice" in CURRENT_USER_PERMISSIONS %}
+                <a class="collapse-item" href="{% url 'admin:admin_order:manufacturer_invoice_list' %}"
+                    id="sidebar_option_order_management_manufacturer_invoice">Manufacturer Invoice</a>
+                {% endif %}
+                {% if "sub_tab_order_management_sales_order" in CURRENT_USER_PERMISSIONS %}
+                <a class="collapse-item" href="{% url 'admin:admin_order:sales_order_list' %}"
+                    id="sidebar_option_order_management_sales_order">Sales Order</a>
+                {% endif %}
+                {% if "sub_tab_order_management_purchase_order" in CURRENT_USER_PERMISSIONS %}
+                <a class="collapse-item" href="{% url 'admin:admin_order:purchase_order_list' %}"
+                    id="sidebar_option_order_management_purchase_order">Purchase Order</a>
+                {% endif %}
+            </div>
+        </div>
+    </li>
+    {% endif %}
+
+    {% if "table.view_table" in CURRENT_USER_PERMISSIONS %}
+    <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" id="sidebar_option_table_a"
+            data-target="#sidebar_option_table_options" aria-expanded="false" aria-controls="collapseTwo">
+            <i class="fas fa-fw fa-hamburger"></i>
+            <span>Table</span>
+        </a>
+        <div id="sidebar_option_table_options" class="collapse" aria-labelledby="headingTwo"
+            data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <h6 class="collapse-header">Control Table:</h6>
+                {% if "table.view_tabletype" in CURRENT_USER_PERMISSIONS %}
+                <a class="collapse-item" href="{% url 'admin:admin_table:table_type_list' %}"
+                    id="sidebar_option_table_type">Table Type</a>
+                {% endif %}
+                {% if "table.view_table" in CURRENT_USER_PERMISSIONS %}
+                <a class="collapse-item" href="{% url 'admin:admin_table:table_list' %}"
+                    id="sidebar_option_table">Table</a>
+                {% endif %}
+            </div>
+        </div>
+    </li>
+    {% endif %}
+
+    {% if "rbac.view_user" in CURRENT_USER_PERMISSIONS %}
+    <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" id="sidebar_option_user_management_a"
+            data-target="#sidebar_option_user_management_options" aria-expanded="false" aria-controls="collapseTwo">
+            <i class="fas fa-fw fa-users"></i>
+            <span>User Management</span>
+        </a>
+        <div id="sidebar_option_user_management_options" class="collapse" aria-labelledby="headingTwo"
+            data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <h6 class="collapse-header">Control Users:</h6>
+                {% if "rbac.view_user" in CURRENT_USER_PERMISSIONS %}
+                <a class="collapse-item" href="{% url 'admin:admin_rbac:user_list' %}"
+                    id="sidebar_option_user_management_user">User</a>
+                {% endif %}
+                <!-- {% if "auth.view_group" in CURRENT_USER_PERMISSIONS %}
+                <a class="collapse-item" href="{% url 'admin:admin_rbac:group_list' %}"
+                    id="sidebar_option_user_management_group">Group</a> -->
+                {% endif %}
+                {% if "sub_tab_user_management_sales_reps" in CURRENT_USER_PERMISSIONS %}
+                <a class="collapse-item" href="{% url 'admin:admin_user_panel:sales_reps_list' %}"
+                    id="sidebar_option_user_management_sales_reps">Sales Reps</a>
+                {% endif %}
+            </div>
+        </div>
+    </li>
+    {% endif %}
+
+    {% if "tab_others" in CURRENT_USER_PERMISSIONS %}
+    <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" id="sidebar_option_others_a"
+            data-target="#sidebar_option_others_options" aria-expanded="false" aria-controls="collapseTwo">
+            <i class="fas fa-fw fa-hamburger"></i>
+            <span>Others</span>
+        </a>
+        <div id="sidebar_option_others_options" class="collapse" aria-labelledby="headingTwo"
+            data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <h6 class="collapse-header">Others:</h6>
+                {% if "sub_tab_others_product_images" in CURRENT_USER_PERMISSIONS %}
+                <a class="collapse-item" href="{% url 'admin:admin_others:product_image_list' %}"
+                    id="sidebar_option_others_product_image">Files</a>
+                {% endif %}
+                {% if "sub_tab_others_expense_type" in CURRENT_USER_PERMISSIONS %}
+                <a class="collapse-item" href="{% url 'admin:admin_others:expense_type_list' %}"
+                    id="sidebar_option_others_expense_type">Expense Type</a>
+                {% endif %}
+                {% if "sub_tab_others_expense" in CURRENT_USER_PERMISSIONS %}
+                <a class="collapse-item" href="{% url 'admin:admin_others:expense_list' %}"
+                    id="sidebar_option_others_expense">Expense</a>
+                {% endif %}
+            </div>
+        </div>
+    </li>
+    {% endif %}
+
+    {% if "__shop.view_shop" in CURRENT_USER_PERMISSIONS %}
+    <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" id="sidebar_option_shop_management_a"
+            data-target="#sidebar_option_shop_management_options" aria-expanded="false" aria-controls="collapseTwo">
+            <i class="fas fa-fw fa-store"></i>
+            <span>Shop Management</span>
+        </a>
+        <div id="sidebar_option_shop_management_options" class="collapse" aria-labelledby="headingTwo"
+            data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <h6 class="collapse-header">Shop Management:</h6>
+                {% if "shop.view_shop" in CURRENT_USER_PERMISSIONS %}
+                <a class="collapse-item" href="{% url 'admin:admin_shop:shop_list' %}"
+                    id="sidebar_option_shop_management_shop">Shops</a>
+                {% endif %}
+            </div>
+        </div>
+    </li>
+    {% endif %}
+
+    <!-- Divider -->
+    <hr class="sidebar-divider d-none d-md-block">
+
+    <!-- Sidebar Toggler (Sidebar) -->
+    <div class="text-center d-none d-md-inline">
+        <button class="rounded-circle border-0" id="sidebarToggle"></button>
+    </div>
+
+    <!-- Divider -->
+    <hr class="sidebar-divider">
+
+    <!-- Heading -->
+    <div class="sidebar-heading">
+        Addons
+    </div>
+
+    <!-- Sidebar Message -->
+    <div class="sidebar-card">
+        <!-- <img class="sidebar-card-illustration mb-2" src="{% static 'base/img/undraw_rocket.svg' %}" alt="">
+        <p class="text-center mb-2"><strong>Message</strong> This is an important message!</p>
+        <a class="btn btn-success btn-sm" href="https://startbootstrap.com/theme/sb-admin-pro">Extra message</a> -->
+        <div id="google_translate_element"></div>
+    </div>
+
+</ul>

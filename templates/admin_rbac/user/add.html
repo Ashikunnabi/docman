@@ -1,4 +1,4 @@
-{% extends 'admin_base/base.html' %}
+{% extends 'base/base.html' %}
 {% load static %}
 {% block css %}
 {% endblock %}
@@ -149,6 +149,6 @@
 </script>
 
 <!-- user JS -->
-<script src="{% static 'admin_base/js/common.js' %}?v={{JS_VERSION}}"></script>
+<script src="{% static 'base/js/common.js' %}?v={{JS_VERSION}}"></script>
 <script src="{% static 'admin_rbac/js/user.js' %}?v={{JS_VERSION}}"></script>
 {% endblock %}
