@@ -178,14 +178,14 @@ class Search {
             },
             error: function (response) {
                 let response_json = response.responseJSON
-                        for (var field in response_json.error) {
-                            if (response_json.error.hasOwnProperty(field)) {
-                                var errorMessages = response_json.error[field];
-                                for (var i = 0; i < errorMessages.length; i++) {
-                                    notify(`${field.toUpperCase()}: ${errorMessages[i]}`, 'error');
-                                }
-                            }
+                for (var field in response_json.error) {
+                    if (response_json.error.hasOwnProperty(field)) {
+                        var errorMessages = response_json.error[field];
+                        for (var i = 0; i < errorMessages.length; i++) {
+                            notify(`${field.toUpperCase()}: ${errorMessages[i]}`, 'error');
                         }
+                    }
+                }
                 notify(response.responseJSON.detail, 'error');
             }
         });
@@ -211,11 +211,9 @@ class Search {
 new Search().main();
 
 
-
-
 // LOCAL STORAGE DATA STORE
 // Function to set an item in LocalStorage with an expiration time
-function setLocalWithExpiry(key, value, minutes=60) {
+function setLocalWithExpiry(key, value, minutes = 60) {
     const now = new Date();
     const item = {
         value: value,
@@ -247,4 +245,77 @@ function removeLocalWithExpiry(key) {
         return null; // Item doesn't exist in LocalStorage
     }
     localStorage.removeItem(key); // Remove the item if it has expired
+}
+
+class AjaxService {
+    constructor() {
+        this.accessToken = this.getAccessToken();
+    }
+
+    // Utility function to get access token from local storage with expiry check
+    getAccessToken() {
+        return getLocalWithExpiry('access');
+    }
+
+    // General method to perform AJAX requests
+    ajaxRequest(method, url, data = null, isFileUpload = false) {
+        const options = {
+            url: url,
+            type: method,
+            headers: {
+                'Authorization': `JWT ${this.accessToken}`
+            },
+            success: function (response) {
+                if (typeof this.successCallback === 'function') {
+                    this.successCallback(response);
+                }
+            }.bind(this),
+            error: function (response) {
+                if (typeof this.errorCallback === 'function') {
+                    this.errorCallback(response);
+                }
+            }.bind(this)
+        };
+
+        if (method === 'POST' && isFileUpload) {
+            options.data = data;
+            options.processData = false;
+            options.contentType = false;
+        } else if (data) {
+            options.data = JSON.stringify(data);
+            options.headers['Content-Type'] = 'application/json';
+        }
+
+        return $.ajax(options);
+    }
+
+    getRequest(url, successCallback, errorCallback) {
+        this.successCallback = successCallback;
+        this.errorCallback = errorCallback;
+        return this.ajaxRequest('GET', url);
+    }
+
+    postRequest(url, data, successCallback, errorCallback) {
+        this.successCallback = successCallback;
+        this.errorCallback = errorCallback;
+        return this.ajaxRequest('POST', url, data);
+    }
+
+    patchRequest(url, data, successCallback, errorCallback) {
+        this.successCallback = successCallback;
+        this.errorCallback = errorCallback;
+        return this.ajaxRequest('PATCH', url, data);
+    }
+
+    deleteRequest(url, successCallback, errorCallback) {
+        this.successCallback = successCallback;
+        this.errorCallback = errorCallback;
+        return this.ajaxRequest('DELETE', url);
+    }
+
+    postRequestWithFile(url, data, successCallback, errorCallback) {
+        this.successCallback = successCallback;
+        this.errorCallback = errorCallback;
+        return this.ajaxRequest('POST', url, data, true);
+    }
 }
