@@ -75,7 +75,7 @@ TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
         "DIRS": [
-            "templates",
+            os.path.join(BASE_DIR, 'templates'),
         ],
         "APP_DIRS": True,
         "OPTIONS": {
@@ -264,6 +264,7 @@ ENCRYPTION_KEY = os.getenv("ENCRYPTION_KEY")
 
 # place this at the end of the file for developer/local configuration
 try:
-    from .local import *
+    if DEBUG:
+        from .local import *
 except ModuleNotFoundError:
     pass
