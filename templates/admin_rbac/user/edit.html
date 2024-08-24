@@ -169,6 +169,7 @@
 
 {% block js %}
 <script>
+    const page = "edit";
     const user_api_url = "{% url 'apps:rbac:api:v1:user_retrieve_update_delete' uuid %}";
     const user_list_url = "{% url 'admin:admin_rbac:user_list' %}";
     const account_activation_email_send_api_url = "{% url 'apps:send_email:api:v1:send_account_activation_email_to_user' %}";

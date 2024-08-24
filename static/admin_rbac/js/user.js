@@ -29,6 +29,7 @@ class User {
             "bDestroy": true,
             "bJQueryUI": true,
             "dom": '<"mb-3"B>flrtip',
+            "ordering": false,
             "buttons": [
                 {
                     text: 'Add',
@@ -70,7 +71,7 @@ class User {
                                 // do ajax request to delete
                                 $.ajax({
                                     url: user_api_url + data[0].uuid + '/',
-                                    headers: {"X-CSRFToken": csrf_token},
+                                    headers: { "X-CSRFToken": csrf_token },
                                     type: "DELETE",
                                     success: function (resp) {
                                         Swal.fire(
@@ -90,43 +91,53 @@ class User {
                 },
                 {
                     extend: 'copy',
-                    exportOptions: {orthogonal: 'export'}
+                    exportOptions: { orthogonal: 'export' }
                 },
                 {
                     extend: 'pdf',
-                    exportOptions: {orthogonal: 'export'}
+                    exportOptions: { orthogonal: 'export' }
                 },
                 {
                     extend: 'excel',
-                    exportOptions: {orthogonal: 'export'}
+                    exportOptions: { orthogonal: 'export' }
                 },
                 {
                     extend: 'csv',
-                    exportOptions: {orthogonal: 'export'}
+                    exportOptions: { orthogonal: 'export' }
                 },
                 {
                     extend: 'print',
-                    exportOptions: {orthogonal: 'export'}
+                    exportOptions: { orthogonal: 'export' }
                 },
             ],
             "lengthMenu": [30, 50, 80, 100, 200],
-            "ajax": {
-                'url': user_api_url,
-                'type': 'GET',
-                'error': function (x, status, error) {
-                    console.log(x, status, error)
-                },
+            "ajax": function (data, callback, settings) {
+                let queryParams = $.param({
+                    draw: data.draw,
+                    start: data.start,
+                    length: data.length,
+                    search: data.search.value,
+                    order: JSON.stringify(data.order),
+                    // Add any additional parameters here
+                });
+                let url = `${user_api_url}?${queryParams}`;
+                new AjaxService().getRequest(url, function (response) {
+                    callback(response);
+                }, function (response) {
+                    notify(response.responseJSON.detail, 'error');
+                })
             },
-            "rowCallback": function(row, data, displayNum, displayIndex, dataIndex) {
+            "rowCallback": function (row, data, displayNum, displayIndex, dataIndex) {
                 $(row).attr('title', 'Double click to edit')
             },
             "columns": [
-                {"title": "SL", "data": ""},
-                {"title": "Username", "data": "username"},
-                {"title": "Email", "data": "email"},
-                {"title": "Name", "data": "name"},
-                {"title": "Phone", "data": "phone"},
-                {"title": "Status", "data": "is_active"},
+                { "title": "SL", "data": "" },
+                { "title": "Username", "data": "username" },
+                { "title": "Email", "data": "email" },
+                { "title": "Name", "data": "name" },
+                { "title": "Phone", "data": "phone" },
+                { "title": "Status", "data": "is_active" },
+                { "title": "Action", "data": "" },
             ],
             "columnDefs": [
                 {
@@ -150,18 +161,30 @@ class User {
                         return inactive_html
                     },
                 },
+                {
+                    "targets": -1,
+                    "data": null,
+                    "render": function (data, type, row, meta) {
+                        return `<a href="edit/${row.uuid}">
+                            <button class="btn btn-outline-primary btn-sm actionButtonEdit" title="Edit">
+                            >
+                            </button>
+                        </a>`
+                    }
+
+                }
             ],
         });
 
         // Single click row select the row and mark a different color
-        $('#userDataTable tbody').on('click', 'tr', function () {
-            if ($(this).hasClass('selected')) {
-                $(this).removeClass('selected');
-            } else {
-                table.$('tr.selected').removeClass('selected');
-                $(this).addClass('selected');
-            }
-        });
+        // $('#userDataTable tbody').on('click', 'tr', function () {
+        //     if ($(this).hasClass('selected')) {
+        //         $(this).removeClass('selected');
+        //     } else {
+        //         table.$('tr.selected').removeClass('selected');
+        //         $(this).addClass('selected');
+        //     }
+        // });
 
         // double click row will redirect to edit selected row
         $('#userDataTable tbody').on('dblclick', 'tr', function () {
@@ -194,7 +217,7 @@ class User {
                 $.ajax({
                     url: user_api_url,
                     type: "POST",
-                    headers: {"X-CSRFToken": csrf_token},
+                    headers: { "X-CSRFToken": csrf_token },
                     data: user_add_form_data,
                     cache: false,
                     contentType: false,
@@ -204,7 +227,7 @@ class User {
                         notify("User has been created successfully.", "success");
 
                         // Delay the page refresh for 2 seconds (2000 milliseconds)
-                        setTimeout(function() {
+                        setTimeout(function () {
                             // Refresh the page
                             // location.reload();
                             window.location.href = user_list_url;
@@ -257,14 +280,14 @@ class User {
             },
             error: function (response) {
                 let response_json = response.responseJSON
-                        for (var field in response_json.error) {
-                            if (response_json.error.hasOwnProperty(field)) {
-                                var errorMessages = response_json.error[field];
-                                for (var i = 0; i < errorMessages.length; i++) {
-                                    notify(`${field.toUpperCase()}: ${errorMessages[i]}`, 'error');
-                                }
-                            }
+                for (var field in response_json.error) {
+                    if (response_json.error.hasOwnProperty(field)) {
+                        var errorMessages = response_json.error[field];
+                        for (var i = 0; i < errorMessages.length; i++) {
+                            notify(`${field.toUpperCase()}: ${errorMessages[i]}`, 'error');
                         }
+                    }
+                }
             }
         });
     };
@@ -300,7 +323,7 @@ class User {
                 // submit an ajax request to the api endpoint
                 $.ajax({
                     url: user_api_url,
-                    headers: {"X-CSRFToken": csrf_token},
+                    headers: { "X-CSRFToken": csrf_token },
                     type: "PATCH",
                     data: user_edit_form_data,
                     cache: false,
@@ -350,15 +373,15 @@ class User {
                     $.ajax({
                         url: account_activation_email_send_api_url,
                         type: "POST",
-                        data: {id: uuid},
+                        data: { id: uuid },
                         success: function (resp) {
                             window.location.reload();
                         },
                         error: function (response) {
                             Swal.fire({
-                              icon: 'error',
-                              title: 'Oops...',
-                              text: response.responseJSON.data
+                                icon: 'error',
+                                title: 'Oops...',
+                                text: response.responseJSON.data
                             })
                         }
                     });
@@ -379,7 +402,7 @@ class User {
         $.ajax({
             url: last_account_activation_sent_at_api_url,
             type: "GET",
-            data: {id: uuid},
+            data: { id: uuid },
             success: function (response) {
                 if (response.data !== "") {
                     let text = `Last sent at: ${response.data}`;
@@ -388,14 +411,14 @@ class User {
             },
             error: function (response) {
                 let response_json = response.responseJSON
-                        for (var field in response_json.error) {
-                            if (response_json.error.hasOwnProperty(field)) {
-                                var errorMessages = response_json.error[field];
-                                for (var i = 0; i < errorMessages.length; i++) {
-                                    notify(`${field.toUpperCase()}: ${errorMessages[i]}`, 'error');
-                                }
-                            }
+                for (var field in response_json.error) {
+                    if (response_json.error.hasOwnProperty(field)) {
+                        var errorMessages = response_json.error[field];
+                        for (var i = 0; i < errorMessages.length; i++) {
+                            notify(`${field.toUpperCase()}: ${errorMessages[i]}`, 'error');
                         }
+                    }
+                }
             }
         });
     };
@@ -406,17 +429,17 @@ class User {
             url: sales_reps_api_url + `?user=${uuid}`,
             type: "get",
             success: function (response) {
-                $(document).ready(function() {
-                    $('#sales_reps').select2({data: response.detail});
+                $(document).ready(function () {
+                    $('#sales_reps').select2({ data: response.detail });
                 });
             },
-            error: function (response) {}
+            error: function (response) { }
         });
 
         $('#sales_reps_save_btn').on('click', function (e) {
             $.ajax({
                 url: sales_reps_add_update_api_url + `?user=${uuid}`,
-                data: JSON.stringify({sales_reps: $('#sales_reps').val()}),
+                data: JSON.stringify({ sales_reps: $('#sales_reps').val() }),
                 dataType: 'json',
                 contentType: "application/json",
                 type: "post",
@@ -440,10 +463,16 @@ class User {
     main = () => {
         // call this function to execute all operations of this class
         this.select_sidebar_option();
-        this.list();
-        this.add();
-        this.edit_form_value_set();
-        this.edit();
+        if (page === 'list') {
+            this.list();
+        }
+        if (page === 'add') {
+            this.add();
+        }
+        if (page === 'edit') {
+            this.edit_form_value_set();
+            this.edit();
+        }
         // this.send_account_activation_email();
         // this.last_account_activation_sent_at();
         // this.sales_reps();

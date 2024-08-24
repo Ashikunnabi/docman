@@ -33,29 +33,6 @@ class LargeResultsSetPagination(LimitOffsetPagination):
         )
 
 
-class CustomLargeResultsSetPagination(LimitOffsetPagination):
-    limit_query_param = "length"
-    offset_query_param = "start"
-    max_limit = 100000000
-
-    def get_paginated_response(self, data):
-        try:
-            draw = self.request.query_params.get("draw")
-        except MultiValueDictKeyError:
-            draw = 1
-
-        return Response(
-            OrderedDict(
-                [
-                    ("recordsTotal", self.count),
-                    ("recordsFiltered", self.count),
-                    ("draw", draw),
-                    ("data", data),
-                ]
-            )
-        )
-
-
 class CustomResultsSetPageWisePagination(PageNumberPagination):
     page_query_param = "page"
     page_size = 100
