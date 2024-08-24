@@ -19,7 +19,7 @@ class UserService(BaseModelService):
 
         remove_keys = ["groups", "user_permissions"]
         for key in remove_keys:
-            del kwargs[key]
+            kwargs.pop(key, None)
 
         for m2m_key in m2m_keys:
             if m2m_key in kwargs:

@@ -257,19 +257,12 @@ class User {
 
     edit_form_value_set = () => {
         // edit user form value setup
-        $.ajax({
-            type: "get",
-            url: `${user_api_url}`,
-            success: function (response) {
+        new AjaxService().getRequest(
+            user_api_url, 
+            function (response) {
                 function populate(form, data) {
                     $.each(data, function (key, value) {
-                        if (key === 'company_application_document') (value != null) ? $('#editCompanyApplicationDocument').attr('href', `/media/${value}`) : "";
-                        else if (key === 'company_store_front') (value != null) ? $('#editCompanyStoreFront').attr('href', `/media/${value}`) : "";
-                        else if (key === 'company_commercial_location') (value != null) ? $('#editCompanyCommercialLocation').attr('href', `/media/${value}`) : "";
-                        else if (key === 'company_reseller_permit') (value != null) ? $('#editCompanyResellerPermit').attr('href', `/media/${value}`) : "";
-                        else if (key === 'company_retail_sales_floor') (value != null) ? $('#editCompanyRetailSalesFloor').attr('href', `/media/${value}`) : "";
-                        else if (key === 'is_staff') (value === true) ? $('input[name=is_staff]').click() : "";
-                        else if (key === 'is_api_user') (value === true) ? $('input[name=is_api_user]').click() : "";
+                        if (key === 'is_staff') (value === true) ? $('input[name=is_staff]').click() : "";
                         else if (key === 'is_active') (value === true) ? $('input[name=is_active]').click() : "";
                         else $('[name=' + key + ']', form).val(value);
                     });
@@ -278,7 +271,7 @@ class User {
                 populate($('#user_edit'), response.data);
                 $('input[name=password]').val('')
             },
-            error: function (response) {
+            function (response) {
                 let response_json = response.responseJSON
                 for (var field in response_json.error) {
                     if (response_json.error.hasOwnProperty(field)) {
@@ -289,7 +282,7 @@ class User {
                     }
                 }
             }
-        });
+        );
     };
 
     /*
@@ -304,36 +297,23 @@ class User {
             e.preventDefault();
             const user_edit_form = $('#user_edit').parsley();
             let user_edit_form_data = new FormData($('#user_edit')[0]);
-            let csrf_token = $('[name="csrfmiddlewaretoken"]').attr('value');
-
 
             if (user_edit_form.isValid()) {
                 // make form attributes request friendly
                 if (user_edit_form_data.has('password')) ($("input[name='password']").val() === '') ? user_edit_form_data.delete('password') : '';
                 if (user_edit_form_data.has('password1')) user_edit_form_data.delete('password1');
-                if (user_edit_form_data.has('company_application_document')) ($("input[name='company_application_document']").val() === '') ? user_edit_form_data.delete('company_application_document') : '';
-                if (user_edit_form_data.has('company_store_front')) ($("input[name='company_store_front']").val() === '') ? user_edit_form_data.delete('company_store_front') : '';
-                if (user_edit_form_data.has('company_commercial_location')) ($("input[name='company_commercial_location']").val() === '') ? user_edit_form_data.delete('company_commercial_location') : '';
-                if (user_edit_form_data.has('company_reseller_permit')) ($("input[name='company_reseller_permit']").val() === '') ? user_edit_form_data.delete('company_reseller_permit') : '';
-                if (user_edit_form_data.has('company_retail_sales_floor')) ($("input[name='company_retail_sales_floor']").val() === '') ? user_edit_form_data.delete('company_retail_sales_floor') : '';
                 if (!user_edit_form_data.has('is_staff')) user_edit_form_data.append('is_staff', 0);
-                if (!user_edit_form_data.has('is_api_user')) user_edit_form_data.append('is_api_user', 0);
                 if (!user_edit_form_data.has('is_active')) user_edit_form_data.append('is_active', 0);
 
                 // submit an ajax request to the api endpoint
-                $.ajax({
-                    url: user_api_url,
-                    headers: { "X-CSRFToken": csrf_token },
-                    type: "PATCH",
-                    data: user_edit_form_data,
-                    cache: false,
-                    contentType: false,
-                    processData: false,
-                    success: function (resp) {
+                new AjaxService().patchRequestWithFile(
+                    user_api_url,
+                    user_edit_form_data,
+                    function (resp) {
                         // Display a success message
                         notify("User has been updated successfully.", "success");
                     },
-                    error: function (response) {
+                    function (response) {
                         let response_json = response.responseJSON
                         for (var field in response_json.error) {
                             if (response_json.error.hasOwnProperty(field)) {
@@ -344,7 +324,7 @@ class User {
                             }
                         }
                     }
-                });
+                );
             }
         });
     };

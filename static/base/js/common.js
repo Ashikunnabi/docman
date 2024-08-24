@@ -283,7 +283,7 @@ class AjaxService {
             }.bind(this)
         };
 
-        if (method === 'POST' && isFileUpload) {
+        if (['POST', 'PATCH'].includes(method) && isFileUpload) {
             options.data = data;
             options.processData = false;
             options.contentType = false;
@@ -323,6 +323,12 @@ class AjaxService {
         this.successCallback = successCallback;
         this.errorCallback = errorCallback;
         return this.ajaxRequest('POST', url, data, true);
+    }
+
+    patchRequestWithFile(url, data, successCallback, errorCallback) {
+        this.successCallback = successCallback;
+        this.errorCallback = errorCallback;
+        return this.ajaxRequest('PATCH', url, data, true);
     }
 }
 
