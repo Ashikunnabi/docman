@@ -1,4 +1,43 @@
 /*=============================================================================
+                    LOCAL STORAGE DATA STORE
+=============================================================================*/
+// Function to set an item in LocalStorage with an expiration time
+function setLocalWithExpiry(key, value, minutes = 60) {
+    const now = new Date();
+    const item = {
+        value: value,
+        expiry: now.getTime() + minutes * 60000, // Convert minutes to milliseconds
+    };
+    localStorage.setItem(key, JSON.stringify(item));
+}
+
+// Function to get an item from LocalStorage and check its expiration
+function getLocalWithExpiry(key) {
+    const itemStr = localStorage.getItem(key);
+    if (!itemStr) {
+        return null; // Item doesn't exist in LocalStorage
+    }
+    const item = JSON.parse(itemStr);
+    const now = new Date();
+    if (now.getTime() > item.expiry) {
+        localStorage.removeItem(key); // Remove the item if it has expired
+        return null;
+    }
+    return item.value;
+}
+
+
+// Function to remove an item from LocalStorage
+function removeLocalWithExpiry(key) {
+    const itemStr = localStorage.getItem(key);
+    if (!itemStr) {
+        return null; // Item doesn't exist in LocalStorage
+    }
+    localStorage.removeItem(key); // Remove the item if it has expired
+}
+
+
+/*=============================================================================
                         notify js customize
 =============================================================================*/
 notify = (message, message_type, duration, global_position = 'top right', element_position = 'bottom left') => {
@@ -208,45 +247,12 @@ class Search {
     }
 }
 
-new Search().main();
+// new Search().main();
 
 
-// LOCAL STORAGE DATA STORE
-// Function to set an item in LocalStorage with an expiration time
-function setLocalWithExpiry(key, value, minutes = 60) {
-    const now = new Date();
-    const item = {
-        value: value,
-        expiry: now.getTime() + minutes * 60000, // Convert minutes to milliseconds
-    };
-    localStorage.setItem(key, JSON.stringify(item));
-}
-
-// Function to get an item from LocalStorage and check its expiration
-function getLocalWithExpiry(key) {
-    const itemStr = localStorage.getItem(key);
-    if (!itemStr) {
-        return null; // Item doesn't exist in LocalStorage
-    }
-    const item = JSON.parse(itemStr);
-    const now = new Date();
-    if (now.getTime() > item.expiry) {
-        localStorage.removeItem(key); // Remove the item if it has expired
-        return null;
-    }
-    return item.value;
-}
-
-
-// Function to remove an item from LocalStorage
-function removeLocalWithExpiry(key) {
-    const itemStr = localStorage.getItem(key);
-    if (!itemStr) {
-        return null; // Item doesn't exist in LocalStorage
-    }
-    localStorage.removeItem(key); // Remove the item if it has expired
-}
-
+/*=============================================================================
+                        AJAX SERVICE
+=============================================================================*/
 class AjaxService {
     constructor() {
         this.accessToken = this.getAccessToken();
@@ -319,3 +325,96 @@ class AjaxService {
         return this.ajaxRequest('POST', url, data, true);
     }
 }
+
+
+/*=============================================================================
+                        SIDEBAR
+=============================================================================*/
+class Sidebar {
+    constructor() {
+        this.moduleWiseSidebarItems = [
+            {
+                code: 'user_management',
+                name: 'User Management',
+                submodules: [
+                    {
+                        name: 'User',
+                        code: 'view_user',
+                        requiredPermissions: ['view_user'],
+                        url: '/rbac/user/'
+                    },
+                    {
+                        name: 'Group',
+                        code: 'view_group',
+                        requiredPermissions: ['view_group'],
+                        url: '/rbac/group/'
+                    },
+                ]
+            },
+        ];
+    }
+
+    getPermissions() {
+        return getLocalWithExpiry('permissions');
+    }
+
+    readPermissionsAndSetSidebar() {
+        const permissions = this.getPermissions();
+        if (permissions) {
+            this.setSidebar(permissions);
+        }
+    }
+
+    hasRequiredPermissions(submodule, permissions) {
+        // Check if all required permissions are present
+        return submodule.requiredPermissions.every(requiredPermission =>
+            permissions.some(permission => permission.codename === requiredPermission)
+        );
+    }
+
+    sidebarSubmodulesHtml(module, permissions) {
+        return module.submodules
+            .filter(submodule => this.hasRequiredPermissions(submodule, permissions))
+            .map(submodule => `
+                <a class="collapse-item" href="${submodule.url}" id="sidebar__${module.code}__${submodule.code}">
+                    ${submodule.name}
+                </a>
+            `).join('');
+    }
+
+    sidebarModuleHtml(module, permissions) {
+        return `
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" 
+                    id="sidebar__${module.code}"
+                    data-target="#sidebar__${module.code}_options" 
+                    aria-expanded="false" aria-controls="collapseTwo">
+                    <i class="fas fa-fw fa-home"></i>
+                    <span>${module.name}</span>
+                </a>
+                <div id="sidebar__${module.code}_options" class="collapse" aria-labelledby="headingTwo"
+                    data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <h6 class="collapse-header">SUB MODULE:</h6>
+                        ${this.sidebarSubmodulesHtml(module, permissions)}
+                    </div>
+                </div>
+            </li>`;
+    }
+
+    setSidebar(permissions) {
+        const sidebar = $('#sidebar-modules');
+        sidebar.empty();
+
+        this.moduleWiseSidebarItems
+            .filter(module =>
+                module.submodules.some(submodule =>
+                    this.hasRequiredPermissions(submodule, permissions))
+            )
+            .forEach(module => {
+                sidebar.append(this.sidebarModuleHtml(module, permissions));
+            });
+    }
+}
+
+new Sidebar().readPermissionsAndSetSidebar();
