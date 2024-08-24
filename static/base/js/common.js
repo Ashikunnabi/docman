@@ -368,6 +368,7 @@ class Sidebar {
         const permissions = this.getPermissions();
         if (permissions) {
             this.setSidebar(permissions);
+            this.highlightActiveSidebarItem();
         }
     }
 
@@ -420,6 +421,41 @@ class Sidebar {
             .forEach(module => {
                 sidebar.append(this.sidebarModuleHtml(module, permissions));
             });
+
+        // Attach click event listeners
+        $('.collapse-item').on('click', (event) => {
+            event.preventDefault();
+            const target = $(event.currentTarget);
+            this.storeSelectedSidebarItem(target);
+            // go to link
+            window.location.href = target.attr('href');
+        });
+    }
+
+    storeSelectedSidebarItem(item) {
+        console.log(item);
+        let id = item[0].id;
+        if (id === '') {
+            delete localStorage.selectedSidebarItem;
+            return;
+        }
+
+        const sidebarItem = {
+            module: id.split('__')[1],
+            submodule: id.split('__')[2],
+        };
+        localStorage.setItem('selectedSidebarItem', JSON.stringify(sidebarItem));
+    }
+
+    highlightActiveSidebarItem() {
+        const selectedItem = JSON.parse(localStorage.getItem('selectedSidebarItem'));
+        if (selectedItem) {
+            let module = $(`#sidebar__${selectedItem.module}`)
+            let submodule = $(`#sidebar__${selectedItem.module}__${selectedItem.submodule}`)
+            module.parent().addClass('active');
+            submodule.parent().parent().addClass('show');
+            submodule.addClass('active');
+        }
     }
 }
 
