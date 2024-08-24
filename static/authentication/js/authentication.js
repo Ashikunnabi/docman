@@ -12,12 +12,23 @@ class Login {
     * =========================================================================
     **/
 
+    remember_me = () => {
+
+        // Check for saved credentials in localStorage
+        if (localStorage.getItem('rememberMe') === 'true') {
+            $('input[type="email"]').val(localStorage.getItem('username'));
+            $('input[type="password"]').val(localStorage.getItem('password'));
+            $('#rememberMe').prop('checked', true);
+        }
+    }
+
     login = () => {
         let self = this;
         $(document).on('submit', '#login-form', function (e) {
             e.preventDefault();
             const login_form = $('#login-form').parsley();
             let login_form_data = new FormData($('#login-form')[0]);
+            let rememberMe = $('#rememberMe').is(':checked');
 
             let data = {
                 username: login_form_data.get('email'),
@@ -32,6 +43,16 @@ class Login {
                     contentType: 'application/json',
                     data: JSON.stringify(data),
                     success: function (resp) {
+                        // Save credentials if 'Remember Me' is checked
+                        if (rememberMe) {
+                            localStorage.setItem('rememberMe', 'true');
+                            localStorage.setItem('username', data.username);
+                            localStorage.setItem('password', data.password);
+                        } else {
+                            localStorage.removeItem('rememberMe');
+                            localStorage.removeItem('username');
+                            localStorage.removeItem('password');
+                        }
                         setLocalWithExpiry('access', resp.data.access, 86400000);
                         setLocalWithExpiry('user', resp.data.user, 86400000);
                         window.location.reload();
@@ -100,8 +121,9 @@ class Login {
 
     main = () => {
         // call this function to execute all operations of this class
+        this.remember_me();
         this.login();
-        this.banner();
+        // this.banner();
     }
 }
 
