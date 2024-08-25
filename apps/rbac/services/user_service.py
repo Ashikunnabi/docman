@@ -36,6 +36,10 @@ class UserService(BaseModelService):
         return instance
 
     def update_user(self, user, **kwargs):
+        remove_keys = ["username"]
+        for key in remove_keys:
+            kwargs.pop(key, None)
+
         kwargs, m2m_data = self.validated_data(**kwargs)
         instance = self.update_model_instance(user, **kwargs)
         return instance

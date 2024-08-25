@@ -69,11 +69,9 @@ class User {
                             if (result.isConfirmed) {
                                 let csrf_token = $('[name="csrfmiddlewaretoken"]').attr('value');
                                 // do ajax request to delete
-                                $.ajax({
-                                    url: user_api_url + data[0].uuid + '/',
-                                    headers: { "X-CSRFToken": csrf_token },
-                                    type: "DELETE",
-                                    success: function (resp) {
+                                new AjaxService().deleteRequest(
+                                    user_api_url + data[0].uuid + '/',
+                                    function (resp) {
                                         Swal.fire(
                                             'Deleted!',
                                             'User has been deleted.',
@@ -81,10 +79,13 @@ class User {
                                         );
                                         dt.ajax.reload()
                                     },
-                                    error: function (response) {
-                                        notify(response.responseJSON.detail, 'error');
+                                    function (response) {
+                                        let response_json = response.responseJSON
+                                        if (response_json.code === "USER_DELETION_NOT_ALLOWED") {
+                                            notify("You are not allowed to delete an user.", "error");
+                                        }
                                     }
-                                });
+                                );
                             }
                         })
                     }
@@ -177,14 +178,14 @@ class User {
         });
 
         // Single click row select the row and mark a different color
-        // $('#userDataTable tbody').on('click', 'tr', function () {
-        //     if ($(this).hasClass('selected')) {
-        //         $(this).removeClass('selected');
-        //     } else {
-        //         table.$('tr.selected').removeClass('selected');
-        //         $(this).addClass('selected');
-        //     }
-        // });
+        $('#userDataTable tbody').on('click', 'tr', function () {
+            if ($(this).hasClass('selected')) {
+                $(this).removeClass('selected');
+            } else {
+                table.$('tr.selected').removeClass('selected');
+                $(this).addClass('selected');
+            }
+        });
 
         // double click row will redirect to edit selected row
         $('#userDataTable tbody').on('dblclick', 'tr', function () {
@@ -200,29 +201,22 @@ class User {
     **/
 
     add = () => {
-        // add user
         $(document).on('submit', '#user_add', function (e) {
             e.preventDefault();
             const user_add_form = $('#user_add').parsley();
             let user_add_form_data = new FormData($('#user_add')[0]);
-            let csrf_token = $('[name="csrfmiddlewaretoken"]').attr('value');
-
 
             if (user_add_form.isValid()) {
                 // make form attributes request friendly
                 if (user_add_form_data.has('password1')) user_add_form_data.delete('password1');
-                if (!user_add_form_data.has('is_staff')) user_add_form_data.append('is_staff', 0);
+                // if (!user_add_form_data.has('is_staff')) user_add_form_data.append('is_staff', 0);
                 if (!user_add_form_data.has('is_active')) user_add_form_data.append('is_active', 0);
+
                 // submit an ajax request to the api endpoint
-                $.ajax({
-                    url: user_api_url,
-                    type: "POST",
-                    headers: { "X-CSRFToken": csrf_token },
-                    data: user_add_form_data,
-                    cache: false,
-                    contentType: false,
-                    processData: false,
-                    success: function (resp) {
+                new AjaxService().postRequestWithFile(
+                    user_api_url,
+                    user_add_form_data,
+                    function (resp) {
                         // Display a success message
                         notify("User has been created successfully.", "success");
 
@@ -233,18 +227,23 @@ class User {
                             window.location.href = user_list_url;
                         }, 2000); // Adjust the delay time as needed
                     },
-                    error: function (response) {
+                    function (response) {
+                        $('#user_add').parsley().destroy();
                         let response_json = response.responseJSON
-                        for (var field in response_json.error) {
-                            if (response_json.error.hasOwnProperty(field)) {
-                                var errorMessages = response_json.error[field];
-                                for (var i = 0; i < errorMessages.length; i++) {
-                                    notify(`${field.toUpperCase()}: ${errorMessages[i]}`, 'error');
-                                }
+                        if (response_json.code === "NOT_ALLOWED") {
+                            notify("You are not allowed to add a new user.", "error");
+                        }
+
+                        if (response_json.code === "INVALID_INPUT") {
+                            for (var fieldName in response_json.error) {
+                                $.each(response_json.error[fieldName], function (index, message) {
+                                    let field = $('[name="' + fieldName + '"]');
+                                    field.parsley().addError('server', { message: message });
+                                })
                             }
                         }
                     }
-                });
+                );
             }
         });
     };
@@ -258,7 +257,7 @@ class User {
     edit_form_value_set = () => {
         // edit user form value setup
         new AjaxService().getRequest(
-            user_api_url, 
+            user_api_url,
             function (response) {
                 function populate(form, data) {
                     $.each(data, function (key, value) {
@@ -300,9 +299,10 @@ class User {
 
             if (user_edit_form.isValid()) {
                 // make form attributes request friendly
+                if (user_edit_form_data.has('username')) user_edit_form_data.delete('username');
                 if (user_edit_form_data.has('password')) ($("input[name='password']").val() === '') ? user_edit_form_data.delete('password') : '';
                 if (user_edit_form_data.has('password1')) user_edit_form_data.delete('password1');
-                if (!user_edit_form_data.has('is_staff')) user_edit_form_data.append('is_staff', 0);
+                // if (!user_edit_form_data.has('is_staff')) user_edit_form_data.append('is_staff', 0);
                 if (!user_edit_form_data.has('is_active')) user_edit_form_data.append('is_active', 0);
 
                 // submit an ajax request to the api endpoint
@@ -314,13 +314,18 @@ class User {
                         notify("User has been updated successfully.", "success");
                     },
                     function (response) {
+                        $('#user_edit').parsley().destroy();
                         let response_json = response.responseJSON
-                        for (var field in response_json.error) {
-                            if (response_json.error.hasOwnProperty(field)) {
-                                var errorMessages = response_json.error[field];
-                                for (var i = 0; i < errorMessages.length; i++) {
-                                    notify(`${field.toUpperCase()}: ${errorMessages[i]}`, 'error');
-                                }
+                        if (response_json.code === "NOT_ALLOWED") {
+                            notify("You are not allowed to add a new user.", "error");
+                        }
+
+                        if (response_json.code === "INVALID_INPUT") {
+                            for (var fieldName in response_json.error) {
+                                $.each(response_json.error[fieldName], function (index, message) {
+                                    let field = $('[name="' + fieldName + '"]');
+                                    field.parsley().addError('server', { message: message });
+                                })
                             }
                         }
                     }

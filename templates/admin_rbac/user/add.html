@@ -9,15 +9,15 @@
     <!-- Page Heading -->
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
         <h1 class="h3 mb-0 text-gray-800">User</h1>
-                    <!-- <a href="#"
+        <!-- <a href="#"
                        class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
                             class="fas fa-download fa-sm text-white-50"></i> Generate
                         Report</a> -->
-        </div>
-        <p class="mb-4">
-            Users are valuable. See list of Registered user.
-            Only active staff can be an admin of this system.
-        </p>
+    </div>
+    <p class="mb-4">
+        Users are valuable. See list of Registered user.
+        Only active staff can be an admin of this system.
+    </p>
 
 
     <div class="card shadow mb-4">
@@ -33,20 +33,28 @@
                             <label for="name">Username: <span class="text-danger">*</span></label>
                             <input type="text" class="form-control" id="username" name="username"
                                 data-parsley-maxlength="256" placeholder="Enter username here (max 256 chars)."
-                                autocomplete="off" required>
+                                required>
                         </div>
 
                         <div class="form-group">
-                            <label for="name">Name: <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control" id="name" name="name" data-parsley-maxlength="256"
-                                placeholder="Enter name here (max 256 chars)." required>
+                            <label for="name">First Name: <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="first_name" name="first_name"
+                                data-parsley-maxlength="256" placeholder="Enter first name here (max 256 chars)."
+                                required>
                         </div>
 
                         <div class="form-group">
+                            <label for="name">Last Name: <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="last_name" name="last_name"
+                                data-parsley-maxlength="256" placeholder="Enter last name here (max 256 chars)."
+                                required>
+                        </div>
+
+                        <!-- <div class="form-group">
                             <label for="password">Password: <span class="text-danger">*</span></label>
                             <input type="password" class="form-control" id="password" name="password"
-                                placeholder="Enter password here."  autocomplete="off" minlength="8" required>
-                        </div>
+                                placeholder="Enter password here." required>
+                        </div> -->
                     </div>
                     <div class="col-md-6">
 
@@ -57,72 +65,35 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="phone">Phone: <span class="text-danger">*</span></label>
-                            <input type="number" class="form-control" id="phone" name="phone" data-parsley-maxlength="12"
-                                placeholder="Enter phone number here (max 12 chars)." required>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="password1">Confirm Password: <span class="text-danger">*</span></label>
-                            <input type="password" class="form-control" id="password1" name="password1"
-                                placeholder="Retype password here." data-parsley-equalto="#password"
-                                data-parsley-trigger="change"  autocomplete="off" required>
+                            <label for="phone">Phone: </label>
+                            <input type="number" class="form-control" id="phone" name="phone"
+                                data-parsley-maxlength="11" placeholder="11 digit mobile number. Example: 01789000000.">
                         </div>
                     </div>
                 </div>
-
-                <hr>
-                <div class="text-center">
-                    <span class="text-primary">Upload Documents</span>
-                </div>
-                <hr>
-
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label for="company_application_document">Image 1: </label>
-                            <input type="file" class="form-control" id="company_application_document"
-                                name="company_application_document">
+                            <label for="password">Password: <span class="text-danger">*</span></label>
+                            <input type="password" class="form-control" id="password" name="password"
+                                placeholder="Enter password here." required>
                         </div>
                     </div>
-
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label for="company_store_front">Image 2:</label>
-                            <input type="file" class="form-control" id="company_store_front" name="company_store_front">
-                        </div>
-                    </div>
-
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="company_commercial_location">Image 3: </label>
-                            <input type="file" class="form-control" id="company_commercial_location"
-                                name="company_commercial_location">
-                        </div>
-                    </div>
-
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="company_reseller_permit">Image 4: </label>
-                            <input type="file" class="form-control" id="company_reseller_permit"
-                                name="company_reseller_permit">
-                        </div>
-                    </div>
-
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="company_retail_sales_floor">Image 5: </label>
-                            <input type="file" class="form-control" id="company_retail_sales_floor"
-                                name="company_retail_sales_floor">
+                            <label for="password1">Re-enter Password: <span class="text-danger">*</span></label>
+                            <input type="password" class="form-control" id="password1" name="password1"
+                                placeholder="Re-enter password here." data-parsley-equalto="#password"
+                                data-parsley-equalto-message="Password doesn't matched" required>
                         </div>
                     </div>
                 </div>
-                <div class="form-group">
+                <!-- <div class="form-group">
                     <div class="custom-control custom-checkbox small">
                         <input type="checkbox" class="custom-control-input" id="is_staff" name="is_staff">
                         <label class="custom-control-label" for="is_staff">Staff (can access admin panel)</label>
                     </div>
-                </div>
+                </div> -->
 
                 <div class="form-group">
                     <div class="custom-control custom-checkbox small">
@@ -150,6 +121,5 @@
 </script>
 
 <!-- user JS -->
-<script src="{% static 'base/js/common.js' %}?v={{JS_VERSION}}"></script>
 <script src="{% static 'admin_rbac/js/user.js' %}?v={{JS_VERSION}}"></script>
 {% endblock %}
