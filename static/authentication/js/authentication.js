@@ -54,6 +54,7 @@ class Login {
                             localStorage.removeItem('password');
                         }
                         setLocalWithExpiry('access', resp.data.access, 86400000);
+                        setLocalWithExpiry('refresh', resp.data.refresh, 86400000);
                         setLocalWithExpiry('user', resp.data.user, 86400000);
                         window.location.reload();
                         self.permissions();

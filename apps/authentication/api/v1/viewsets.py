@@ -80,6 +80,24 @@ def logout(request):
             {"detail": "User not authenticated."}, status=status.HTTP_400_BAD_REQUEST
         )
 
+@api_view(["POST"])
+@permission_classes([])
+def refresh_token(request):
+    """
+    Refresh the JWT token.
+    """
+    try:
+        refresh = RefreshToken(request.data["refresh"])
+        access = refresh.access_token
+    except InvalidToken as e:
+        return Response({"detail": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+    token = {
+        "refresh": str(refresh),
+        "access": str(access),
+    }
+    return Response(token, status=200)
+
 
 @api_view(["POST"])
 def registration(request):
