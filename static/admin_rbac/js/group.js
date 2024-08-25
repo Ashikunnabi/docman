@@ -68,11 +68,9 @@ class GroupActivityLog {
                             if (result.isConfirmed) {
                                 let csrf_token = $('[name="csrfmiddlewaretoken"]').attr('value');
                                 // do ajax request to delete
-                                $.ajax({
-                                    url: api_urls["group_list"] + data[0].id + '/',
-                                    headers: { "X-CSRFToken": csrf_token },
-                                    type: "DELETE",
-                                    success: function (resp) {
+                                new AjaxService().deleteRequest(
+                                    api_urls["group_list"] + data[0].id + '/',
+                                    function (resp) {
                                         Swal.fire(
                                             'Deleted!',
                                             'Group has been deleted.',
@@ -80,42 +78,37 @@ class GroupActivityLog {
                                         );
                                         dt.ajax.reload()
                                     },
-                                    error: function (response) {
+                                    function (response) {
                                         let response_json = response.responseJSON
-                        for (var field in response_json.error) {
-                            if (response_json.error.hasOwnProperty(field)) {
-                                var errorMessages = response_json.error[field];
-                                for (var i = 0; i < errorMessages.length; i++) {
-                                    notify(`${field.toUpperCase()}: ${errorMessages[i]}`, 'error');
-                                }
-                            }
-                        }
-                                        notify(response.responseJSON.detail, 'error');
+                                        if (response_json.code === "USER_DELETION_NOT_ALLOWED") {
+                                            notify("You are not allowed to delete an user.", "error");
+                                        }
+                                        notify(response.responseJSON.message, 'error');
                                     }
-                                });
+                                );
                             }
                         })
                     }
                 },
                 {
                     extend: 'copy',
-                    exportOptions: {orthogonal: 'export'}
+                    exportOptions: { orthogonal: 'export' }
                 },
                 {
                     extend: 'pdf',
-                    exportOptions: {orthogonal: 'export'}
+                    exportOptions: { orthogonal: 'export' }
                 },
                 {
                     extend: 'excel',
-                    exportOptions: {orthogonal: 'export'}
+                    exportOptions: { orthogonal: 'export' }
                 },
                 {
                     extend: 'csv',
-                    exportOptions: {orthogonal: 'export'}
+                    exportOptions: { orthogonal: 'export' }
                 },
                 {
                     extend: 'print',
-                    exportOptions: {orthogonal: 'export'}
+                    exportOptions: { orthogonal: 'export' }
                 },
                 // {
                 //     extend: 'print',
@@ -125,19 +118,29 @@ class GroupActivityLog {
                 // }
             ],
             "lengthMenu": [10, 25, 50, 75, 100],
-            "ajax": {
-                'url': api_urls["group_list"],
-                'type': 'GET',
-                'error': function (x, status, error) {
-                    console.log(x, status, error)
-                },
+            "ajax": function (data, callback, settings) {
+                let queryParams = $.param({
+                    draw: data.draw,
+                    start: data.start,
+                    length: data.length,
+                    search: data.search.value,
+                    order: JSON.stringify(data.order),
+                    // Add any additional parameters here
+                });
+                let url = `${api_urls["group_list"]}?${queryParams}`;
+                new AjaxService().getRequest(url, function (response) {
+                    callback(response);
+                }, function (response) {
+                    notify(response.responseJSON.detail, 'error');
+                })
             },
             "rowCallback": function (row, data, displayNum, displayIndex, dataIndex) {
                 $(row).attr('title', 'Double click to edit')
             },
             "columns": [
                 { "title": "SL", "data": "" },
-                { "title": "Name", "data": "name" }
+                { "title": "Name", "data": "name" },
+                { "title": "Action", "data": "" },
             ],
             "columnDefs": [
                 {
@@ -153,6 +156,18 @@ class GroupActivityLog {
                         return `${data}`;
                     }
                 },
+                {
+                    "targets": -1,
+                    "data": null,
+                    "render": function (data, type, row, meta) {
+                        return `<a href="edit/${row.id}">
+                            <button class="btn btn-outline-primary btn-sm actionButtonEdit" title="Edit">
+                            >
+                            </button>
+                        </a>`
+                    }
+
+                }
             ],
         });
 
@@ -180,14 +195,13 @@ class GroupActivityLog {
    **/
     members = () => {
         let self = this;
-        $.ajax({
-            url: api_urls["staff_list"],
-            type: "get",
-            success: function (response) {
+        new AjaxService().getRequest(
+            api_urls["user_list"],
+            function (response) {
                 let html = "";
                 $.each(response.data, function (i, v) {
                     html += `
-                        <option value=${v.id}>${v.email}</option>
+                        <option value="${v.uuid}">${v.email}</option>
                     `
                 })
                 $('#members_list').append(html)
@@ -198,8 +212,8 @@ class GroupActivityLog {
                         var that = this,
                             $selectableSearch = that.$selectableUl.prev(),
                             $selectionSearch = that.$selectionUl.prev(),
-                            selectableSearchString = '#' + that.$container.attr('id') + ' .ms-elem-selectable:not(.ms-selected)',
-                            selectionSearchString = '#' + that.$container.attr('id') + ' .ms-elem-selection.ms-selected';
+                            selectableSearchString = '#' + that.$container.attr('uuid') + ' .ms-elem-selectable:not(.ms-selected)',
+                            selectionSearchString = '#' + that.$container.attr('uuid') + ' .ms-elem-selection.ms-selected';
 
                         that.qs1 = $selectableSearch.quicksearch(selectableSearchString)
                             .on('keydown', function (e) {
@@ -227,12 +241,12 @@ class GroupActivityLog {
                     }
                 });
             },
-            error: function (response) {
+            function (response) {
                 $('#nav-members').hide()
                 notify('Something went wrong in members tab', 'error', 5000);
                 console.log(response)
             }
-        });
+        );
 
     }
 
@@ -243,14 +257,13 @@ class GroupActivityLog {
    **/
     permissions = () => {
         let self = this;
-        $.ajax({
-            url: api_urls["permission_list"],
-            type: "get",
-            success: function (response) {
+        new AjaxService().getRequest(
+            api_urls["permission_list"],
+            function (response) {
                 let html = "";
                 $.each(response.data, function (i, v) {
                     html += `
-                        <option value=${v.id}>${v.name}</option>
+                        <option value="${v.codename}">${v.name}</option>
                     `
                 })
                 $('#permissions_list').append(html)
@@ -261,8 +274,8 @@ class GroupActivityLog {
                         var that = this,
                             $selectableSearch = that.$selectableUl.prev(),
                             $selectionSearch = that.$selectionUl.prev(),
-                            selectableSearchString = '#' + that.$container.attr('id') + ' .ms-elem-selectable:not(.ms-selected)',
-                            selectionSearchString = '#' + that.$container.attr('id') + ' .ms-elem-selection.ms-selected';
+                            selectableSearchString = '#' + that.$container.attr('codename') + ' .ms-elem-selectable:not(.ms-selected)',
+                            selectionSearchString = '#' + that.$container.attr('codename') + ' .ms-elem-selection.ms-selected';
 
                         that.qs1 = $selectableSearch.quicksearch(selectableSearchString)
                             .on('keydown', function (e) {
@@ -290,12 +303,12 @@ class GroupActivityLog {
                     }
                 });
             },
-            error: function (response) {
+            function (response) {
                 $('#nav-permissions').hide()
                 notify('Something went wrong in permissions tab', 'error', 5000);
                 console.log(response)
             }
-        });
+        );
 
     }
 
@@ -307,14 +320,19 @@ class GroupActivityLog {
 
     edit_form_value_set = () => {
         // edit group form value setup
-        $.ajax({
-            url: api_urls["group_list"] + uuid + '/',
-            type: "get",
-            success: function (response) {
+        new AjaxService().getRequest(
+            api_urls["group_list"] + uuid + '/',
+            function (response) {
                 function populate(form, data) {
                     $.each(data, function (key, value) {
-                        if (key === 'users') $('#members_list').multiSelect('select', value.map(String))
-                        if (key === 'permissions') $('#permissions_list').multiSelect('select', value.map(String))
+                        if (key === 'users') {
+                            let uuids = value.map(function (v) { return v.uuid });
+                            $('#members_list').multiSelect('select', uuids.map(String))
+                        }
+                        if (key === 'permissions') {
+                            let codenames = value.map(function (v) { return v.codename });
+                            $('#permissions_list').multiSelect('select', codenames.map(String))
+                        }
                         else $('[name=' + key + ']', form).val(value);
                     });
                 }
@@ -322,18 +340,18 @@ class GroupActivityLog {
                     populate($('#group_edit'), response.data);
                 }, 3000)
             },
-            error: function (response) {
+            function (response) {
                 let response_json = response.responseJSON
-                        for (var field in response_json.error) {
-                            if (response_json.error.hasOwnProperty(field)) {
-                                var errorMessages = response_json.error[field];
-                                for (var i = 0; i < errorMessages.length; i++) {
-                                    notify(`${field.toUpperCase()}: ${errorMessages[i]}`, 'error');
-                                }
-                            }
+                for (var field in response_json.error) {
+                    if (response_json.error.hasOwnProperty(field)) {
+                        var errorMessages = response_json.error[field];
+                        for (var i = 0; i < errorMessages.length; i++) {
+                            notify(`${field.toUpperCase()}: ${errorMessages[i]}`, 'error');
                         }
+                    }
+                }
             }
-        });
+        );
     };
 
 
@@ -345,6 +363,7 @@ class GroupActivityLog {
     save = () => {
         let self = this;
         $(document).on('click', '.submit_btn', function (e) {
+            e.preventDefault();
             if ($('#name').val() == "") {
                 notify('Group name required!', 'error', 5000);
                 return;
@@ -356,39 +375,53 @@ class GroupActivityLog {
                 permissions: $('#permissions_list').val(),
             }
             let url = api_urls["group_list"]
-            let request_type = "POST"
-            if (page === "edit") {
-                url = api_urls["group_list"] + uuid + "/"
-                request_type = "PATCH"
-            }
-            $.ajax({
-                url: url,
-                type: request_type,
-                data: JSON.stringify(data),
-                cache: false,
-                contentType: "application/json",
-                processData: false,
-                success: function (response) {
-                    notify('Success', 'success', 3000);
-                    if (page === "add") {
-                        setTimeout(function (e) {
-                            window.location.href = group_list_url;
-                        }, 4000)
-                    }
 
-                },
-                error: function (response) {
-                    let response_json = response.responseJSON
-                    for (var field in response_json.error) {
-                        if (response_json.error.hasOwnProperty(field)) {
-                            var errorMessages = response_json.error[field];
-                            for (var i = 0; i < errorMessages.length; i++) {
-                                notify(`${field.toUpperCase()}: ${errorMessages[i]}`, 'error');
-                            }
+            if (page === "add") {
+                new AjaxService().postRequest(
+                    url,
+                    data,
+                    function (response) {
+                        notify('Success', 'success', 3000);
+                        if (page === "add") {
+                            setTimeout(function (e) {
+                                window.location.href = group_list_url;
+                            }, 4000)
+                        }
+
+                    },
+                    function (response) {
+                        let response_json = response.responseJSON
+                        console.log(response_json)
+                        if (response_json.code === "NOT_ALLOWED") {
+                            notify("You are not allowed to add a new group.", "error");
                         }
                     }
-                }
-            });
+                );
+            }
+
+            if (page === "edit") {
+                url = api_urls["group_list"] + uuid + "/"
+                new AjaxService().patchRequest(
+                    url,
+                    data,
+                    function (response) {
+                        notify('Success', 'success', 3000);
+                        if (page === "add") {
+                            setTimeout(function (e) {
+                                window.location.href = group_list_url;
+                            }, 4000)
+                        }
+
+                    },
+                    function (response) {
+                        let response_json = response.responseJSON
+                        console.log(response_json)
+                        if (response_json.code === "NOT_ALLOWED") {
+                            notify("You are not allowed to add a new group.", "error");
+                        }
+                    }
+                );
+            }
         })
     }
 

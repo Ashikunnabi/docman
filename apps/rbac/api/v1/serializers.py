@@ -56,8 +56,8 @@ class PermissionSerializer(serializers.ModelSerializer):
 
 class GroupInputSerializer(serializers.Serializer):
     name = serializers.CharField()
-    permissions = serializers.ListField(child=serializers.IntegerField(min_value=1))
-    users = serializers.ListField(child=serializers.IntegerField(min_value=1))
+    permissions = serializers.ListField(child=serializers.CharField(), required=False)
+    users = serializers.ListField(child=serializers.UUIDField(), required=False)
 
 
 class GroupOutputSerializer(serializers.ModelSerializer):

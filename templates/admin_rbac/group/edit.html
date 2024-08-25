@@ -87,7 +87,7 @@
 {% block js %}
     <script>
         const api_urls = {
-            "staff_list": "{% url 'apps:rbac:api:v1:staff-list' %}",
+            "user_list": "/api/v1/rbac/users/",
             "group_list": "{% url 'apps:rbac:api:v1:group_list_create' %}",
             "permission_list": "{% url 'apps:rbac:api:v1:permission_list_create' %}",
         }

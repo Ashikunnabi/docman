@@ -1,5 +1,8 @@
+from django.contrib.auth.models import Permission
+
 from apps.common.exceptions import ObjectAlreadyExistsException
 from apps.common.service import BaseModelService
+from apps.rbac.models.branch import User
 
 from ..models import Group
 
@@ -17,6 +20,16 @@ class GroupService(BaseModelService):
 
         for m2m_key in m2m_keys:
             if m2m_key in kwargs:
+                if "permissions" == m2m_key:
+                    permissions = Permission.objects.filter(
+                        codename__in=kwargs.get(m2m_key)
+                    )
+                    kwargs[m2m_key] = permissions
+                if "users" == m2m_key:
+                    users = User.objects.filter(
+                        uuid__in=kwargs.get(m2m_key)
+                    )
+                    kwargs[m2m_key] = users
                 m2m_data[m2m_key] = kwargs.pop(m2m_key)
 
         return kwargs, m2m_data
@@ -26,7 +39,9 @@ class GroupService(BaseModelService):
         try:
             self.does_object_already_exists(**kwargs)
         except ObjectAlreadyExistsException as ex:
-            raise ObjectAlreadyExistsException(errors={"name": ["Group with this name already exists"]}) from ex
+            raise ObjectAlreadyExistsException(
+                errors={"name": ["Group with this name already exists"]}
+            ) from ex
         instance = self.create(**kwargs)
 
         if "permissions" in m2m_data:
