@@ -56,7 +56,6 @@ class Login {
                         setLocalWithExpiry('access', resp.data.access, 86400000);
                         setLocalWithExpiry('refresh', resp.data.refresh, 86400000);
                         setLocalWithExpiry('user', resp.data.user, 86400000);
-                        window.location.reload();
                         self.permissions();
                     },
                     error: function (response) {
@@ -77,6 +76,7 @@ class Login {
         ajaxService.getRequest(permission_api_url,
             function success(response) {
                 setLocalWithExpiry('permissions', response.data, 86400000);
+                window.location.reload();
             },
             function error(response) {
                 console.log('Error:', response);
