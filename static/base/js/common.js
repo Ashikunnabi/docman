@@ -358,7 +358,8 @@ class Sidebar {
         this.moduleWiseSidebarItems = [
             {
                 code: 'user_management',
-                name: 'User Management',
+                name: 'Users',
+                icon: 'fas fa-fw fa-user',
                 submodules: [
                     {
                         name: 'User',
@@ -374,6 +375,19 @@ class Sidebar {
                     },
                 ]
             },
+            {
+                code: 'document_management',
+                name: 'Documents',
+                icon: 'fas fa-folder-open',
+                submodules: [
+                    {
+                        name: 'Document',
+                        code: 'view_document',
+                        requiredPermissions: ['view_document'],
+                        url: '/document/'
+                    },
+                ]
+            }
         ];
     }
 
@@ -413,7 +427,7 @@ class Sidebar {
                     id="sidebar__${module.code}"
                     data-target="#sidebar__${module.code}_options" 
                     aria-expanded="false" aria-controls="collapseTwo">
-                    <i class="fas fa-fw fa-home"></i>
+                    <i class="${module.icon}"></i>
                     <span>${module.name}</span>
                 </a>
                 <div id="sidebar__${module.code}_options" class="collapse" aria-labelledby="headingTwo"

@@ -47,6 +47,10 @@ class DocumentService(BaseModelService):
         return MetadataValueService()
 
     @property
+    def category_service(self):
+        return CategoryService(user=self.user)
+
+    @property
     def category_permission_service(self):
         return CategoryPermissionService(user=self.user)
 
@@ -99,10 +103,68 @@ class DocumentService(BaseModelService):
         self.metadata_value_service.create_or_update(metadata_values)
         return instance
 
+    def generate_response_data(self, instance):
+        data = {
+            "uuid": instance.uuid,
+            "name": instance.name,
+            "file": None,
+            "extension": "folder",
+            "size": None,
+            "is_active": instance.is_active,
+            "category_wise_file_path": "",
+            "is_encrypted": None,
+            "category": None,
+            "created_at": instance.created_at,
+            "updated_at": instance.updated_at,
+            "created_by_name": instance.created_by_name,
+            "updated_by_name": instance.updated_by_name,
+        }
+
+        if isinstance(instance, self.model):
+            data.update(
+                {
+                    "file": instance.file.url,
+                    "extension": instance.extension,
+                    "size": instance.size,
+                    "is_encrypted": instance.is_encrypted,
+                    "category_wise_file_path": instance.category_wise_file_path,
+                    "category": instance.category.code if instance.category else None,
+                }
+            )
+        return data
+
+    def response_list(self, queryset):
+        data = []
+        for instance in queryset:
+            data.append(self.generate_response_data(instance))
+        return data
+
     def search(self, **kwargs):
-        viewable_category_codes = (
+        category_uuid = kwargs.get("category_uuid")
+        viewable_category_codes = list(
             self.category_permission_service.category_code_permissions()
         )
-        queryset = self.list(**kwargs)
-        queryset = queryset.filter(category__code__in=viewable_category_codes)
-        return queryset
+
+        if viewable_category_codes:
+            # if no category requested, return parent categories
+            if not category_uuid:
+                queryset = self.category_service.list(
+                    **{
+                        "code__in": ",".join(viewable_category_codes),
+                        "parent": None,
+                        "is_active": True,
+                    }
+                )
+            else:
+                kwargs.update(
+                    {
+                        "category__uuid": category_uuid,
+                        "category__code__in": ",".join(viewable_category_codes),
+                    }
+                )
+                queryset = self.list(**kwargs)
+        else:
+            queryset = self.empty_queryset()
+
+        response_data = self.response_list(queryset)
+        return response_data

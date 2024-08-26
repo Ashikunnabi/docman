@@ -1,3 +1,4 @@
+from apps.common.custom_pagination import LargeResultsSetPagination
 from apps.common.exceptions import ObjectNotFoundException
 from rest_framework import filters, status
 from rest_framework.response import Response
@@ -23,6 +24,7 @@ class DocumentListCreateAPIView(BaseListCreateAPIView):
     input_serializer_class = DocumentInputSerializer
     output_serializer_class = DocumentOutputSerializer
     simpleoutput_serializer_class = DocumentSimpleOutputSerializer
+    pagination_class = LargeResultsSetPagination
 
     def list(self, request, *args, **kwargs):
         service = self.get_service()
@@ -97,6 +99,7 @@ class DocumentSearchAPIView(BaseListAPIView):
     input_serializer_class = DocumentInputSerializer
     output_serializer_class = DocumentOutputSerializer
     simpleoutput_serializer_class = DocumentSimpleOutputSerializer
+    pagination_class = LargeResultsSetPagination
     filter_backends = [filters.SearchFilter]
     search_fields = ["name", "metadata_values__value_text"]
 

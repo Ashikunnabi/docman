@@ -379,3 +379,6 @@ class BaseModelService:
         if instance:
             raise ObjectAlreadyExistsException
         return False
+
+    def empty_queryset(self):
+        return self.model.objects.none()
