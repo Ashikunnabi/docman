@@ -29,13 +29,13 @@ class Document(BaseModel):
     def __str__(self):
         return self.name
 
-    @property
-    def category_wise_file_path(self):
-        # document has category which has parent category which has parent category and so on
-        path = []
-        category = self.category
-        while category:
-            path.append(category.name)
-            category = category.parent
-        path.reverse()
-        return "/".join(path)
+    # @property
+    # def category_wise_file_path(self):
+    #     # document has category which has parent category which has parent category and so on
+    #     path = []
+    #     category = self.category
+    #     while category:
+    #         path.append(category.name)
+    #         category = category.parent
+    #     path.reverse()
+    #     return "/".join(path)

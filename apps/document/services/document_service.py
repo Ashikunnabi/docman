@@ -111,7 +111,6 @@ class DocumentService(BaseModelService):
             "extension": "folder",
             "size": None,
             "is_active": instance.is_active,
-            "category_wise_file_path": "",
             "is_encrypted": None,
             "category": None,
             "created_at": instance.created_at,
@@ -127,7 +126,6 @@ class DocumentService(BaseModelService):
                     "extension": instance.extension,
                     "size": instance.size,
                     "is_encrypted": instance.is_encrypted,
-                    "category_wise_file_path": instance.category_wise_file_path,
                     "category": instance.category.code if instance.category else None,
                 }
             )

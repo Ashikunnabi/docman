@@ -24,8 +24,13 @@ class Document {
     *                       Document in Datatable
     * =========================================================================
     **/
-    list = () => {
+    list = (category_uuid) => {
         let self = this;
+
+        // Destroy the existing DataTable if it exists
+        if ($.fn.DataTable.isDataTable('#documentDataTable')) {
+            $('#documentDataTable').DataTable().clear().destroy();
+        }
 
         let table = $('#documentDataTable').DataTable({
             "processing": true,
@@ -123,7 +128,7 @@ class Document {
                     length: data.length,
                     search: data.search.value,
                     order: JSON.stringify(data.order),
-                    // Add any additional parameters here
+                    category_uuid: category_uuid
                 });
                 let url = `${document_api_url}?${queryParams}`;
                 new AjaxService().getRequest(url, function (response) {
@@ -132,20 +137,21 @@ class Document {
                     notify(response.responseJSON.detail, 'error');
                 })
             },
-            "rowCallback": function (row, data, displayNum, displayIndex, dataIndex) {
-                $(row).attr('title', 'Double click to edit')
-            },
+            // "rowCallback": function (row, data, displayNum, displayIndex, dataIndex) {
+            //     $(row).attr('title', 'Double click to edit')
+            // },
             "columns": [
                 { "title": "Name", "data": "" },
                 { "title": "Size", "data": "" },
                 { "title": "Modified", "data": "" },
-                { "title": "Path", "data": "category_wise_file_path" },
+                // { "title": "Path", "data": "category_wise_file_path" },
                 { "title": "Action", "data": "" },
             ],
             "columnDefs": [
                 {
                     "targets": 0,
                     "data": "name",
+                    "width": "50%",
                     "render": function (data, type, row, meta) {
                         return `<div class="file-icon">${self.getIcon(row.extension)} &nbsp;${row.name}</div>`;
                     }
@@ -205,11 +211,21 @@ class Document {
         });
 
         // double click row will redirect to edit selected row
-        $('#documentDataTable tbody').on('dblclick', 'tr', function () {
-            let data = table.row(this).data();
-            window.location = 'edit/' + data.uuid;
+        $('#documentDataTable tbody').off('dblclick').on('dblclick', 'tr', function () {
+            let data = $('#documentDataTable').DataTable().row(this).data();
+            if (data.extension === 'folder') {
+                self.handleRowDoubleClick(data);
+            }
         });
     };
+
+
+
+    // Function to handle row double-click and reinitialize DataTable with new data
+    handleRowDoubleClick = (rowData) => {
+        let self = this;
+        self.list(rowData.uuid);
+    }
 
     main = () => {
         if (page === 'list') {
