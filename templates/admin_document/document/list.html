@@ -1,6 +1,32 @@
 {% extends 'base/base.html' %}
 {% load static %}
 {% block css %}
+<style>
+    /* Basic styling for breadcrumbs */
+    .breadcrumb {
+        padding: 10px;
+        background-color: #f8f9fa;
+        border-radius: 4px;
+        margin-bottom: 20px;
+    }
+
+    .breadcrumb a {
+        text-decoration: none;
+        color: #007bff;
+    }
+
+    .breadcrumb a:hover {
+        text-decoration: underline;
+    }
+
+    .breadcrumb span {
+        color: #6c757d;
+    }
+
+    .breadcrumb .separator {
+        margin: 0 5px;
+    }
+</style>
 {% endblock %}
 
 {% block content %}
@@ -26,6 +52,10 @@
             <h6 class="m-0 font-weight-bold text-primary">Document List</h6>
         </div>
         <div class="card-body">
+            <!-- Breadcrumb container -->
+            <nav id="breadcrumb" class="breadcrumb">
+                <!-- Breadcrumb items will be dynamically generated here -->
+            </nav>
             <div class="table-responsive">
                 <table class="table table-bordered table-hover row-select" id="documentDataTable">
                 </table>

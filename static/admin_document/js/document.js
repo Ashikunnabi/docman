@@ -1,4 +1,8 @@
 class Document {
+    breadcrumbTrail = [{
+        name: 'Home',
+        uuid: "#"
+    }];
 
     getIcon = (extension) => {
         switch (extension) {
@@ -217,14 +221,55 @@ class Document {
                 self.handleRowDoubleClick(data);
             }
         });
+        self.renderBreadcrumb();
+        self.breadcrumbClick();
     };
-
-
 
     // Function to handle row double-click and reinitialize DataTable with new data
     handleRowDoubleClick = (rowData) => {
         let self = this;
+        self.updateBreadcrumb(rowData);
         self.list(rowData.uuid);
+    }
+
+    updateBreadcrumb = (rowData) => {
+        let self = this;
+        self.breadcrumbTrail.push({
+            name: rowData.name,
+            uuid: rowData.uuid
+        });
+        self.renderBreadcrumb();
+    }
+
+    renderBreadcrumb = () => {
+        let self = this;
+        let breadcrumbHtml = ``;
+
+        self.breadcrumbTrail.forEach((item, index) => {
+            if (index === 0) {
+                breadcrumbHtml += `<a href="#" class="breadcrumbItem">${item.name}</a>`;
+            } else {
+                breadcrumbHtml += ` <span class="separator">/</span> <a href="${item.uuid}" class="breadcrumbItem">${item.name}</a>`;
+            }
+        });
+
+        $('#breadcrumb').html(breadcrumbHtml);
+    }
+
+    breadcrumbClick = () => {
+        let self = this;
+        $('#breadcrumb').off('click').on('click', '.breadcrumbItem', function (e) {
+            e.preventDefault();
+            let uuid = $(this).attr('href');
+            let index = self.breadcrumbTrail.findIndex((item) => item.uuid === uuid);
+            self.breadcrumbTrail = self.breadcrumbTrail.slice(0, index + 1);
+            self.renderBreadcrumb();
+            if (uuid === "#") {
+                self.list();
+            } else {
+                self.list(uuid);
+            }
+        });
     }
 
     main = () => {
