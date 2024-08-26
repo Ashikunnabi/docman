@@ -1,6 +1,7 @@
 import uuid
 
 from apps.category.models.category_group_permission import CategoryGroupPermission
+from apps.category.models.category_permission import CategoryPermission
 from auditlog.models import AuditlogHistoryField
 from django.contrib.auth.models import AbstractUser
 from django.db import models
@@ -38,6 +39,11 @@ class User(AbstractUser):
 
     def get_category_permissions(self):
         """List of category permission codes for the user."""
+        # superuser has all permissions by default and can access all categories
+        # users with create_category permission can access all categories
+        if self.has_perm("category.create_category"):
+            return CategoryPermission.objects.values_list("code", flat=True).distinct()
+
         permission_codes = (
             CategoryGroupPermission.objects.filter(group__in=self.groups.all())
             .values_list("permission__code", flat=True)
