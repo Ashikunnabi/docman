@@ -144,7 +144,6 @@ class DocumentService(BaseModelService):
         viewable_category_codes = list(
             self.category_permission_service.category_code_permissions()
         )
-        print(viewable_category_codes)
 
         if viewable_category_codes:
             # if no category requested, return parent categories
@@ -163,7 +162,8 @@ class DocumentService(BaseModelService):
                         "category__code__in": ",".join(viewable_category_codes),
                     }
                 )
-                queryset = self.list(**kwargs)
+                queryset = list(self.category_service.list(parent__uuid=category_uuid))
+                queryset += self.list(**kwargs)
         else:
             queryset = self.empty_queryset()
 

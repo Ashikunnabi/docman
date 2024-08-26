@@ -100,13 +100,10 @@ class DocumentSearchAPIView(BaseListAPIView):
     output_serializer_class = DocumentOutputSerializer
     simpleoutput_serializer_class = DocumentSimpleOutputSerializer
     pagination_class = LargeResultsSetPagination
-    filter_backends = [filters.SearchFilter]
-    search_fields = ["name", "metadata_values__value_text"]
 
     def list(self, request, *args, **kwargs):
         service = self.get_service(**{"user": request.user})
-        queryset = service.search()
-        queryset = self.filter_queryset(queryset)
+        queryset = service.search(**request.query_params.dict())
 
         page = self.paginate_queryset(queryset)
         if page is not None:
