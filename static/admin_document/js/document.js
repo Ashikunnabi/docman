@@ -211,6 +211,13 @@ class Document {
                         //     </button>
                         // </a>`;
                         // }
+                        const has_delete_permission = hasPermission('document.delete_document');
+                        if (has_delete_permission) {
+                            html += `<i class="far fa-trash-alt actionButton actionButtonDelete"></i>`;
+                        }
+                        if (row.extension === 'folder') {
+                            html += `<i class="far fa-sun actionButton actionButtonManage"></i>`;
+                        }
                         return html;
                     }
                 }

@@ -36,6 +36,14 @@ function removeLocalWithExpiry(key) {
     localStorage.removeItem(key); // Remove the item if it has expired
 }
 
+function hasPermission(codename) {
+    const permissions = getLocalWithExpiry('permissions');
+    if (permissions) {
+        return permissions.some(permission => permission.codename === codename);
+    }
+    return false;
+}
+
 
 /*=============================================================================
                         notify js customize
