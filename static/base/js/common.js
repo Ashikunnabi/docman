@@ -364,13 +364,13 @@ class Sidebar {
                     {
                         name: 'User',
                         code: 'view_user',
-                        requiredPermissions: ['view_user'],
+                        requiredPermissions: ['rbac.view_user'],
                         url: '/rbac/user/'
                     },
                     {
                         name: 'Group',
                         code: 'view_group',
-                        requiredPermissions: ['view_group'],
+                        requiredPermissions: ['auth.view_group'],
                         url: '/rbac/group/'
                     },
                 ]
@@ -383,7 +383,7 @@ class Sidebar {
                     {
                         name: 'Document',
                         code: 'view_document',
-                        requiredPermissions: ['view_document'],
+                        requiredPermissions: ['document.view_document'],
                         url: '/document/'
                     },
                 ]

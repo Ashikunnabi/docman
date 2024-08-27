@@ -40,9 +40,9 @@
 {% block js %}
     <script>
         const api_urls = {
-            "staff_list": "{% url 'apps:rbac:api:v1:staff-list' %}",
-            "group_list": "{% url 'apps:rbac:api:v1:group_list_create' %}",
-            "permission_list": "{% url 'apps:rbac:api:v1:permission_list_create' %}",
+            "staff_list": "/api/v1/rbac/users/",
+            "group_list": "/api/v1/rbac/groups/",
+            "permission_list": "/api/v1/rbac/permissions/",
         }
         const group_add_url = "{% url 'admin:admin_rbac:group_add' %}";
         const page = "list";

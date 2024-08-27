@@ -50,8 +50,8 @@ urlpatterns = [
     ),
     path(
         "permissions/",
-        PermissionListCreateAPIView.as_view(),
-        name="permission_list_create",
+        PermissionListAPIView.as_view(),
+        name="permission_list",
     ),
     # path(
     #     'permisisons/<int:id>/',

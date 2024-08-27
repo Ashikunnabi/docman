@@ -20,15 +20,18 @@ class GroupService(BaseModelService):
 
         for m2m_key in m2m_keys:
             if m2m_key in kwargs:
-                if "permissions" == m2m_key:
-                    permissions = Permission.objects.filter(
-                        codename__in=kwargs.get(m2m_key)
-                    )
+                if "permissions" == m2m_key and kwargs.get(m2m_key, []):
+                    permission_ids = []
+                    for permission_code in kwargs.get(m2m_key):
+                        app_label, codename = permission_code.split(".")
+                        permission = Permission.objects.get(
+                            content_type__app_label=app_label, codename=codename
+                        )
+                        permission_ids.append(permission.id)
+                    permissions = Permission.objects.filter(id__in=permission_ids)
                     kwargs[m2m_key] = permissions
                 if "users" == m2m_key:
-                    users = User.objects.filter(
-                        uuid__in=kwargs.get(m2m_key)
-                    )
+                    users = User.objects.filter(uuid__in=kwargs.get(m2m_key))
                     kwargs[m2m_key] = users
                 m2m_data[m2m_key] = kwargs.pop(m2m_key)
 

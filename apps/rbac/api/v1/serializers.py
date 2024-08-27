@@ -45,13 +45,9 @@ class UserOutputSerializer(serializers.ModelSerializer):
         ]
 
 
-class PermissionSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Permission
-        fields = [
-            "name",
-            "codename",
-        ]
+class PermissionSerializer(serializers.Serializer):
+    name = serializers.CharField()
+    codename = serializers.CharField()
 
 
 class GroupInputSerializer(serializers.Serializer):
@@ -61,7 +57,7 @@ class GroupInputSerializer(serializers.Serializer):
 
 
 class GroupOutputSerializer(serializers.ModelSerializer):
-    permissions = PermissionSerializer(many=True)
+    permissions = serializers.SerializerMethodField()
     users = serializers.SerializerMethodField()
 
     class Meta:
@@ -70,6 +66,18 @@ class GroupOutputSerializer(serializers.ModelSerializer):
 
     def get_users(self, obj):
         return UserOutputSerializer(instance=obj.user_set, many=True).data
+
+    def get_permissions(self, obj):
+        permissions = []
+        if obj.permissions.exists():
+            for permission in obj.permissions.all():
+                permissions.append(
+                    {
+                        "name": permission.name,
+                        "codename": f"{permission.content_type.app_label}.{permission.codename}",
+                    }
+                )
+        return PermissionSerializer(instance=permissions, many=True).data
 
 
 class UserPermissionOutputSerializer(serializers.ModelSerializer):

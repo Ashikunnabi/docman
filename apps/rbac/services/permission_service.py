@@ -7,8 +7,9 @@ class PermissionService(BaseModelService):
     model = Permission
     search_keywords = []
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, user=None, **kwargs):
         super().__init__(*args, **kwargs)
+        self.user = user
 
     def create_permission(self, **kwargs):
         remove_keys = []
@@ -33,3 +34,18 @@ class PermissionService(BaseModelService):
             username=username, defaults=user_default_data
         )
         return user, created
+
+    def get_user_permissions_dict(self):
+        permissions = []
+        user_permissions = self.user.get_all_permissions()
+        for user_permission in user_permissions:
+            app_label, codename = user_permission.split(".")
+            permission = self.model.objects.get(content_type__app_label=app_label, codename=codename)
+            permissions.append(
+                {
+                    "name": permission.name,
+                    "codename": user_permission,
+                }
+            )
+
+        return permissions

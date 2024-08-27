@@ -404,21 +404,14 @@ class GroupRetrieveUpdateDestroyAPIView(BaseRetrieveUpdateDestroyAPIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-class PermissionListCreateAPIView(BaseListCreateAPIView):
+class PermissionListAPIView(BaseListAPIView):
     service_class = PermissionService
     input_serializer_class = PermissionSerializer
     output_serializer_class = PermissionSerializer
-    pagination_class = LargeResultsSetPagination
 
     def list(self, request, *args, **kwargs):
-        service = self.service_class()
-        queryset = service.list()
-
-        page = self.paginate_queryset(queryset)
-        if page is not None:
-            serializer = self.get_serializer(page, many=True)
-            return self.get_paginated_response(serializer.data)
-
+        service = self.service_class(user=request.user)
+        queryset = service.get_user_permissions_dict()
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
