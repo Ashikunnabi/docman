@@ -144,7 +144,7 @@ class DocumentService(BaseModelService):
         )
 
         if viewable_category_codes:
-            # if no category requested, return parent categories
+            # if no category requested, return root categories
             if not category_uuid:
                 queryset = self.category_service.list(
                     **{

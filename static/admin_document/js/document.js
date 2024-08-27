@@ -203,13 +203,16 @@ class Document {
                     "targets": -1,
                     "data": null,
                     "render": function (data, type, row, meta) {
-                        return `<a href="edit/${row.uuid}">
+                        let html = '';
+                        if (row.extension !== 'folder') {
+                            html = `<a href="edit/${row.uuid}">
                             <button class="btn btn-outline-primary btn-sm actionButtonEdit" title="Edit">
                             >
                             </button>
-                        </a>`
+                        </a>`;
+                        }
+                        return html;
                     }
-
                 }
             ],
         });
@@ -274,7 +277,14 @@ class Document {
 
     main = () => {
         if (page === 'list') {
-            this.list();
+            // get category_uuid from url
+            let url = new URL(window.location.href);
+            let category_uuid = url.searchParams.get("category_uuid");
+            if (category_uuid) {
+                this.list(category_uuid);
+            } else {
+                this.list();
+            }
         }
     }
 }
