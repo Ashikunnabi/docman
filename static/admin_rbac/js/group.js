@@ -212,8 +212,8 @@ class GroupActivityLog {
                         var that = this,
                             $selectableSearch = that.$selectableUl.prev(),
                             $selectionSearch = that.$selectionUl.prev(),
-                            selectableSearchString = '#' + that.$container.attr('uuid') + ' .ms-elem-selectable:not(.ms-selected)',
-                            selectionSearchString = '#' + that.$container.attr('uuid') + ' .ms-elem-selection.ms-selected';
+                            selectableSearchString = '#' + that.$container.attr('id') + ' .ms-elem-selectable:not(.ms-selected)',
+                            selectionSearchString = '#' + that.$container.attr('id') + ' .ms-elem-selection.ms-selected';
 
                         that.qs1 = $selectableSearch.quicksearch(selectableSearchString)
                             .on('keydown', function (e) {
@@ -274,8 +274,8 @@ class GroupActivityLog {
                         var that = this,
                             $selectableSearch = that.$selectableUl.prev(),
                             $selectionSearch = that.$selectionUl.prev(),
-                            selectableSearchString = '#' + that.$container.attr('codename') + ' .ms-elem-selectable:not(.ms-selected)',
-                            selectionSearchString = '#' + that.$container.attr('codename') + ' .ms-elem-selection.ms-selected';
+                            selectableSearchString = '#' + that.$container.attr('id') + ' .ms-elem-selectable:not(.ms-selected)',
+                            selectionSearchString = '#' + that.$container.attr('id') + ' .ms-elem-selection.ms-selected';
 
                         that.qs1 = $selectableSearch.quicksearch(selectableSearchString)
                             .on('keydown', function (e) {
