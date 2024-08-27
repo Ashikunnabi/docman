@@ -204,13 +204,13 @@ class Document {
                     "data": null,
                     "render": function (data, type, row, meta) {
                         let html = '';
-                        if (row.extension !== 'folder') {
-                            html = `<a href="edit/${row.uuid}">
-                            <button class="btn btn-outline-primary btn-sm actionButtonEdit" title="Edit">
-                            >
-                            </button>
-                        </a>`;
-                        }
+                        // if (row.extension !== 'folder') {
+                        //     html = `<a href="edit/${row.uuid}">
+                        //     <button class="btn btn-outline-primary btn-sm actionButtonEdit" title="Edit">
+                        //     >
+                        //     </button>
+                        // </a>`;
+                        // }
                         return html;
                     }
                 }
@@ -222,6 +222,8 @@ class Document {
             let data = $('#documentDataTable').DataTable().row(this).data();
             if (data.extension === 'folder') {
                 self.handleRowDoubleClick(data);
+            } else {
+                window.location.href = "edit/" + data.uuid;
             }
         });
         self.renderBreadcrumb();
