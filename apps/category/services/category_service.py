@@ -1,7 +1,8 @@
+from apps.category.exceptions import CategoryDeleteException
 from apps.common.service import BaseModelService
 from apps.metadata.services.metadata_service import MetadataService
 
-from ..models.category import Category
+from ..models.category import Category, models
 
 
 class CategoryService(BaseModelService):
@@ -60,3 +61,10 @@ class CategoryService(BaseModelService):
         if m2m_data:
             instance.metadata.set(m2m_data["metadata_ids"])
         return instance
+
+    def delete(self, instance):
+        try:
+            super().delete(instance)
+        except models.ProtectedError as ex:
+            message = "Category can't be deleted. It has documents or subcategories associated with it."
+            raise CategoryDeleteException(message)

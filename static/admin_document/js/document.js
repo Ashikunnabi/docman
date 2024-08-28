@@ -157,7 +157,17 @@ class Document {
                     "data": "name",
                     "width": "50%",
                     "render": function (data, type, row, meta) {
-                        return `<div class="file-icon">${self.getIcon(row.extension)} &nbsp;${row.name}</div>`;
+                        let html = `<div class="file-icon">${self.getIcon(row.extension)} &nbsp;${row.name}`;
+                        if (hasPermission('category.add_category') && row.extension === 'folder') {
+                            if (row.is_active) {
+                                html += ` &nbsp;<span class="badge badge-success">Active</span>`;
+                            } else {
+                                html += ` &nbsp;<span class="badge badge-danger">Inactive</span>`;
+                            }
+                        }
+                        html += `</div>`;
+
+                        return html;
                     }
 
                 },
@@ -213,7 +223,11 @@ class Document {
                         // }
                         const has_delete_permission = hasPermission('document.delete_document');
                         if (has_delete_permission) {
-                            html += `<i class="far fa-trash-alt actionButton actionButtonDelete"></i>`;
+                            if (row.extension === 'folder') {
+                                html += `<i class="far fa-trash-alt actionButton actionButtonDeleteFolder"></i>`;
+                            } else {
+                                html += `<i class="far fa-trash-alt actionButton actionButtonDeleteFile"></i>`;
+                            }
                         }
                         if (row.extension === 'folder') {
                             html += `<i class="far fa-sun actionButton actionButtonManage"></i>`;
@@ -331,6 +345,52 @@ class Document {
         });
     }
 
+    deleteFolder = () => {
+        let self = this;
+        let datatable_row = null;
+        let modal = $('#deleteFolderModal');
+
+        // $('.actionButtonDeleteFolder').off('click').on('click', function () {
+        $(document).on('click', '.actionButtonDeleteFolder', function () {
+            let row = $(this).parent().parent()
+            datatable_row = $('#documentDataTable').DataTable().row(row).data();
+            modal.find('#deleteFolderModalFolderName').text(datatable_row.name);
+            modal.find('#deleteFolderModalFormError').html("");
+            modal.modal('show');
+        });
+
+        $(document).on('submit', '#deleteFolderModalForm', function (e) {
+            e.preventDefault();
+            let parent_uuid = self.breadcrumbTrail[self.breadcrumbTrail.length - 1].uuid;
+            new AjaxService().deleteRequest(
+                category_api_url + datatable_row.uuid + '/',
+                function (response) {
+                    if (parent_uuid === "#") {
+                        self.list();
+                    } else {
+                        self.list(self.breadcrumbTrail[self.breadcrumbTrail.length - 1].uuid);
+                    }
+                    modal.modal('hide');
+                },
+                function (response) {
+                    if (response.status === 400) {
+                        let response_json = response.responseJSON
+                        let errorHtml = `
+                            <div class="alert alert-danger">
+                                <strong>Error:</strong> ${response_json.message}
+                            </div>`;
+                        // $.each(response_json.error, function (key, value) {
+                        //     $.each(value, function (k, v) {
+                        //         errorHtml += `${key.toUpperCase().replace(/_/g, ' ')}: ${v}<br>`;
+                        //     })
+                        // })
+                        $('#deleteFolderModalFormError').html(errorHtml);
+                    }
+                }
+            );
+        });
+    }
+
     main = () => {
         if (page === 'list') {
             // get category_uuid from url
@@ -342,6 +402,7 @@ class Document {
                 this.list();
             }
             this.addFolder();
+            this.deleteFolder();
         }
     }
 }

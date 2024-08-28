@@ -19,3 +19,9 @@ class UserNotSetException(BaseException):
     code = "USER_NOT_SET"
     status_code = status.HTTP_400_BAD_REQUEST
     message = "User is not set"
+
+
+class CategoryDeleteException(BaseException):
+    code = "CATEGORY_DELETE_EXCEPTION"
+    status_code = status.HTTP_400_BAD_REQUEST
+    message = "Category can't be deleted"
