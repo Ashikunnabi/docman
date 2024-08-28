@@ -449,9 +449,21 @@ class Document {
             } else {
                 this.list();
             }
-            this.addFolder();
-            this.deleteFolder();
-            this.deleteFile();
+            if (!hasPermission('category.add_category')) {
+                $('#actionButtonAddFolder').hide();
+            } else {
+                this.addFolder();
+            }
+            if (!hasPermission('document.delete_document')) {
+                $('.actionButtonDeleteFolder').hide();
+            } else {
+                this.deleteFolder();
+            }
+            if (!hasPermission('document.delete_document')) {
+                $('.actionButtonDeleteFile').hide();
+            } else {
+                this.deleteFile();
+            }
         }
     }
 }
