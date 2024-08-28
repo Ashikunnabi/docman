@@ -350,7 +350,6 @@ class Document {
         let datatable_row = null;
         let modal = $('#deleteFolderModal');
 
-        // $('.actionButtonDeleteFolder').off('click').on('click', function () {
         $(document).on('click', '.actionButtonDeleteFolder', function () {
             let row = $(this).parent().parent()
             datatable_row = $('#documentDataTable').DataTable().row(row).data();
@@ -373,18 +372,67 @@ class Document {
                     modal.modal('hide');
                 },
                 function (response) {
-                    if (response.status === 400) {
-                        let response_json = response.responseJSON
+                    let response_json = response.responseJSON
+                    if (response_json.code === "CATEGORY_DELETE_EXCEPTION") {
                         let errorHtml = `
                             <div class="alert alert-danger">
                                 <strong>Error:</strong> ${response_json.message}
                             </div>`;
-                        // $.each(response_json.error, function (key, value) {
-                        //     $.each(value, function (k, v) {
-                        //         errorHtml += `${key.toUpperCase().replace(/_/g, ' ')}: ${v}<br>`;
-                        //     })
-                        // })
+                        $.each(response_json.error, function (key, value) {
+                            if (Array.isArray(value)) {
+                                $.each(value, function (k, v) {
+                                    errorHtml += `${key.toUpperCase().replace(/_/g, ' ')}: ${v}<br>`;
+                                })
+                            }
+                        })
                         $('#deleteFolderModalFormError').html(errorHtml);
+                    }
+                }
+            );
+        });
+    }
+
+    deleteFile = () => {
+        let self = this;
+        let datatable_row = null;
+        let modal = $('#deleteFileModal');
+
+        $(document).on('click', '.actionButtonDeleteFile', function () {
+            let row = $(this).parent().parent()
+            datatable_row = $('#documentDataTable').DataTable().row(row).data();
+            modal.find('#deleteFileModalFolderName').text(datatable_row.name);
+            modal.find('#deleteFileModalFormError').html("");
+            modal.modal('show');
+        });
+
+        $(document).on('submit', '#deleteFileModalForm', function (e) {
+            e.preventDefault();
+            let parent_uuid = self.breadcrumbTrail[self.breadcrumbTrail.length - 1].uuid;
+            new AjaxService().deleteRequest(
+                document_api_url + datatable_row.uuid + '/',
+                function (response) {
+                    if (parent_uuid === "#") {
+                        self.list();
+                    } else {
+                        self.list(self.breadcrumbTrail[self.breadcrumbTrail.length - 1].uuid);
+                    }
+                    modal.modal('hide');
+                },
+                function (response) {
+                    let response_json = response.responseJSON
+                    if (response_json.code === "DOCUMENT_DELETE_EXCEPTION") {
+                        let errorHtml = `
+                            <div class="alert alert-danger">
+                                <strong>Error:</strong> ${response_json.message}
+                            </div>`;
+                        $.each(response_json.error, function (key, value) {
+                            if (Array.isArray(value)) {
+                                $.each(value, function (k, v) {
+                                    errorHtml += `${key.toUpperCase().replace(/_/g, ' ')}: ${v}<br>`;
+                                })
+                            }
+                        })
+                        $('#deleteFileModalFormError').html(errorHtml);
                     }
                 }
             );
@@ -403,6 +451,7 @@ class Document {
             }
             this.addFolder();
             this.deleteFolder();
+            this.deleteFile();
         }
     }
 }
