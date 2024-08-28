@@ -40,8 +40,8 @@ class User(AbstractUser):
     def get_category_permissions(self):
         """List of category permission codes for the user."""
         # superuser has all permissions by default and can access all categories
-        # users with create_category permission can access all categories
-        if self.has_perm("category.create_category"):
+        # users with add_category permission can access all categories
+        if self.has_perm("category.add_category"):
             return CategoryPermission.objects.values_list("code", flat=True).distinct()
 
         permission_codes = (
