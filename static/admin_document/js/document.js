@@ -302,6 +302,8 @@ class Document {
         let self = this;
         let modal = $('#addFolderModal');
         $('#actionButtonAddFolder').off('click').on('click', function () {
+            $('#addFolderModalForm')[0].reset();
+            modal.find('#addFolderModalFormError').html("");
             modal.modal('show');
         });
         $(document).on('submit', '#addFolderModalForm', function (e) {
@@ -329,16 +331,20 @@ class Document {
                     modal.modal('hide');
                 },
                 function (response) {
-                    if (response.status === 400) {
-                        let errorHtml = '';
-                        $.each(response.responseJSON.error, function (key, value) {
-                            $.each(value, function (k, v) {
-                                errorHtml += `${key.toUpperCase().replace(/_/g, ' ')}: ${v}<br>`;
-                            })
+                    let response_json = response.responseJSON
+                    if (response_json.code === "BAD_REQUEST") {
+                        let errorHtml = `
+                            <div class="alert alert-danger">
+                                <strong>Error:</strong> ${response_json.message}
+                            </div>`;
+                        $.each(response_json.error, function (key, value) {
+                            if (Array.isArray(value)) {
+                                $.each(value, function (k, v) {
+                                    errorHtml += `${key.toUpperCase().replace(/_/g, ' ')}: ${v}<br>`;
+                                })
+                            }
                         })
-                        Swal.showValidationMessage(
-                            errorHtml
-                        );
+                        $('#addFolderModalFormError').html(errorHtml);
                     }
                 }
             );

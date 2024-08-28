@@ -47,6 +47,10 @@
         padding: 3px 4px;
         border-radius: 3px;
     }
+
+    .modal-form-error {
+        width: 100%;
+    }
 </style>
 {% endblock %}
 
@@ -81,7 +85,7 @@
                 <!-- Breadcrumb items will be dynamically generated here -->
             </nav>
             <div class="table-responsive">
-                <table class="table table-bordered table-hover row-select" id="documentDataTable">
+                <table class="table table-bordered table-hover row-select" id="documentDataTable" style="width: 100%;">
                 </table>
             </div>
         </div>
@@ -117,6 +121,7 @@
                 <div class="modal-footer">
                     <button type="submit" class="btn btn-primary">Save</button>
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <div id="addFolderModalFormError" class="modal-form-error text-danger"></div>
                 </div>
             </form>
         </div>
@@ -137,9 +142,11 @@
                 <div class="modal-body">
                     <div class="form-group row">
                         <div class="col-sm-12">
-                            <p>Are you sure you want to delete folder <strong id="deleteFolderModalFolderName"></strong>?</p>
+                            <p>Are you sure you want to delete folder <strong
+                                    id="deleteFolderModalFolderName"></strong>?</p>
                             <div class="alert alert-warning">
-                                <strong>Warning:</strong> Deletion not allowed if folder contains documents or sub-folders.
+                                <strong>Warning:</strong> Deletion not allowed if folder contains documents or
+                                sub-folders.
                             </div>
                         </div>
                     </div>
@@ -148,7 +155,7 @@
                 <div class="modal-footer">
                     <button type="submit" class="btn btn-danger">Delete</button>
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <div id="deleteFolderModalFormError" class="text-danger"></div>
+                    <div id="deleteFolderModalFormError" class="modal-form-error text-danger"></div>
                 </div>
             </form>
         </div>
@@ -169,7 +176,8 @@
                 <div class="modal-body">
                     <div class="form-group row">
                         <div class="col-sm-12">
-                            <p>Are you sure you want to delete file <strong id="deleteFileModalFolderName"></strong>?</p>
+                            <p>Are you sure you want to delete file <strong id="deleteFileModalFolderName"></strong>?
+                            </p>
                             <div class="alert alert-warning">
                                 <strong>Warning:</strong> Deleted file cannot be recovered.
                             </div>
