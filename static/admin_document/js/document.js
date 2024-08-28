@@ -83,7 +83,7 @@ class Document {
                                 let csrf_token = $('[name="csrfmiddlewaretoken"]').attr('value');
                                 // do ajax request to delete
                                 new AjaxService().deleteRequest(
-                                    document_api_url + data[0].uuid + '/',
+                                    document_search_api_url + data[0].uuid + '/',
                                     function (resp) {
                                         Swal.fire(
                                             'Deleted!',
@@ -134,7 +134,7 @@ class Document {
                     order: JSON.stringify(data.order),
                     category_uuid: category_uuid
                 });
-                let url = `${document_api_url}?${queryParams}`;
+                let url = `${document_search_api_url}?${queryParams}`;
                 new AjaxService().getRequest(url, function (response) {
                     callback(response);
                 }, function (response) {
@@ -284,6 +284,53 @@ class Document {
         });
     }
 
+    addFolder = () => {
+        let self = this;
+        let modal = $('#addFolderModal');
+        $('#actionButtonAddFolder').off('click').on('click', function () {
+            modal.modal('show');
+        });
+        $(document).on('submit', '#addFolderModalForm', function (e) {
+            e.preventDefault();
+            const form = $('#addFolderModalForm').parsley();
+            let payload = {
+                name: $(this).find('#name').val(),
+                is_active: $(this).find('#is_active').is(':checked'),
+            }
+            let parent_uuid = self.breadcrumbTrail[self.breadcrumbTrail.length - 1].uuid;
+
+            if (parent_uuid !== "#") {
+                payload.parent_uuid = parent_uuid;
+            }
+
+            new AjaxService().postRequest(
+                category_api_url,
+                payload,
+                function (response) {
+                    if (parent_uuid === "#") {
+                        self.list();
+                    } else {
+                        self.list(parent_uuid);
+                    }
+                    modal.modal('hide');
+                },
+                function (response) {
+                    if (response.status === 400) {
+                        let errorHtml = '';
+                        $.each(response.responseJSON.error, function (key, value) {
+                            $.each(value, function (k, v) {
+                                errorHtml += `${key.toUpperCase().replace(/_/g, ' ')}: ${v}<br>`;
+                            })
+                        })
+                        Swal.showValidationMessage(
+                            errorHtml
+                        );
+                    }
+                }
+            );
+        });
+    }
+
     main = () => {
         if (page === 'list') {
             // get category_uuid from url
@@ -294,6 +341,7 @@ class Document {
             } else {
                 this.list();
             }
+            this.addFolder();
         }
     }
 }

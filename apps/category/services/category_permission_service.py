@@ -26,7 +26,7 @@ class CategoryPermissionService(BaseModelService):
 
     def create(self, category, **kwargs):
         for key, value in CategoryPermissionType.CHOICES:
-            code = f"category_{category.code}.{key}_document"
+            code = f"{category.code}.{key}_document"
             name = f"Can {key} document of {category.code}"
             self.model.objects.get_or_create(code=code, name=name, category=category)
 

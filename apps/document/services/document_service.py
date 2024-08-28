@@ -164,24 +164,35 @@ class DocumentService(BaseModelService):
             else:
                 # if no category requested, return root categories
                 if not category_uuid:
-                    queryset = self.category_service.list(
-                        **{
-                            "code__in": ",".join(viewable_category_codes),
-                            "parent": None,
-                            "is_active": True,
-                        }
-                    )
+                    filter_kwargs = {
+                        "code__in": ",".join(viewable_category_codes),
+                        "parent": None,
+                        "is_active": True,
+                    }
+                    if self.user.has_perm("category.add_category"):
+                        filter_kwargs.pop("is_active")
+
+                    queryset = self.category_service.list(**filter_kwargs)
                 else:
-                    kwargs.update(
-                        {
-                            "category__uuid": category_uuid,
-                            "category__code__in": ",".join(viewable_category_codes),
-                        }
-                    )
+                    filter_kwargs = {
+                        "category__uuid": category_uuid,
+                        "category__code__in": ",".join(viewable_category_codes),
+                        "category__is_active": True,
+                        **kwargs,
+                    }
+                    category_filter_kwargs = {
+                        "parent__uuid": category_uuid,
+                        "is_active": True,
+                    }
+
+                    if self.user.has_perm("category.add_category"):
+                        filter_kwargs.pop("category__is_active")
+                        category_filter_kwargs.pop("is_active")
+
                     queryset = list(
-                        self.category_service.list(parent__uuid=category_uuid)
+                        self.category_service.list(**category_filter_kwargs)
                     )
-                    queryset += self.list(**kwargs)
+                    queryset += self.list(**filter_kwargs)
         else:
             queryset = self.empty_queryset()
 

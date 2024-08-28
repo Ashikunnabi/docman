@@ -16,6 +16,7 @@ class CategoryInputSerializer(serializers.ModelSerializer):
             "name",
             "parent_uuid",
             "metadata_uuids",
+            "is_active",
         ]
 
 

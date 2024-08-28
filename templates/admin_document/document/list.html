@@ -7,7 +7,7 @@
         justify-content: space-between;
     }
 
-    .create-category {
+    .create-folder {
         cursor: pointer;
         color: #4e73df;
         font-size: x-large;
@@ -72,7 +72,7 @@
         <div class="card-header py-3">
             <h6 class="m-0 font-weight-bold text-primary">Document List</h6>
             <div>
-                <i class="fa fa-folder-plus create-category" title="Create New Folder"></i>
+                <i id="actionButtonAddFolder" class="fa fa-folder-plus create-folder" title="Create New Folder"></i>
             </div>
         </div>
         <div class="card-body">
@@ -86,7 +86,41 @@
             </div>
         </div>
     </div>
+</div>
 
+
+<!-- Modal HTML -->
+<div class="modal fade" id="addFolderModal" tabindex="-1" role="dialog" aria-labelledby="addFolderModalTitle"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addFolderModalTitle">Add New Folder</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form id="addFolderModalForm" data-parsley-validate>
+                <div class="modal-body">
+                    <div class="form-group row">
+                        <label for="name" class="col-sm-3 col-form-label">Name<span class="text-danger">*</span></label>
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control" id="name" name="name" required>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="is_active" class="col-sm-3 col-form-label">
+                            <input type="checkbox" class="" id="is_active" name="is_active" checked> Active
+                        </label>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Save</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
 {% endblock %}
 
@@ -94,7 +128,8 @@
 {% block js %}
 <script>
     const page = "list";
-    const document_api_url = "/api/v1/documents/search/";
+    const category_api_url = "/api/v1/categories/";
+    const document_search_api_url = "/api/v1/documents/search/";
 </script>
 
 <!-- Document JS -->
