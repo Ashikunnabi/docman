@@ -37,11 +37,16 @@ class Document {
         }
 
         let table = $('#documentDataTable').DataTable({
+            "fixedHeader": {
+                header: true,
+                footer: true
+            },
+            scrollY: '55vh',
             "processing": true,
             "serverSide": true,
             "bDestroy": true,
             "bJQueryUI": true,
-            "dom": 'rtp',
+            "dom": 'rtip',
             "ordering": false,
             "buttons": [
                 {

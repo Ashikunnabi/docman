@@ -24,6 +24,11 @@ class GroupActivityLog {
         let self = this;
 
         let table = $('#groupDataTable').DataTable({
+            "fixedHeader": {
+                header: true,
+                footer: true
+            },
+            scrollY: '50vh',
             "processing": true,
             "serverSide": true,
             "bDestroy": true,

@@ -77,3 +77,7 @@ table.dataTable>tbody>tr>td {
     padding: .4rem;
 
 }
+
+.dataTables_wrapper {
+    position: static !important;
+}

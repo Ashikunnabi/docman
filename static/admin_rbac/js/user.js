@@ -24,6 +24,11 @@ class User {
         let self = this;
 
         let table = $('#userDataTable').DataTable({
+            "fixedHeader": {
+                header: true,
+                footer: true
+            },
+            scrollY: '50vh',
             "processing": true,
             "serverSide": true,
             "bDestroy": true,
