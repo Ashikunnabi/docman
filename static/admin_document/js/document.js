@@ -226,16 +226,17 @@ class Document {
                         //     </button>
                         // </a>`;
                         // }
-                        const has_delete_permission = hasPermission('document.delete_document');
-                        if (has_delete_permission) {
-                            if (row.extension === 'folder') {
-                                html += `<i class="far fa-trash-alt actionButton actionButtonDeleteFolder"></i>`;
-                            } else {
-                                html += `<i class="far fa-trash-alt actionButton actionButtonDeleteFile"></i>`;
-                            }
+                        if (row.extension === 'folder' && hasPermission('category.delete_category')) {
+                            html += `<i class="far fa-trash-alt actionButton actionButtonDeleteFolder" title="View Folder"></i>`;
                         }
-                        if (row.extension === 'folder') {
-                            html += `<i class="far fa-sun actionButton actionButtonManage"></i>`;
+                        if (row.extension === 'folder' && hasPermission('category.view_category')) {
+                            html += `<button class="btn btn-outline-primary btn-sm actionButton actionButtonViewFolder" title="View Folder">></button>`;
+                        }
+                        if (row.extension !== 'folder' && hasPermission('document.delete_document')) {
+                            html += `<i class="far fa-trash-alt actionButton actionButton actionButtonDeleteFile" title="Delete File"></i>`;
+                        }
+                        if (row.extension !== 'folder' && hasPermission('document.view_document')) {
+                            html += `<button class="btn btn-outline-primary btn-sm actionButtonViewFile" title="View File">></button>`;
                         }
                         return html;
                     }
@@ -450,6 +451,19 @@ class Document {
         });
     }
 
+
+    viewFolder = () => {
+        let self = this;
+        let datatable_row = null;
+
+        $(document).on('click', '.actionButtonViewFolder', function () {
+            let row = $(this).parent().parent()
+            datatable_row = $('#documentDataTable').DataTable().row(row).data();
+            let url = `/category/edit/${datatable_row.uuid}/`;
+            window.location.href = url;
+        });
+    }
+
     main = () => {
         if (page === 'list') {
             // get category_uuid from url
@@ -464,6 +478,11 @@ class Document {
                 $('#actionButtonAddFolder').hide();
             } else {
                 this.addFolder();
+            }
+            if (!hasPermission('category.view_category')) {
+                $('.actionButtonViewFolder').hide();
+            } else {
+                this.viewFolder();
             }
             if (!hasPermission('document.delete_document')) {
                 $('.actionButtonDeleteFolder').hide();

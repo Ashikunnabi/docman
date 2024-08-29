@@ -197,7 +197,7 @@ class DocumentService(BaseModelService):
                 "parent": None,
                 "is_active": True,
             }
-            if not self.user.has_perm("category.add_category"):
+            if self.user.has_perm("category.add_category"):
                 filter_kwargs.pop("is_active")
                 no_doc_filter_kwargs.pop("is_active")
 

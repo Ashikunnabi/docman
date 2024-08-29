@@ -9,4 +9,5 @@ urlpatterns = [
     path('rbac/', include('apps.admin.admin_rbac.urls')),
     path('', include('apps.admin.admin_menu.urls')),
     path('', include('apps.admin.admin_document.urls')),
+    path('', include('apps.admin.admin_category.urls')),
 ]
