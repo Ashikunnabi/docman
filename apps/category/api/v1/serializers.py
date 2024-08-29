@@ -21,6 +21,7 @@ class CategoryInputSerializer(serializers.ModelSerializer):
 
 
 class SimpleCategoryOutputSerializer(serializers.ModelSerializer):
+    path = serializers.CharField()
     parent = serializers.SerializerMethodField()
 
     class Meta:
@@ -29,6 +30,7 @@ class SimpleCategoryOutputSerializer(serializers.ModelSerializer):
             "uuid",
             "code",
             "name",
+            "path",
             "parent",
             "is_active",
         ]
@@ -46,6 +48,7 @@ class SimpleCategoryOutputSerializer(serializers.ModelSerializer):
 
 
 class CategoryOutputSerializer(serializers.ModelSerializer):
+    path = serializers.CharField()
     parent = serializers.SerializerMethodField()
     metadata = MetadataOutputSerializer(many=True)
 
@@ -55,6 +58,7 @@ class CategoryOutputSerializer(serializers.ModelSerializer):
             "uuid",
             "code",
             "name",
+            "path",
             "parent",
             "is_active",
             "metadata",

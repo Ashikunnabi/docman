@@ -29,13 +29,13 @@ class CategoryListCreateAPIView(BaseListCreateAPIView):
     search_fields = ["name"]
 
     def list(self, request, *args, **kwargs):
-        service = self.service_class()
-        queryset = service.list()
+        service = self.service_class(user=request.user)
+        queryset = service.filtered_list()
         queryset = self.filter_queryset(queryset)
 
         page = self.paginate_queryset(queryset)
         if page is not None:
-            serializer = self.get_output_serializer(page, many=True)
+            serializer = self.simple_output_serializer_class(page, many=True)
             return self.get_paginated_response(serializer.data)
 
         serializer = self.simple_output_serializer_class(queryset, many=True)

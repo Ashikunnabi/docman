@@ -8,12 +8,32 @@ from ..models.category import Category, models
 class CategoryService(BaseModelService):
     model = Category
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, user=None, **kwargs):
         super().__init__(*args, **kwargs)
+        self.user = user
 
     @property
     def metadata_service(self):
         return MetadataService()
+
+    @property
+    def category_permissions_service(self):
+        from apps.category.services.category_permission_service import (
+            CategoryPermissionService,
+        )
+
+        return CategoryPermissionService(user=self.user)
+
+    def filtered_list(self, **kwargs):
+        """Returns the list of categories based on the ADD permissions of the user."""
+        queryset = self.list()
+        allowed_categories = (
+            self.category_permissions_service.category_code_permissions(
+                permission_type="add"
+            )
+        )
+        queryset = queryset.filter(code__in=allowed_categories)
+        return queryset
 
     def validated_data(self, **kwargs):
         m2m_data = {}

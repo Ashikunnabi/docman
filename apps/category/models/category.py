@@ -45,3 +45,12 @@ class Category(BaseModel):
             .exists()
         ):
             return "Category with this name already exists."
+
+    @property
+    def path(self):
+        path = []
+        instance = self
+        while instance:
+            path.append(instance.name)
+            instance = instance.parent
+        return " > ".join(reversed(path))
