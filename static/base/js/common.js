@@ -398,6 +398,12 @@ class Sidebar {
                         requiredPermissions: ['document.view_document'],
                         url: '/document/'
                     },
+                    {
+                        name: 'Upload',
+                        code: 'add_document',
+                        requiredPermissions: ['document.add_document'],
+                        url: '/document/upload/'
+                    },
                 ]
             }
         ];

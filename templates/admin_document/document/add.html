@@ -1,0 +1,133 @@
+{% extends 'base/base.html' %}
+{% load static %}
+{% block css %}
+<style>
+    .card-header {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .create-folder {
+        cursor: pointer;
+        color: #4e73df;
+        font-size: x-large;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+{% csrf_token %}
+<div class="container-fluid">
+
+    <!-- Page Heading -->
+    <!-- <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Document</h1>
+        <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">
+            <i class="fas fa-download fa-sm text-white-50"></i> Generate
+            Report
+        </a>
+    </div> -->
+    <!-- <p class="mb-4">
+        Documents are valuable. See list of Registered document.
+        Only active staff can be an admin of this system.
+    </p> -->
+
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Upload Document</h6>
+                </div>
+                <div class="card-body">
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Metadata Information</h6>
+                    <div>
+                        <i id="actionButtonAddFolder" class="fa fa-folder-plus create-folder"
+                            title="Create New Folder"></i>
+                    </div>
+                </div>
+                <div class="card-body">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Document Upload</h6>
+        </div>
+        <div class="card-body">
+            <nav>
+                <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                    <button class="nav-link active" id="nav-home-tab" data-toggle="tab" data-target="#nav-home"
+                        type="button" role="tab" aria-controls="nav-home" aria-selected="true">Uploaded Files</button>
+                    <button class="nav-link" id="nav-profile-tab" data-toggle="tab" data-target="#nav-profile"
+                        type="button" role="tab" aria-controls="nav-profile" aria-selected="false">Metadata</button>
+                    <button class="nav-link" id="nav-contact-tab" data-toggle="tab" data-target="#nav-contact"
+                        type="button" role="tab" aria-controls="nav-contact" aria-selected="false">Overview</button>
+                </div>
+            </nav>
+            <div class="tab-content" id="nav-tabContent">
+                <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">...
+                </div>
+                <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">...</div>
+                <div class="tab-pane fade" id="nav-contact" role="tabpanel" aria-labelledby="nav-contact-tab">...</div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Modal HTML -->
+    <div class="modal fade" id="addFolderModal" tabindex="-1" role="dialog" aria-labelledby="addFolderModalTitle"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addFolderModalTitle">Add New Folder</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form id="addFolderModalForm" data-parsley-validate>
+                    <div class="modal-body">
+                        <div class="form-group row">
+                            <label for="name" class="col-sm-3 col-form-label">Name<span
+                                    class="text-danger">*</span></label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" id="name" name="name" required>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="is_active" class="col-sm-3 col-form-label">
+                                <input type="checkbox" class="" id="is_active" name="is_active" checked> Active
+                            </label>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Save</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <div id="addFolderModalFormError" class="modal-form-error text-danger"></div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    {% endblock %}
+
+
+    {% block js %}
+    <script>
+        const page = "list";
+        const category_api_url = "/api/v1/categories/";
+        const document_api_url = "/api/v1/documents/";
+        const document_search_api_url = "/api/v1/documents/search/";
+    </script>
+
+    <!-- Document JS -->
+    <script src="{% static 'admin_document/js/document.js' %}?v={{JS_VERSION}}"></script>
+    {% endblock %}

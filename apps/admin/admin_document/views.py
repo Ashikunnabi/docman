@@ -3,16 +3,15 @@ from django.shortcuts import render
 
 from django.contrib.auth.decorators import permission_required
 
-"""
-===============================================================================
-                                    USER
-===============================================================================
-"""
-
 
 @permission_required("document.view_document", raise_exception=True)
 def document_list(request):
     return render(request, "admin_document/document/list.html")
+
+
+@permission_required("document.add_document", raise_exception=True)
+def document_add(request):
+    return render(request, "admin_document/document/add.html")
 
 
 # @permission_required('rbac.add_user', raise_exception=True)
