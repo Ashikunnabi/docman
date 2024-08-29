@@ -81,3 +81,6 @@ table.dataTable>tbody>tr>td {
 .dataTables_wrapper {
     position: static !important;
 }
+div.dataTables_scrollBody {
+    border-left: none !important;
+}
