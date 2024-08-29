@@ -1,0 +1,50 @@
+.content {
+	display: flex;
+	flex-wrap: wrap;
+	margin-right: -.75rem;
+	margin-left: -.75rem;
+}
+.card .droparea .dz-started {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	grid-template-rows: 1fr 1fr;
+}
+
+.card {
+	border-radius: 2.5rem;
+}
+
+.card-body .dropzone {
+	height: 23rem;
+	border: 2px dashed cyan;
+	border-radius: 1.5rem;
+	padding: 1rem;
+	text-align: center;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.card .droparea .dz-preview.dz-image-preview {
+	/* background: #fff; */
+	margin: .5rem;
+	justify-self: center;
+	align-self: center;
+}
+
+.dz-message.svelte-12uhhij h1.svelte-12uhhij {
+	font-size: 2.375rem;
+	font-weight: 700;
+	color: black;
+}
+
+.dropzone .dz-preview .dz-image .dz-image-preview {
+	border-radius: 20px;
+	overflow: hidden;
+	width: 80px;
+	height: 80px;
+	position: relative;
+	display: block;
+	z-index: 10;
+}
+
