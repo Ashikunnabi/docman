@@ -78,7 +78,7 @@
                 <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
                 <div class="modal-footer">
                     <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                    <a class="btn btn-primary" href="{% url 'apps:authentication:logout' %}">Logout</a>
+                    <button class="btn btn-primary" id="actionButtonLogout">Logout</button>
                 </div>
             </div>
         </div>
@@ -87,6 +87,14 @@
 
     {% include 'base/js.html' %}
     {% block js %}{% endblock %}
+    <script>
+        $(document).ready(function () {
+            $('#actionButtonLogout').click(function () {
+                window.location.href = "/logout/";
+                new AjaxService().onLogoutAction();
+            });
+        });
+    </script>
 </body>
 
 </html>

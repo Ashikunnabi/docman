@@ -138,63 +138,97 @@ class DocumentService(BaseModelService):
         return data
 
     def search(self, **kwargs):
-        category_uuid = kwargs.get("category_uuid")
-        file_only = kwargs.get("file_only", False)
+        category_uuid = kwargs.pop("category_uuid")
+        file_only = kwargs.pop("file_only", False)
         viewable_category_codes = list(
             self.category_permission_service.category_code_permissions()
         )
+        no_document_viewable_category_codes = (
+            self.get_no_document_viewable_category_codes(viewable_category_codes)
+        )
 
-        if viewable_category_codes:
-            if file_only:
-                if not category_uuid:
-                    kwargs.update(
-                        {
-                            "category__code__in": ",".join(viewable_category_codes),
-                        }
-                    )
-                    queryset = self.list(**kwargs)
-                else:
-                    kwargs.update(
-                        {
-                            "category__uuid": category_uuid,
-                            "category__code__in": ",".join(viewable_category_codes),
-                        }
-                    )
-                    queryset = self.list(**kwargs)
-            else:
-                # if no category requested, return root categories
-                if not category_uuid:
-                    filter_kwargs = {
-                        "code__in": ",".join(viewable_category_codes),
-                        "parent": None,
-                        "is_active": True,
-                    }
-                    if self.user.has_perm("category.add_category"):
-                        filter_kwargs.pop("is_active")
+        if not viewable_category_codes:
+            return self.response_list(self.empty_queryset())
 
-                    queryset = self.category_service.list(**filter_kwargs)
-                else:
-                    filter_kwargs = {
-                        "category__uuid": category_uuid,
-                        "category__code__in": ",".join(viewable_category_codes),
-                        "category__is_active": True,
-                        **kwargs,
-                    }
-                    category_filter_kwargs = {
-                        "parent__uuid": category_uuid,
-                        "is_active": True,
-                    }
-
-                    if self.user.has_perm("category.add_category"):
-                        filter_kwargs.pop("category__is_active")
-                        category_filter_kwargs.pop("is_active")
-
-                    queryset = list(
-                        self.category_service.list(**category_filter_kwargs)
-                    )
-                    queryset += self.list(**filter_kwargs)
+        if file_only:
+            queryset = self.get_file_only_queryset(
+                category_uuid, viewable_category_codes, **kwargs
+            )
         else:
-            queryset = self.empty_queryset()
+            queryset = self.get_standard_queryset(
+                category_uuid,
+                viewable_category_codes,
+                no_document_viewable_category_codes,
+                **kwargs,
+            )
 
-        response_data = self.response_list(queryset)
-        return response_data
+        return self.response_list(queryset)
+
+    def get_no_document_viewable_category_codes(self, viewable_category_codes):
+        no_document_viewable_category_codes = []
+        for category_code in viewable_category_codes:
+            category = self.category_service.read_by_code(category_code)
+            if category.parent and category.parent.code not in viewable_category_codes:
+                no_document_viewable_category_codes.append(category.parent.code)
+        return no_document_viewable_category_codes
+
+    def get_file_only_queryset(self, category_uuid, viewable_category_codes, **kwargs):
+        filter_kwargs = {"category__code__in": ",".join(viewable_category_codes)}
+        if category_uuid:
+            filter_kwargs["category__uuid"] = category_uuid
+        kwargs.update(filter_kwargs)
+        return self.list(**kwargs)
+
+    def get_standard_queryset(
+        self,
+        category_uuid,
+        viewable_category_codes,
+        no_document_viewable_category_codes,
+        **kwargs,
+    ):
+        if not category_uuid:
+            filter_kwargs = {
+                "code__in": ",".join(viewable_category_codes),
+                "parent": None,
+                "is_active": True,
+            }
+            no_doc_filter_kwargs = {
+                "code__in": ",".join(no_document_viewable_category_codes),
+                "parent": None,
+                "is_active": True,
+            }
+            if not self.user.has_perm("category.add_category"):
+                filter_kwargs.pop("is_active")
+                no_doc_filter_kwargs.pop("is_active")
+
+            return list(self.category_service.list(**filter_kwargs)) + list(
+                self.category_service.list(**no_doc_filter_kwargs)
+            )
+
+        else:
+            filter_kwargs = {
+                "category__uuid": category_uuid,
+                "category__code__in": ",".join(viewable_category_codes),
+                "category__is_active": True,
+                **kwargs,
+            }
+            category_filter_kwargs = {
+                "parent__uuid": category_uuid,
+                "code__in": ",".join(viewable_category_codes),
+                "is_active": True,
+            }
+            no_doc_filter_kwargs = {
+                "parent__uuid": category_uuid,
+                "code__in": ",".join(no_document_viewable_category_codes),
+                "is_active": True,
+            }
+
+            if not self.user.has_perm("category.add_category"):
+                filter_kwargs.pop("category__is_active")
+                category_filter_kwargs.pop("is_active")
+
+            return (
+                list(self.category_service.list(**category_filter_kwargs))
+                + list(self.category_service.list(**no_doc_filter_kwargs))
+                + list(self.list(**filter_kwargs))
+            )

@@ -205,6 +205,18 @@ class BaseModelService:
         except self.model.DoesNotExist:
             raise ObjectDoesNotExist
 
+    def read_by_code(self, code_value, **kwargs):
+        """
+        Read object by code value
+
+        :param code_value: code of the desired record
+        :return: model instance
+        """
+        try:
+            return self._get_queryset(**kwargs).get(code=code_value)
+        except self.model.DoesNotExist:
+            raise ObjectDoesNotExist
+
     def _get_order_by_fields(self, query_params):
         model_field_names = self.get_model_field_names(self.model)
         order_by_fields = [

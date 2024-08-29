@@ -271,6 +271,17 @@ class AjaxService {
         return getLocalWithExpiry('access');
     }
 
+    onLogoutAction() {
+        // clear local storage except few keys
+        let doNotRemoveKeys = ['rememberMe', 'username', 'password'];
+        let allLoccalStorateKeys = Object.keys(localStorage);
+        allLoccalStorateKeys.forEach(key => {
+            if (!doNotRemoveKeys.includes(key)) {
+                localStorage.removeItem(key);
+            }
+        });
+    }
+
     // General method to perform AJAX requests
     ajaxRequest(method, url, data = null, isFileUpload = false) {
         const options = {
@@ -287,14 +298,7 @@ class AjaxService {
             error: function (response) {
                 if (response.status === 401) {
                     // Unauthorized error
-                    // clear local storage except few keys
-                    let doNotRemoveKeys = ['rememberMe', 'username', 'password'];
-                    let allLoccalStorateKeys = Object.keys(localStorage);
-                    allLoccalStorateKeys.forEach(key => {
-                        if (!doNotRemoveKeys.includes(key)) {
-                            localStorage.removeItem(key);
-                        }
-                    });
+                    this.onLogoutAction()
                     // notify user
                     notify('Session expired. Please login again.', 'error');
                     // Redirect to login page
