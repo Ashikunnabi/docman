@@ -273,7 +273,7 @@ class Document {
 
         self.breadcrumbTrail.forEach((item, index) => {
             if (index === 0) {
-                breadcrumbHtml += `<a href="#" class="breadcrumbItem">${item.name}</a>`;
+                breadcrumbHtml += `<a href="#" class="breadcrumbItem" title="Go to home"><i class="fas fa-home"></i></a>`;
             } else {
                 breadcrumbHtml += ` <span class="separator">/</span> <a href="${item.uuid}" class="breadcrumbItem">${item.name}</a>`;
             }

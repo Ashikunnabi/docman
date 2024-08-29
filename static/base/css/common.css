@@ -61,3 +61,19 @@
 table.dataTable>tbody>tr.selected>td:last-child {
     box-shadow: revert !important;
 }
+
+table.dataTable {
+    width: 100% !important;
+    color: #212529;
+}
+
+.table-hover tbody tr:hover {
+    color: #212529;
+    /* background-color: rgba(0, 0, 0, .075); */
+    background-color: rgb(117 120 254 / 11%)
+}
+
+table.dataTable>tbody>tr>td {
+    padding: .4rem;
+
+}
