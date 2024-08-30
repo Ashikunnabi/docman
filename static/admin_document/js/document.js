@@ -236,7 +236,7 @@ class Document {
                             html += `<i class="far fa-trash-alt actionButton actionButton actionButtonDeleteFile" title="Delete File"></i>`;
                         }
                         if (row.extension !== 'folder' && hasPermission('document.view_document')) {
-                            html += `<button class="btn btn-outline-primary btn-sm actionButtonViewFile" title="View File">></button>`;
+                            html += `<button class="btn btn-outline-primary btn-sm actionButton actionButtonViewFile" title="View File">></button>`;
                         }
                         return html;
                     }

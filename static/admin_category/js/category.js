@@ -2,6 +2,7 @@ class Category {
 
 
     setFormData = (form_id, data) => {
+        let self = this;
         let form = $(form_id);
         $.each(data, function (key, value) {
             let element = form.find(`#${key}`);
@@ -13,6 +14,33 @@ class Category {
         });
     }
 
+    pathGenerator = (category, ignore_current = true) => {
+        let paths = [];
+        let path = '';
+
+        while (category.parent) {
+            paths.push({
+                name: category.name,
+                uuid: category.uuid
+            });
+            category = category.parent;
+        }
+        paths = paths.reverse();
+
+        if (paths.length !== 0 && ignore_current) {
+            paths.pop();
+        }
+
+        if (paths.length === 0) {
+            path = `<span class="separator">/</span>`;
+        }
+
+        $.each(paths, function (key, value) {
+            path += `<span class="separator">/</span> <a href="/category/edit/${value.uuid}/" class="breadcrumbItem">${value.name}</a> `;
+        });
+        return path;
+    }
+
     viewCategory = (uuid) => {
         let self = this;
         new AjaxService().getRequest(
@@ -20,6 +48,7 @@ class Category {
             function (response) {
                 let category = response.data;
                 self.setFormData('#categoryBasicInformationForm', category);
+                $('#categoryBasicInformationForm').find('#path').html(self.pathGenerator(category));
             },
             function (response) {
                 let response_json = response.responseJSON;
@@ -36,35 +65,19 @@ class Category {
 
     editCategory = () => {
         let self = this;
-        let modal = $('#addFolderModal');
-        $('#actionButtonAddFolder').off('click').on('click', function () {
-            $('#addFolderModalForm')[0].reset();
-            modal.find('#addFolderModalFormError').html("");
-            modal.modal('show');
-        });
-        $(category).on('submit', '#addFolderModalForm', function (e) {
+        $(document).on('submit', '#categoryBasicInformationForm', function (e) {
             e.preventDefault();
-            const form = $('#addFolderModalForm').parsley();
+            const form = $('#categoryBasicInformationForm').parsley();
             let payload = {
                 name: $(this).find('#name').val(),
                 is_active: $(this).find('#is_active').is(':checked'),
             }
-            let parent_uuid = self.breadcrumbTrail[self.breadcrumbTrail.length - 1].uuid;
 
-            if (parent_uuid !== "#") {
-                payload.parent_uuid = parent_uuid;
-            }
-
-            new AjaxService().postRequest(
-                category_api_url,
+            new AjaxService().patchRequest(
+                category_api_url + uuid + '/',
                 payload,
                 function (response) {
-                    if (parent_uuid === "#") {
-                        self.list();
-                    } else {
-                        self.list(parent_uuid);
-                    }
-                    modal.modal('hide');
+                    notify('Success', 'success');
                 },
                 function (response) {
                     let response_json = response.responseJSON
@@ -80,7 +93,7 @@ class Category {
                                 })
                             }
                         })
-                        $('#addFolderModalFormError').html(errorHtml);
+                        $('#editCategoryBasicInformationFormError').html(errorHtml);
                     }
                 }
             );

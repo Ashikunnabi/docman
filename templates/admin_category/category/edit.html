@@ -43,6 +43,10 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="form-group">
+                                    <small id="path"></small>
+                                </div>
+
+                                <div class="form-group">
                                     <label for="code">Code:</label>
                                     <input type="text" class="form-control" id="code" name="code"
                                         data-parsley-maxlength="256" readonly>
@@ -60,6 +64,12 @@
                                         <input type="checkbox" class="" id="is_active" name="is_active" checked> Active
                                     </label>
                                 </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12 text-right">
+                                <button type="submit" class="btn btn-primary">Save</button>
+                                <div id="editCategoryBasicInformationFormError" class="text-danger"></div>
                             </div>
                         </div>
                     </form>
