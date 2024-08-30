@@ -14,6 +14,7 @@ from apps.common.utils.basic import *
 
 from ...services import CategoryService
 from .serializers import (
+    CategoryGroupPermissionInputSerializer,
     CategoryGroupPermissionOutputSerializer,
     CategoryInputSerializer,
     CategoryOutputSerializer,
@@ -94,7 +95,7 @@ class CategoryRetrieveUpdateDestroyAPIView(BaseRetrieveUpdateDestroyAPIView):
 
 class CategoryGroupPermissionListCreateAPIView(BaseListCreateAPIView):
     service_class = CategoryGroupPermissionService
-    input_serializer_class = CategoryInputSerializer
+    input_serializer_class = CategoryGroupPermissionInputSerializer
     output_serializer_class = CategoryGroupPermissionOutputSerializer
 
     def list(self, request, *args, **kwargs):
@@ -116,7 +117,32 @@ class CategoryGroupPermissionListCreateAPIView(BaseListCreateAPIView):
         serializer = self.get_input_serializer(data=data)
         serializer.is_valid(raise_exception=True)
 
+        service = self.service_class(user=request.user)
+        instance = service.create(**serializer.validated_data)
+        return Response(
+            {
+                "uuid": instance.uuid,
+                "group_id": instance.group_id,
+                "category_permission_id": instance.permission_id,
+            },
+            status=status.HTTP_201_CREATED,
+        )
+
+
+class CategoryGroupPermissionDeleteAPIView(BaseRetrieveUpdateDestroyAPIView):
+    service_class = CategoryGroupPermissionService
+    http_method_names = ["delete"]
+
+    def get_object(self):
+        service = self.service_class(user=self.request.user)
+        return service.read_by_uuid(
+            uuid_value=self.kwargs["category_group_permission_uuid"]
+        )
+
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
         service = self.service_class()
-        instance = service.create_category(**serializer.validated_data)
-        serializer = self.get_output_serializer(instance)
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        service.delete(instance=instance)
+        response = Response(status=status.HTTP_204_NO_CONTENT)
+        response["Content-Length"] = 0
+        return response

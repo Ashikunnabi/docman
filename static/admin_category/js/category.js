@@ -18,7 +18,7 @@ class Category {
         let paths = [];
         let path = '';
 
-        while (category.parent) {
+        while (category) {
             paths.push({
                 name: category.name,
                 uuid: category.uuid
@@ -127,6 +127,7 @@ class Category {
                     $.each(permissions, function (key, value) {
                         columns += `<td>
                             <input type="checkbox" 
+                            class="actionButtonAddDeleteGroupPermission"
                             data-group-id="${value.group_id}" 
                             data-category-permission-id="${value.category_permission_id}" 
                             data-category-group-permission-uuid="${value.category_group_permission_uuid}"
@@ -159,6 +160,64 @@ class Category {
         );
     }
 
+    addDeleteGroupPermission = () => {
+        let self = this;
+        $(document).on('change', '.actionButtonAddDeleteGroupPermission', function (e) {
+            let current_checkbox = $(this);
+            current_checkbox.attr('disabled','disabled');
+            let category_group_permission_uuid = current_checkbox.data('category-group-permission-uuid');
+            let category_permission_id = current_checkbox.data('category-permission-id');
+            let group_id = current_checkbox.data('group-id');
+            let has_permission = current_checkbox.is(':checked');
+            let payload = {
+                permission_id: category_permission_id,
+                group_id: group_id
+            }
+            console
+            if (has_permission) {
+                new AjaxService().postRequest(
+                    category_group_permission_api_url,
+                    payload,
+                    function (response) {
+                        notify('Success', 'success');
+                        current_checkbox.data('category-group-permission-uuid', response.data.uuid);
+                        current_checkbox.removeAttr('disabled');
+                    },
+                    function (response) {
+                        current_checkbox.removeAttr('disabled');
+                        let response_json = response.responseJSON;
+                        if (response_json.code === "BAD_REQUEST") {
+                            $('#editCategoryBasicInformationFormError').html(
+                                `<div class="alert alert-danger">
+                                <strong>Error:</strong> ${response_json.message}
+                            </div>`
+                            );
+                        }
+                    }
+                );
+            } else {
+                new AjaxService().deleteRequest(
+                    category_group_permission_api_url + group_id + '/' + 'category-group-permission' + '/' + category_group_permission_uuid + '/',
+                    function (response) {
+                        notify('Success', 'success');
+                        current_checkbox.removeAttr('disabled');
+                    },
+                    function (response) {
+                        current_checkbox.removeAttr('disabled');
+                        let response_json = response.responseJSON;
+                        if (response_json.code === "BAD_REQUEST") {
+                            $('#editCategoryBasicInformationFormError').html(
+                                `<div class="alert alert-danger">
+                                <strong>Error:</strong> ${response_json.message}
+                            </div>`
+                            );
+                        }
+                    }
+                );
+            }
+        });
+    }
+
 
     main = () => {
         if (page === 'edit') {
@@ -176,6 +235,11 @@ class Category {
                 $('#groupPermissionTable').parent().parent().parent().parent().hide();
             } else {
                 this.groupPermissions();
+            }
+            if (!hasPermission('category.add_categorygrouppermission')) {
+                $('.actionButtonAddDeleteGroupPermission').hide();
+            } else {
+                this.addDeleteGroupPermission();
             }
         }
     }

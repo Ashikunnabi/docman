@@ -73,6 +73,11 @@ class CategoryOutputSerializer(serializers.ModelSerializer):
         return None
 
 
+class CategoryGroupPermissionInputSerializer(serializers.Serializer):
+    permission_id = serializers.IntegerField()
+    group_id = serializers.IntegerField()
+
+
 class CategoryGroupPermissionOutputSerializer(serializers.ModelSerializer):
     permission_names = serializers.SerializerMethodField()
     permissions = serializers.SerializerMethodField()
@@ -122,5 +127,5 @@ class CategoryGroupPermissionOutputSerializer(serializers.ModelSerializer):
                         "category_permission_id": category_permission.id,
                         "category_group_permission_uuid": None,
                     }
-            )
+                )
         return permissions
