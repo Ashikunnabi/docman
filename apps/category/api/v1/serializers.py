@@ -1,5 +1,8 @@
-from apps.metadata.api.v1.serializers import MetadataOutputSerializer
 from rest_framework import serializers
+
+from apps.category.constants import CategoryPermissionType
+from apps.metadata.api.v1.serializers import MetadataOutputSerializer
+from apps.rbac.models import Group
 
 from ...models import Category
 
@@ -68,3 +71,56 @@ class CategoryOutputSerializer(serializers.ModelSerializer):
         if obj.parent:
             return CategoryOutputSerializer(obj.parent).data
         return None
+
+
+class CategoryGroupPermissionOutputSerializer(serializers.ModelSerializer):
+    permission_names = serializers.SerializerMethodField()
+    permissions = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Group
+        fields = [
+            "id",
+            "name",
+            "permission_names",
+            "permissions",
+        ]
+
+    def get_permission_names(self, obj):
+        return CategoryPermissionType.CHOICES
+
+    def get_permissions(self, obj):
+        category = self.context.get("category")
+        if not category:
+            raise ValueError("Category is required in context")
+
+        permissions = []
+        for key, value in CategoryPermissionType.CHOICES:
+            category_permission = category.permissions.filter(
+                code__icontains=f".{key}_document"
+            ).first()
+            if category_permission:
+                category_group_permission = obj.category_permissions.filter(
+                    permission=category_permission
+                ).first()
+                if category_group_permission:
+                    permissions.append(
+                        {
+                            "key": key,
+                            "group_id": obj.id,
+                            "has_permission": True,
+                            "category_permission_id": category_permission.id,
+                            "category_group_permission_uuid": category_group_permission.uuid,
+                        }
+                    )
+                    continue
+                permissions.append(
+                    {
+                        "key": key,
+                        "group_id": obj.id,
+                        "has_permission": False,
+                        "category_permission_id": category_permission.id,
+                        "category_group_permission_uuid": None,
+                    }
+            )
+        return permissions

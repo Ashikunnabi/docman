@@ -12,6 +12,23 @@
         color: #4e73df;
         font-size: x-large;
     }
+
+    #groupPermissionTable tbody tr td {
+        cursor: auto;
+    }
+
+    #groupPermissionTable td {
+        text-align: center;
+    }
+
+    #groupPermissionTable td:first-child {
+        width: 70%;
+        text-align: left;
+    }
+
+    #groupPermissionTable tbody tr td input[type="checkbox"] {
+        cursor: pointer;
+    }
 </style>
 {% endblock %}
 
@@ -77,6 +94,22 @@
             </div>
         </div>
     </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Group Permission</h6>
+                </div>
+                <div class="card-body">
+                    <table class="table table-bordered" id="groupPermissionTable" width="100%" cellspacing="0">
+                        <thead></thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 {% endblock %}
 
@@ -88,6 +121,7 @@
     const category_api_url = "/api/v1/categories/";
     const document_api_url = "/api/v1/documents/";
     const document_search_api_url = "/api/v1/documents/search/";
+    const category_group_permission_api_url = "/api/v1/categories/{{uuid}}/groups/";
 </script>
 
 <!-- Document JS -->

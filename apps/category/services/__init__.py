@@ -1,2 +1,3 @@
 from .category_service import CategoryService
 from .category_permission_service import CategoryPermissionService
+from .category_group_permission_service import CategoryGroupPermissionService

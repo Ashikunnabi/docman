@@ -99,6 +99,67 @@ class Category {
             );
         });
     }
+
+    groupPermissions = () => {
+        let self = this;
+        new AjaxService().getRequest(
+            category_group_permission_api_url,
+            function (response) {
+                let group_permissions = response.data;
+                let groupPermissionTable = $('#groupPermissionTable');
+                let table_head = groupPermissionTable.find('thead');
+                let table_body = groupPermissionTable.find('tbody');
+                table_body.html('');
+
+                let table_headers = ["Group"]
+                $.each(group_permissions[0].permission_names, function (key, value) {
+                    table_headers.push(value[1]);
+                });
+                $.each(table_headers, function (key, value) {
+                    table_head.append(`<th>${value}</th>`);
+                });
+
+
+
+                function permissionColumns(data) {
+                    let permissions = data.permissions
+                    let columns = '';
+                    $.each(permissions, function (key, value) {
+                        columns += `<td>
+                            <input type="checkbox" 
+                            data-group-id="${value.group_id}" 
+                            data-category-permission-id="${value.category_permission_id}" 
+                            data-category-group-permission-uuid="${value.category_group_permission_uuid}"
+                             ${value.has_permission ? 'checked' : ''}
+                             >
+                        </td>`;
+                    });
+                    return columns;
+                }
+
+
+                $.each(group_permissions, function (key, value) {
+                    let tr = `<tr>
+                        <td>${value.name}</td>
+                        ${permissionColumns(value)}
+                        </tr>`;
+                    table_body.append(tr);
+                });
+            },
+            function (response) {
+                let response_json = response.responseJSON;
+                if (response_json.code === "NOT_FOUND") {
+                    $('#editCategoryBasicInformationFormError').html(
+                        `<div class="alert alert-danger">
+                            <strong>Error:</strong> ${response_json.message}
+                        </div>`
+                    );
+                }
+            }
+        );
+    }
+
+
     main = () => {
         if (page === 'edit') {
             if (!hasPermission('category.view_category')) {
@@ -110,6 +171,11 @@ class Category {
                 $('.actionButtonViewFolder').hide();
             } else {
                 this.editCategory();
+            }
+            if (!hasPermission('category.view_categorygrouppermission')) {
+                $('#groupPermissionTable').parent().parent().parent().parent().hide();
+            } else {
+                this.groupPermissions();
             }
         }
     }
