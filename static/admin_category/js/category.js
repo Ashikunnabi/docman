@@ -14,7 +14,7 @@ class Category {
         });
     }
 
-    pathGenerator = (category, ignore_current = true) => {
+    pathGenerator = (category) => {
         let paths = [];
         let path = '';
 
@@ -27,15 +27,15 @@ class Category {
         }
         paths = paths.reverse();
 
-        if (paths.length !== 0 && ignore_current) {
-            paths.pop();
-        }
-
-        if (paths.length === 0) {
-            path = `<span class="separator">/</span>`;
-        }
-
         $.each(paths, function (key, value) {
+            if (paths.length === 0) {
+                path += `<span class="separator">/</span>`;
+                return
+            }
+            if (key === paths.length - 1) {
+                path += `<span class="separator">/</span> ${value.name}`;
+                return
+            }
             path += `<span class="separator">/</span> <a href="/category/edit/${value.uuid}/" class="breadcrumbItem">${value.name}</a> `;
         });
         return path;
@@ -164,7 +164,7 @@ class Category {
         let self = this;
         $(document).on('change', '.actionButtonAddDeleteGroupPermission', function (e) {
             let current_checkbox = $(this);
-            current_checkbox.attr('disabled','disabled');
+            current_checkbox.attr('disabled', 'disabled');
             let category_group_permission_uuid = current_checkbox.data('category-group-permission-uuid');
             let category_permission_id = current_checkbox.data('category-permission-id');
             let group_id = current_checkbox.data('group-id');

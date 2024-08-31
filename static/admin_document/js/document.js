@@ -280,9 +280,13 @@ class Document {
         self.breadcrumbTrail.forEach((item, index) => {
             if (index === 0) {
                 breadcrumbHtml += `<a href="#" class="breadcrumbItem" title="Go to home"><i class="fas fa-home"></i></a>`;
-            } else {
-                breadcrumbHtml += ` <span class="separator">/</span> <a href="${item.uuid}" class="breadcrumbItem">${item.name}</a>`;
+                return;
             }
+            if (index === self.breadcrumbTrail.length - 1) {
+                breadcrumbHtml += ` <span class="separator">/</span> ${item.name}`;
+                return;
+            }
+            breadcrumbHtml += ` <span class="separator">/</span> <a href="${item.uuid}" class="breadcrumbItem">${item.name}</a>`;
         });
 
         $('#breadcrumb').html(breadcrumbHtml);
