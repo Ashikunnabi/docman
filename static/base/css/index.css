@@ -4,25 +4,32 @@
 	margin-right: -.75rem;
 	margin-left: -.75rem;
 }
-.card .droparea .dz-started {
+
+/* .card .droparea .dz-started {
 	display: grid;
 	grid-template-columns: 1fr 1fr;
 	grid-template-rows: 1fr 1fr;
-}
+} */
 
 .card {
-	border-radius: 2.5rem;
+	border-radius: .5rem;
 }
 
 .card-body .dropzone {
-	height: 23rem;
-	border: 2px dashed cyan;
-	border-radius: 1.5rem;
+	height: 19.25rem;
+	border: 2px transparent;
+	border-radius: .5rem;
 	padding: 1rem;
 	text-align: center;
 	display: flex;
 	justify-content: center;
 	align-items: center;
+	flex-wrap: wrap;
+	overflow-y: scroll;
+}
+
+.card-body .docs-list {
+	height: 15rem;
 }
 
 .card .droparea .dz-preview.dz-image-preview {
@@ -38,13 +45,47 @@
 	color: black;
 }
 
-.dropzone .dz-preview .dz-image .dz-image-preview {
+.dropzone .dz-preview .dz-image {
 	border-radius: 20px;
 	overflow: hidden;
-	width: 80px;
-	height: 80px;
+	width: 80px !important;
+	height: 80px !important;
 	position: relative;
 	display: block;
 	z-index: 10;
 }
 
+.dropzone .dz-preview .dz-error-message {
+	pointer-events: none;
+	z-index: 1000;
+	position: absolute;
+	/* display: block; */
+	display: none;
+	opacity: 0;
+	-webkit-transition: opacity 0.3s ease;
+	-moz-transition: opacity 0.3s ease;
+	-ms-transition: opacity 0.3s ease;
+	-o-transition: opacity 0.3s ease;
+	transition: opacity 0.3s ease;
+	border-radius: 8px;
+	font-size: 13px;
+	top: 100px !important;
+	left: -30px !important;
+	width: 130px !important;
+	/* background: #be2626; */
+	background: linear-gradient(to bottom, #be2626, #a92222);
+	padding: .5em 1.2em;
+	color: #fff;
+}
+
+.dropzone .dz-preview .dz-success-mark, .dropzone .dz-preview .dz-error-mark {
+	pointer-events: none;
+	opacity: 0;
+	z-index: 210;
+	position: absolute;
+	display: block ruby !important;
+	top: 40% !important;
+	left: 50%;
+	margin-left: -27px;
+	margin-top: -27px;
+}
