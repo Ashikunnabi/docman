@@ -1,19 +1,27 @@
+.card {
+	height: 100%;
+	max-height: 19.25rem;
+}
+
+#document-upload {
+	display: none;
+}
+#recent-uploaded-document {
+	display: none;
+}
+
 .card-body .dropzone {
-	height: 19.25rem;
+	height: 13.55rem;
 	background-color: #8080800f;
 	border: 2px solid #8080802e;
 	border-radius: .5rem;
-	padding: 1rem;
+	padding: 0.5rem;
 	text-align: center;
 	display: flex;
 	justify-content: center;
 	align-items: center;
 	flex-wrap: wrap;
 	overflow-y: auto;
-}
-
-.card-body .docs-list {
-	height: 15rem;
 }
 
 .dz-message.svelte-12uhhij h1.svelte-12uhhij {
@@ -54,4 +62,9 @@
 #dropzone-inner-template .dz-remove i {
 	cursor: pointer;
 	color: red;
+}
+
+#recent-docs-list {
+	overflow-y: auto;
+	max-height: 13.25rem;
 }

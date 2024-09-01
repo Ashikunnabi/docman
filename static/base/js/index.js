@@ -38,7 +38,18 @@ class CustomDropzone {
     }
 
     main = () => {
-        this.generate();
+        if (!hasPermission('document.add_document')) {
+            $("#document-upload").hide();
+        } else {
+            this.generate();
+            $("#document-upload").show();
+        }
+        if (!hasPermission('document.view_document')) {
+            $("#recent-uploaded-document").hide();
+        } else {
+            $("#recent-uploaded-document").show();
+        }
+
     }
 }
 

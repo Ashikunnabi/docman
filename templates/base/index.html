@@ -9,7 +9,7 @@
 <div class="container-fluid">
     <div class="row">
         <div class="col-xl-7 col-lg-6">
-            <div class="card shadow mb-4">
+            <div class="card shadow mb-4" id="document-upload">
                 <!-- Card Body -->
                 <div class="card-body droparea svelte-12uhhij dz-clickable dz-started">
                     <div class="dropzone">
@@ -48,14 +48,17 @@
                     </div>
                 </div>
                 <div class="card-footer">
-                    <div class="text-align-right">
-                    Next <i class="fas fa-arrow-right text-success"></i></div>
+                    <a href="/document/upload/">
+                        <div class="text-right">
+                            Next <i class="fas fa-arrow-right text-success"></i>
+                        </div>
+                    </a>
                 </div>
             </div>
         </div>
 
         <div class="col-xl-5 col-lg-6">
-            <div class="card shadow mb-4">
+            <div class="card shadow mb-4" id="recent-uploaded-document">
                 <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
                     <h6 class="m-0 font-weight-bold text-primary">Recent Uploaded Docs</h6>
                     <div class="dropdown no-arrow">
@@ -74,7 +77,7 @@
                     </div>
                 </div>
                 <div class="card-body">
-                    <ul class="docs-list">
+                    <ul id="recent-docs-list">
                         <li>List 1</li>
                         <li>List 2</li>
                         <li>List 3</li>
