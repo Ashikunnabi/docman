@@ -23,6 +23,10 @@
 	flex-wrap: wrap;
 	overflow-y: auto;
 }
+.dropzone .dz-preview .dz-image {
+	width: 100px;
+	height: 100px;
+}
 
 .dz-message.svelte-12uhhij h1.svelte-12uhhij {
 	font-size: 2.375rem;

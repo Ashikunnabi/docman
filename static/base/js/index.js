@@ -35,6 +35,30 @@ class CustomDropzone {
                 }
             );
         });
+
+        // mock push existing files from server
+        new AjaxService().getRequest(
+            document_api_url,
+            function (response) {
+                response.data.forEach((document) => {
+                    let mockFile = {
+                        name: document.name,
+                        size: document.size,
+                        dataURL: document.file,
+                        accepted: true,
+                        status: Dropzone.ADDED,
+                        uuid: document.uuid
+                    };
+                    dropzone.emit("addedfile", mockFile);
+                    dropzone.emit("thumbnail", mockFile, document.file);
+                    dropzone.emit("complete", mockFile);
+                    $(mockFile.previewTemplate).find('.dz-remove').attr('data-uuid', document.uuid);
+                });
+            },
+            function (response) {
+                console.log('Error fetching documents');
+            }
+        );
     }
 
     main = () => {
