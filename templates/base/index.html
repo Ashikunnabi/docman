@@ -2,7 +2,6 @@
 {% load static %}
 {% block css %}
 <link rel="stylesheet" href="/static/base/css/index.css">
-
 {% endblock %}
 
 {% block content %}
@@ -13,20 +12,44 @@
             <div class="card shadow mb-4">
                 <!-- Card Body -->
                 <div class="card-body droparea svelte-12uhhij dz-clickable dz-started">
-                   
-
                     <div class="dropzone">
                         <div class="dz-message svelte-12uhhij">
-                            <h1 class="svelte-12uhhij">Try it out!</h1>
+                            <h1 class="svelte-12uhhij"><i class="fas fa-cloud-upload-alt text-primary"></i></h1>
                             <p>Drag and drop files here</p>
                         </div>
                     </div>
-                    
 
-                    <script>
-                        // Dropzone has been added as a global variable.
-                        const dropzone = new Dropzone(".dropzone", { url: "/api/v1/documents/" });
-                    </script>
+                    <div style="display:none;" id="dropzone-template">
+                        <div id="dropzone-inner-template" class="dz-preview dz-file-preview">
+                            <div class="dz-image"><img data-dz-thumbnail /></div>
+                            <div class="dz-details">
+                                <div class="dz-size"><span data-dz-size></span></div>
+                                <div class="dz-filename"><span data-dz-name></span></div>
+                            </div>
+                            <div class="dz-progress">
+                                <span class="dz-upload" data-dz-uploadprogress></span>
+                            </div>
+                            <div class="dz-error-message"><span data-dz-errormessage></span></div>
+                            <div class="dz-success-mark">
+                                <i class="far fa-check-circle"></i>
+                            </div>
+                            <div class="dz-error-mark">
+                                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px"
+                                    fill="#000000">
+                                    <path d="M0 0h24v24H0z" fill="none" />
+                                    <circle cx="12" cy="19" r="2" />
+                                    <path d="M10 3h4v12h-4z" />
+                                </svg>
+                            </div>
+                            <div class="dz-remove actionButtonRemoveDoc" data-dz-remove>
+                                <i class="far fa-times-circle"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <div class="text-align-right">
+                    Next <i class="fas fa-arrow-right text-success"></i></div>
                 </div>
             </div>
         </div>
@@ -70,7 +93,7 @@
 
 {% block js %}
 <script>
-    const custom_url = "your/custom/url";
+    const document_api_url = "/api/v1/documents/";
 </script>
 <script src="/static/base/js/index.js"></script>
 {% endblock %}

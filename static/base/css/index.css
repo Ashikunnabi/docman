@@ -1,23 +1,7 @@
-.content {
-	display: flex;
-	flex-wrap: wrap;
-	margin-right: -.75rem;
-	margin-left: -.75rem;
-}
-
-/* .card .droparea .dz-started {
-	display: grid;
-	grid-template-columns: 1fr 1fr;
-	grid-template-rows: 1fr 1fr;
-} */
-
-.card {
-	border-radius: .5rem;
-}
-
 .card-body .dropzone {
 	height: 19.25rem;
-	border: 2px transparent;
+	background-color: #8080800f;
+	border: 2px solid #8080802e;
 	border-radius: .5rem;
 	padding: 1rem;
 	text-align: center;
@@ -25,18 +9,11 @@
 	justify-content: center;
 	align-items: center;
 	flex-wrap: wrap;
-	overflow-y: scroll;
+	overflow-y: auto;
 }
 
 .card-body .docs-list {
 	height: 15rem;
-}
-
-.card .droparea .dz-preview.dz-image-preview {
-	/* background: #fff; */
-	margin: .5rem;
-	justify-self: center;
-	align-self: center;
 }
 
 .dz-message.svelte-12uhhij h1.svelte-12uhhij {
@@ -45,47 +22,36 @@
 	color: black;
 }
 
-.dropzone .dz-preview .dz-image {
-	border-radius: 20px;
-	overflow: hidden;
-	width: 80px !important;
-	height: 80px !important;
-	position: relative;
+.dz-success-mark {
+	background-color: rgb(102, 187, 106, 0.8) !important;
+}
+
+.dz-success-mark i {
+	font-size: 33px;
+	color: #fff !important;
+	padding: 10px;
+}
+
+.dz-error-mark {
+	background-color: rgba(239, 83, 80, 0.8) !important;
+}
+
+.dz-error-mark svg {
+	font-size: 54px;
+	fill: #fff !important;
+}
+
+#dropzone-inner-template .dz-remove {
+	z-index: 999;
+	position: absolute;
 	display: block;
-	z-index: 10;
+	top: 0%;
+	left: 0%;
+	margin-left: -16px;
+	margin-top: -16px;
 }
 
-.dropzone .dz-preview .dz-error-message {
-	pointer-events: none;
-	z-index: 1000;
-	position: absolute;
-	/* display: block; */
-	display: none;
-	opacity: 0;
-	-webkit-transition: opacity 0.3s ease;
-	-moz-transition: opacity 0.3s ease;
-	-ms-transition: opacity 0.3s ease;
-	-o-transition: opacity 0.3s ease;
-	transition: opacity 0.3s ease;
-	border-radius: 8px;
-	font-size: 13px;
-	top: 100px !important;
-	left: -30px !important;
-	width: 130px !important;
-	/* background: #be2626; */
-	background: linear-gradient(to bottom, #be2626, #a92222);
-	padding: .5em 1.2em;
-	color: #fff;
-}
-
-.dropzone .dz-preview .dz-success-mark, .dropzone .dz-preview .dz-error-mark {
-	pointer-events: none;
-	opacity: 0;
-	z-index: 210;
-	position: absolute;
-	display: block ruby !important;
-	top: 40% !important;
-	left: 50%;
-	margin-left: -27px;
-	margin-top: -27px;
+#dropzone-inner-template .dz-remove i {
+	cursor: pointer;
+	color: red;
 }

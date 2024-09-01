@@ -12,6 +12,29 @@
         color: #4e73df;
         font-size: x-large;
     }
+
+    .already-uploaded table {
+        width: 100%;
+    }
+
+    .already-uploaded table tr td {
+        padding: 5px;
+        border-bottom: 1px solid #e3e6f0;
+    }
+
+    .already-uploaded table tr:last-child td {
+        border-bottom: none;
+    }
+
+    .already-uploaded table tr td:first-child {
+        width: 95%;
+    }
+
+    .already-uploaded table tr td:last-child {
+        text-align: right;
+        color: red;
+        cursor: pointer;
+    }
 </style>
 {% endblock %}
 
@@ -45,11 +68,25 @@
         <div class="col-md-4">
             <div class="card shadow mb-4">
                 <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Metadata Information</h6>
+                    <h6 class="m-0 font-weight-bold text-primary">Already Uploaded</h6>
+                </div>
+                <div class="card-body already-uploaded">
                     <div>
-                        <i id="actionButtonAddFolder" class="fa fa-folder-plus create-folder"
-                            title="Create New Folder"></i>
+                        <table>
+                            <tr>
+                                <td>File 1</td>
+                                <td class="actionButtonAlreadyUploadedDeleteFile" data-id="1">
+                                    <i class="fas fa-trash"></i>
+                                </td>
+                            </tr>
+                        </table>
                     </div>
+                </div>
+            </div>
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Metadata Information</h6>
+                    <div></div>
                 </div>
                 <div class="card-body">
                 </div>
@@ -57,156 +94,55 @@
         </div>
     </div>
 
-    <div class="card shadow mb-4">
-        <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-primary">Document Upload</h6>
-        </div>
-        <div class="card-body">
-            <nav>
-                <div class="nav nav-tabs" id="nav-tab" role="tablist">
-                    <button class="nav-link active" id="nav-home-tab" data-toggle="tab" data-target="#nav-home"
-                        type="button" role="tab" aria-controls="nav-home" aria-selected="true">Uploaded Files</button>
-                    <button class="nav-link" id="nav-profile-tab" data-toggle="tab" data-target="#nav-profile"
-                        type="button" role="tab" aria-controls="nav-profile" aria-selected="false">Metadata</button>
-                    <button class="nav-link" id="nav-contact-tab" data-toggle="tab" data-target="#nav-contact"
-                        type="button" role="tab" aria-controls="nav-contact" aria-selected="false">Overview</button>
+
+    <!-- Modal HTML -->
+    <div class="modal fade" id="addFolderModal" tabindex="-1" role="dialog" aria-labelledby="addFolderModalTitle"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addFolderModalTitle">Add New Folder</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
                 </div>
-            </nav>
-            <div class="tab-content" id="nav-tabContent">
-                <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">...
-                </div>
-                <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">...</div>
-                <div class="tab-pane fade" id="nav-contact" role="tabpanel" aria-labelledby="nav-contact-tab">...</div>
+                <form id="addFolderModalForm" data-parsley-validate>
+                    <div class="modal-body">
+                        <div class="form-group row">
+                            <label for="name" class="col-sm-3 col-form-label">Name<span
+                                    class="text-danger">*</span></label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" id="name" name="name" required>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="is_active" class="col-sm-3 col-form-label">
+                                <input type="checkbox" class="" id="is_active" name="is_active" checked> Active
+                            </label>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Save</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <div id="addFolderModalFormError" class="modal-form-error text-danger"></div>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
-
-    <div class="card shadow mb-4">
-        <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-primary">Document Upload</h6>
-        </div>
-        <div class="card-body">
-            <!-- SmartWizard html -->
-            <div id="smartwizard">
-                <ul class="nav">
-                    <li class="nav-item">
-                        <a class="nav-link" href="#step-1">
-                            <div class="num">1</div>
-                            Uploaded Docs
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#step-2">
-                            <span class="num">2</span>
-                            Metadata Information
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#step-3">
-                            <span class="num">3</span>
-                            Overview
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link " href="#step-4">
-                            <span class="num">4</span>
-                            Step Title
-                        </a>
-                    </li>
-                </ul>
-
-                <div class="tab-content">
-                    <div id="step-1" class="tab-pane" role="tabpanel" aria-labelledby="step-1">
-                        Step content
-                    </div>
-                    <div id="step-2" class="tab-pane" role="tabpanel" aria-labelledby="step-2">
-                        Step content
-                    </div>
-                    <div id="step-3" class="tab-pane" role="tabpanel" aria-labelledby="step-3">
-                        Step content
-                    </div>
-                    <div id="step-4" class="tab-pane" role="tabpanel" aria-labelledby="step-4">
-                        Step content
-                    </div>
-                </div>
-
-                <!-- Include optional progressbar HTML -->
-                <div class="progress">
-                    <div class="progress-bar" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0"
-                        aria-valuemax="100"></div>
-                </div>
-            </div>
-        </div>
+</div>
+{% endblock %}
 
 
-        <!-- Modal HTML -->
-        <div class="modal fade" id="addFolderModal" tabindex="-1" role="dialog" aria-labelledby="addFolderModalTitle"
-            aria-hidden="true">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="addFolderModalTitle">Add New Folder</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <form id="addFolderModalForm" data-parsley-validate>
-                        <div class="modal-body">
-                            <div class="form-group row">
-                                <label for="name" class="col-sm-3 col-form-label">Name<span
-                                        class="text-danger">*</span></label>
-                                <div class="col-sm-9">
-                                    <input type="text" class="form-control" id="name" name="name" required>
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label for="is_active" class="col-sm-3 col-form-label">
-                                    <input type="checkbox" class="" id="is_active" name="is_active" checked> Active
-                                </label>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="submit" class="btn btn-primary">Save</button>
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                            <div id="addFolderModalFormError" class="modal-form-error text-danger"></div>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-        {% endblock %}
+{% block js %}
+<script>
+    const page = "list";
+    const category_api_url = "/api/v1/categories/";
+    const document_api_url = "/api/v1/documents/";
+    const document_search_api_url = "/api/v1/documents/search/";
+</script>
 
+<!-- Document JS -->
+<script src="{% static 'admin_document/js/document.js' %}?v={{JS_VERSION}}"></script>
 
-        {% block js %}
-        <script>
-            const page = "list";
-            const category_api_url = "/api/v1/categories/";
-            const document_api_url = "/api/v1/documents/";
-            const document_search_api_url = "/api/v1/documents/search/";
-        </script>
-
-        <!-- Document JS -->
-        <script src="{% static 'admin_document/js/document.js' %}?v={{JS_VERSION}}"></script>
-        <script>
-            $(function() {
-    // SmartWizard initialize
-    $('#smartwizard').smartWizard(
-        {
-            selected: 0,
-            theme: 'arrows',
-            transitionEffect: 'fade',
-            showStepURLhash: false,
-            colors: 'black',
-            toolbarSettings: {
-                toolbarPosition: 'bottom',
-                toolbarButtonPosition: 'end',
-                showNextButton: true,
-                showPreviousButton: true,
-                toolbarExtraButtons: []
-            },
-            enableURLhash: false,
-        }
-    );
-});
-        </script>
-        {% endblock %}
+{% endblock %}
