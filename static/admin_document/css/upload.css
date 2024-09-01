@@ -1,0 +1,50 @@
+
+.card-header {
+    display: flex;
+    justify-content: space-between;
+}
+
+.create-folder {
+    cursor: pointer;
+    color: #4e73df;
+    font-size: x-large;
+}
+
+.dropzone {
+    max-height: 70vh;
+    overflow-y: auto;
+}
+
+.dz-success-mark {
+    background-color: rgb(102, 187, 106, 0.8) !important;
+}
+
+.dz-success-mark i {
+    font-size: 33px;
+    color: #fff !important;
+    padding: 10px;
+}
+
+.dz-error-mark {
+    background-color: rgba(239, 83, 80, 0.8) !important;
+}
+
+.dz-error-mark svg {
+    font-size: 54px;
+    fill: #fff !important;
+}
+
+#dropzone-inner-template .dz-remove {
+    z-index: 999;
+    position: absolute;
+    display: block;
+    top: 0%;
+    left: 0%;
+    margin-left: -16px;
+    margin-top: -16px;
+}
+
+#dropzone-inner-template .dz-remove i {
+    cursor: pointer;
+    color: red;
+}

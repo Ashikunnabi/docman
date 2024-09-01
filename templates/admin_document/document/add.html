@@ -1,41 +1,7 @@
 {% extends 'base/base.html' %}
 {% load static %}
 {% block css %}
-<style>
-    .card-header {
-        display: flex;
-        justify-content: space-between;
-    }
-
-    .create-folder {
-        cursor: pointer;
-        color: #4e73df;
-        font-size: x-large;
-    }
-
-    .already-uploaded table {
-        width: 100%;
-    }
-
-    .already-uploaded table tr td {
-        padding: 5px;
-        border-bottom: 1px solid #e3e6f0;
-    }
-
-    .already-uploaded table tr:last-child td {
-        border-bottom: none;
-    }
-
-    .already-uploaded table tr td:first-child {
-        width: 95%;
-    }
-
-    .already-uploaded table tr td:last-child {
-        text-align: right;
-        color: red;
-        cursor: pointer;
-    }
-</style>
+<link rel="stylesheet" href="{% static 'admin_document/css/upload.css' %}?v={{CSS_VERSION}}">
 {% endblock %}
 
 {% block content %}
@@ -57,32 +23,52 @@
 
     <div class="row">
         <div class="col-md-8">
-            <div class="card shadow mb-4">
+            <div class="card shadow mb-4" id="document-upload">
                 <div class="card-header py-3">
                     <h6 class="m-0 font-weight-bold text-primary">Upload Document</h6>
                 </div>
                 <div class="card-body">
+                    <div class="dropzone">
+                        <div class="dz-message svelte-12uhhij">
+                            <h1 class="svelte-12uhhij"><i class="fas fa-cloud-upload-alt text-primary"></i></h1>
+                            <p>Drag and drop files here</p>
+                        </div>
+                    </div>
+
+                    <div style="display:none;" id="dropzone-template">
+                        <div id="dropzone-inner-template" class="dz-preview dz-file-preview">
+                            <div class="dz-image"><img data-dz-thumbnail /></div>
+                            <div class="dz-details">
+                                <div class="dz-size"><span data-dz-size></span></div>
+                                <div class="dz-filename"><span data-dz-name></span></div>
+                            </div>
+                            <div class="dz-progress">
+                                <span class="dz-upload" data-dz-uploadprogress></span>
+                            </div>
+                            <div class="dz-error-message"><span data-dz-errormessage></span></div>
+                            <div class="dz-success-mark">
+                                <i class="far fa-check-circle"></i>
+                            </div>
+                            <div class="dz-error-mark">
+                                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px"
+                                    fill="#000000">
+                                    <path d="M0 0h24v24H0z" fill="none" />
+                                    <circle cx="12" cy="19" r="2" />
+                                    <path d="M10 3h4v12h-4z" />
+                                </svg>
+                            </div>
+                            <div class="dz-remove actionButtonRemoveDoc" data-dz-remove>
+                                <i class="far fa-times-circle"></i>
+                            </div>
+                        </div>
+                    </div>
                 </div>
+                <!-- <div class="card-footer">
+                    <div id="dropzone-stats"></div>
+                </div> -->
             </div>
         </div>
         <div class="col-md-4">
-            <div class="card shadow mb-4">
-                <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Already Uploaded</h6>
-                </div>
-                <div class="card-body already-uploaded">
-                    <div>
-                        <table>
-                            <tr>
-                                <td>File 1</td>
-                                <td class="actionButtonAlreadyUploadedDeleteFile" data-id="1">
-                                    <i class="fas fa-trash"></i>
-                                </td>
-                            </tr>
-                        </table>
-                    </div>
-                </div>
-            </div>
             <div class="card shadow mb-4">
                 <div class="card-header py-3">
                     <h6 class="m-0 font-weight-bold text-primary">Metadata Information</h6>
@@ -143,6 +129,6 @@
 </script>
 
 <!-- Document JS -->
-<script src="{% static 'admin_document/js/document.js' %}?v={{JS_VERSION}}"></script>
+<script src="{% static 'admin_document/js/upload.js' %}?v={{JS_VERSION}}"></script>
 
 {% endblock %}
