@@ -21,6 +21,7 @@ class CategoryModelAdmin(BaseModelAdmin):
                     "name",
                     "parent",
                     "is_active",
+                    "metadata",
                 )
             },
         ),
