@@ -22,8 +22,13 @@ class MetadataValueService(BaseModelService):
 
     def reform_metadata_values(self, metadata_field: dict) -> list:
         metadata_values = []
-        for field, value in metadata_field.items():
-            field = self.metadata_field_service.read_by_uuid(field)
+        field_uuids = list(metadata_field.keys())
+        fields = self.metadata_field_service.list(
+            uuid__in=",".join(map(str, field_uuids))
+        )
+
+        for field_uuid, value in metadata_field.items():
+            field = fields.get(uuid=field_uuid)
             metadata_values.append(
                 {
                     "field_uuid": field.uuid,

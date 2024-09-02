@@ -103,21 +103,20 @@ class DocumentService(BaseModelService):
         document_uuids = kwargs.pop("document_uuids")
         metadata = kwargs.pop("metadata")
 
-        if metadata:
-            self.category_service.validate_category_metadata_fields(
-                category_uuid, metadata.keys()
-            )
-
         category = self.category_service.read_by_uuid(category_uuid)
         documents = self.list(uuid__in=",".join(map(str, document_uuids)))
         documents.update(category=category)
 
-        formatted_metadata = self.metadata_value_service.reform_metadata_values(
-            metadata
-        )
+        if metadata:
+            self.category_service.validate_category_metadata_fields(
+                category_uuid, metadata.keys()
+            )
+            formatted_metadata = self.metadata_value_service.reform_metadata_values(
+                metadata
+            )
 
-        for document in documents:
-            self.update_metadata_values(document, formatted_metadata)
+            for document in documents:
+                self.update_metadata_values(document, formatted_metadata)
         return documents
 
     def update_metadata_values(self, instance, metadata_values, **kwargs):

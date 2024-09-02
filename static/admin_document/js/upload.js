@@ -30,7 +30,6 @@ class Upload {
                 url,
                 function (response) {
                     console.log('Document deleted successfully');
-                    self.countAndRenderFiles(dropzone);
                 },
                 function (response) {
                     console.log('Error deleting document');
@@ -207,8 +206,11 @@ class Upload {
                 url,
                 upload_data,
                 function (response) {
-                    console.log('Document uploaded successfully');
-                    self.countAndRenderFiles();
+                    notify('Document uploaded successfully', 'success');
+                    // documentUploadform.trigger("reset");
+                    documentUploadform.parsley().reset();
+                    // documentUploadform.find("#metadata-section").empty();
+                    Dropzone.forElement(".dropzone").removeAllFiles(true);
                 },
                 function (response) {
                     console.log('Error uploading document');
