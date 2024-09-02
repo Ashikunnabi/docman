@@ -89,14 +89,12 @@ class Upload {
 
         let fields = metadata.fields;
         fields.forEach((field) => {
-            if (field.field_type === 'text') {
-                formFields += this.textField(field);
-            }
             if (field.field_type === 'integer') {
                 formFields += this.integerField(field);
-            }
-            if (field.field_type === 'email') {
+            } else if (field.field_type === 'email') {
                 formFields += this.emailField(field);
+            } else {
+                formFields += this.textField(field);
             }
         });
         formFields += `</fieldset>`;
