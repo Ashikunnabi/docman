@@ -5,6 +5,7 @@ from .viewsets import (
     DocumentRetrieveUpdateDestroyAPIView,
     DocumentMetadataValueUpdateAPIView,
     DocumentSearchAPIView,
+    DocumentUploadAPIView,
 )
 
 
@@ -15,4 +16,5 @@ urlpatterns = [
     path("<uuid:uuid>/", DocumentRetrieveUpdateDestroyAPIView.as_view(), name="document_retrieve_update_destroy"),
     path("<uuid:uuid>/metadata-values/", DocumentMetadataValueUpdateAPIView.as_view(), name="document_metadata_values_update"),
     path("search/", DocumentSearchAPIView.as_view(), name="document_search"),
+    path("upload/", DocumentUploadAPIView.as_view(), name="document_upload"),
 ]

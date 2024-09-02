@@ -101,3 +101,9 @@ class DocumentMetadataValueInputSerializer(serializers.ModelSerializer):
             "value_timezone",
             "value_currency_code",
         ]
+
+
+class DocumentUploadInputSerializer(serializers.Serializer):
+    document_uuids = serializers.ListField(child=serializers.UUIDField(), required=True)
+    category_uuid = serializers.UUIDField(required=True)
+    metadata = serializers.DictField(required=False)

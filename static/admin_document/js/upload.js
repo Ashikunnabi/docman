@@ -65,21 +65,21 @@ class Upload {
 
     textField = (field) => {
         return `<div class="form-group">
-            <label for="${field.uuid}">${field.name}</label>
+            <label for="${field.uuid}">${field.name}${field.is_required ? '<span class="text-danger">*</span>' : ''}</label>
             <input type="text" class="form-control" id="${field.uuid}" name="${field.uuid}" placeholder="${field.placeholder}" ${field.is_required ? 'required' : ''}>
         </div>`;
     }
 
     integerField = (field) => {
         return `<div class="form-group">
-            <label for="${field.uuid}">${field.name}</label>
+            <label for="${field.uuid}">${field.name}${field.is_required ? '<span class="text-danger">*</span>' : ''}</label>
             <input type="number" class="form-control" id="${field.uuid}" name="${field.uuid}" placeholder="${field.placeholder}" ${field.is_required ? 'required' : ''}>
         </div>`;
     }
 
     emailField = (field) => {
         return `<div class="form-group">
-            <label for="${field.uuid}">${field.name}</label>
+            <label for="${field.uuid}">${field.name}${field.is_required ? '<span class="text-danger">*</span>' : ''}</label>
             <input type="email" class="form-control" id="${field.uuid}" name="${field.uuid}" placeholder="${field.placeholder}" ${field.is_required ? 'required' : ''}>
         </div>`;
     }
@@ -137,7 +137,7 @@ class Upload {
     getAvailableCategories = () => {
         let self = this;
         let documentUploadform = $("#documentUploadMetadataForm")
-        let category_dropdown = documentUploadform.find("#category");
+        let category_dropdown = documentUploadform.find("#__category_uuid");
 
         category_dropdown.select2({
             ajax: {
@@ -174,12 +174,57 @@ class Upload {
         });
     }
 
+    submitDocument = () => {
+        let self = this;
+        let documentUploadform = $("#documentUploadMetadataForm")
+        documentUploadform.on('submit', function (e) {
+            e.preventDefault();
+            documentUploadform.parsley().validate();
+            if (!documentUploadform.parsley().isValid()) {
+                return false;
+            }
+            let metadata = {};
+            let url = document_api_url + 'upload/';
+            let data = documentUploadform.serializeArray();
+            let document_uuids = $('.dz-remove').map(function () {
+                return $(this).attr('data-uuid');
+            });
+
+            data.forEach((field) => {
+                if (field.name === '__category_uuid') {
+                    return;
+                }
+                metadata[field.name] = field.value;
+            });
+
+            let upload_data = {
+                metadata: metadata,
+                document_uuids: Array.from(document_uuids),
+                category_uuid: documentUploadform.find("#__category_uuid").val()
+            };
+
+            new AjaxService().postRequest(
+                url,
+                upload_data,
+                function (response) {
+                    console.log('Document uploaded successfully');
+                    self.countAndRenderFiles();
+                },
+                function (response) {
+                    console.log('Error uploading document');
+                }
+            );
+            return false;
+        });
+    }
+
     main = () => {
         if (!hasPermission('document.add_document')) {
             $("#document-upload").hide();
         } else {
             this.generate();
             $("#document-upload").show();
+            this.submitDocument();
         }
         if (hasPermission('category.view_category')) {
             this.getAvailableCategories();

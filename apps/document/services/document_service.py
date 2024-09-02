@@ -97,6 +97,29 @@ class DocumentService(BaseModelService):
         instance = super().create(**kwargs)
         return instance
 
+    def document_upload(self, **kwargs):
+        """This is a method to attach temporary files with category and metadata values"""
+        category_uuid = kwargs.pop("category_uuid")
+        document_uuids = kwargs.pop("document_uuids")
+        metadata = kwargs.pop("metadata")
+
+        if metadata:
+            self.category_service.validate_category_metadata_fields(
+                category_uuid, metadata.keys()
+            )
+
+        category = self.category_service.read_by_uuid(category_uuid)
+        documents = self.list(uuid__in=",".join(map(str, document_uuids)))
+        documents.update(category=category)
+
+        formatted_metadata = self.metadata_value_service.reform_metadata_values(
+            metadata
+        )
+
+        for document in documents:
+            self.update_metadata_values(document, formatted_metadata)
+        return documents
+
     def update_metadata_values(self, instance, metadata_values, **kwargs):
         for metadata_value in metadata_values:
             metadata_value["document_uuid"] = instance.uuid

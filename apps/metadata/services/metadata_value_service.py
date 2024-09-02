@@ -13,11 +13,25 @@ class MetadataValueService(BaseModelService):
     @property
     def document_service(self):
         from apps.document.services import DocumentService
+
         return DocumentService()
 
     @property
     def metadata_field_service(self):
         return MetadataFieldService()
+
+    def reform_metadata_values(self, metadata_field: dict) -> list:
+        metadata_values = []
+        for field, value in metadata_field.items():
+            field = self.metadata_field_service.read_by_uuid(field)
+            metadata_values.append(
+                {
+                    "field_uuid": field.uuid,
+                    f"value_{field.field_type}": value,
+                }
+            )
+
+        return metadata_values
 
     def validated_data(self, **kwargs):
         m2m_data = {}

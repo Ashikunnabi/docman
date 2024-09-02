@@ -88,3 +88,18 @@ class CategoryService(BaseModelService):
         except models.ProtectedError as ex:
             message = "Category can't be deleted. It has documents or subcategories associated with it."
             raise CategoryDeleteException(message)
+
+    def validate_category_metadata_fields(self, category_uuid, metadata_uuids):
+        category = self.read_by_uuid(category_uuid)
+        connected_metadata = category.metadata.all()
+        connected_metadata_field_uuids = []
+
+        for metadata in connected_metadata:
+            connected_metadata_field_uuids += list(
+                map(str, metadata.fields.values_list("uuid", flat=True))
+            )
+
+        for metadata_uuid in metadata_uuids:
+            if metadata_uuid not in connected_metadata_field_uuids:
+                raise Exception("Metadata field not connected to the category.")
+        return True

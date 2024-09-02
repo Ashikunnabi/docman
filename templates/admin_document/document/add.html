@@ -74,16 +74,21 @@
                     <h6 class="m-0 font-weight-bold text-primary">Metadata Information</h6>
                     <div></div>
                 </div>
-                <div class="card-body">
-                    <form id="documentUploadMetadataForm" data-parsley-validate>
+                <form id="documentUploadMetadataForm" data-parsley-validate>
+                    <div class="card-body">
                         <div class="form-group">
-                            <label for="category">Folder</label>
-                            <select class="form-control" id="category" name="category" required>
+                            <label for="__category_uuid">Folder</label>
+                            <select class="form-control" id="__category_uuid" name="__category_uuid" required>
                             </select>
                         </div>
                         <div id="metadata-section"></div>
-                    </form>
-                </div>
+
+                    </div>
+                    <div class="card-footer text-right">
+                        <button type="reset" class="btn btn-secondary" id="resetMetadataForm">Reset</button>
+                        <button type="submit" class="btn btn-primary">Upload</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>

@@ -4,6 +4,7 @@ from rest_framework import filters, status
 from rest_framework.response import Response
 
 from apps.common.custom_viewset import (
+    BaseCreateAPIView,
     BaseListAPIView,
     BaseListCreateAPIView,
     BaseRetrieveUpdateAPIView,
@@ -16,6 +17,7 @@ from .serializers import (
     DocumentMetadataValueInputSerializer,
     DocumentOutputSerializer,
     DocumentSimpleOutputSerializer,
+    DocumentUploadInputSerializer,
 )
 
 
@@ -59,7 +61,9 @@ class DocumentRetrieveUpdateDestroyAPIView(BaseRetrieveUpdateDestroyAPIView):
     def get_object(self):
         instance = super().get_object()
         service = self.get_service(user=self.request.user)
-        viewable_category_codes = service.category_permission_service.category_code_permissions()
+        viewable_category_codes = (
+            service.category_permission_service.category_code_permissions()
+        )
         if instance.category and instance.category.code not in viewable_category_codes:
             raise ObjectNotFoundException("Document not found")
         return instance
@@ -112,3 +116,18 @@ class DocumentSearchAPIView(BaseListAPIView):
 
         serializer = self.simpleoutput_serializer_class(queryset, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class DocumentUploadAPIView(BaseCreateAPIView):
+    service_class = DocumentService
+    input_serializer_class = DocumentUploadInputSerializer
+    output_serializer_class = DocumentOutputSerializer
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_input_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        validated_data = serializer.validated_data
+        service = self.get_service()
+        document = service.document_upload(**validated_data)
+        output_serializer = self.get_output_serializer(document, many=True)
+        return Response(output_serializer.data, status=status.HTTP_201_CREATED)
