@@ -1,4 +1,3 @@
-
 .card-header {
     display: flex;
     justify-content: space-between;
@@ -11,8 +10,9 @@
 }
 
 .dropzone {
-    max-height: 70vh;
+    height: 70vh;
     overflow-y: auto;
+    align-content: center;
 }
 
 .dz-success-mark {
@@ -47,4 +47,22 @@
 #dropzone-inner-template .dz-remove i {
     cursor: pointer;
     color: red;
+}
+
+#documentUploadMetadataForm .card-body {
+    height: 67vh;
+    overflow-y: auto;
+    color: #212529;
+}
+
+#documentUploadMetadataForm .card-body #metadata-section {
+    font-size: small;
+}
+
+#documentUploadMetadataForm .card-body #metadata-section legend {
+    font-size: medium;
+}
+
+#documentUploadMetadataForm .card-body #metadata-section input {
+    font-size: small;
 }
