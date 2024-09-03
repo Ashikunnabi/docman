@@ -1,6 +1,15 @@
+body {
+    scrollbar-color: auto;
+}
 #document-viewer {
     width: 100%;
     height: 70vh;
+    overflow: auto;
+}
+
+#document-viewer #pdfDocumentViewer,
+#document-viewer #imageDocumentViewer {
+    display: none;
 }
 
 #documentEditMetadataForm .card-body {

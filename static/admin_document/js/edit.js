@@ -1,6 +1,8 @@
 class Edit {
     document_view_card = $("#document-view-card");
     document_viewer = $("#document-viewer");
+    pdfDocumentViewer = $(this.document_viewer).find("#pdfDocumentViewer");
+    imageDocumentViewer = $(this.document_viewer).find("#imageDocumentViewer");
     document = null;
 
     textField = (field) => {
@@ -135,6 +137,19 @@ class Edit {
         })
     }
 
+    renderImage = (_document) => {
+        let self = this;
+        console.log('Rendering image');
+        let image_url = _document.file;
+        let image = new Image();
+        image.src = image_url;
+        image.style.width = '100%';
+        image.style.height = 'auto';
+        image.onload = function () {
+            self.imageDocumentViewer.append(image);
+        }
+    }
+
     viewDocument = () => {
         let self = this;
         let url = `${document_api_url}${uuid}/`;
@@ -147,7 +162,17 @@ class Edit {
                 setTimeout(function () {
                     self.setFormFieldValues(response.data);
                 }, 2000);
-                self.renderPDF(self.document);
+
+                if (self.document.extension !== 'pdf') {
+                    PDFViewerApplication.close();
+                }
+                if (self.document.extension === 'pdf') {
+                    self.pdfDocumentViewer.show();
+                    self.renderPDF(self.document);
+                } else if (self.document.extension === 'png') {
+                    self.imageDocumentViewer.show();
+                    self.renderImage(self.document);
+                }
 
             },
             function (response) {
