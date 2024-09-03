@@ -3,6 +3,7 @@ class Edit {
     document_viewer = $("#document-viewer");
     pdfDocumentViewer = $(this.document_viewer).find("#pdfDocumentViewer");
     imageDocumentViewer = $(this.document_viewer).find("#imageDocumentViewer");
+    otherDocumentViewer = $(this.document_viewer).find("#otherDocumentViewer");
     document = null;
 
     textField = (field) => {
@@ -139,7 +140,6 @@ class Edit {
 
     renderImage = (_document) => {
         let self = this;
-        console.log('Rendering image');
         let image_url = _document.file;
         let image = new Image();
         image.src = image_url;
@@ -148,6 +148,17 @@ class Edit {
         image.onload = function () {
             self.imageDocumentViewer.append(image);
         }
+    }
+
+    renderOtherDocument = (_document) => {
+        // gdrive iframe
+        let iframe = document.createElement('iframe');
+        iframe.src = `https://docs.google.com/gview?url=https://www.cmu.edu/blackboard/files/evaluate/tests-example.xls&embedded=true`;
+        // iframe.src = `https://docs.google.com/gview?url=${window.location.origin}${_document.file}&embedded=true`;
+        iframe.style.width = '100%';
+        iframe.style.height = '100%';
+        iframe.style.border = 'none';
+        this.otherDocumentViewer.append(iframe);
     }
 
     viewDocument = () => {
@@ -172,6 +183,9 @@ class Edit {
                 } else if (self.document.extension === 'png') {
                     self.imageDocumentViewer.show();
                     self.renderImage(self.document);
+                } else {
+                    self.otherDocumentViewer.show();
+                    self.renderOtherDocument(self.document);
                 }
 
             },

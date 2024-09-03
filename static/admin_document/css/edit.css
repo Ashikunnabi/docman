@@ -1,14 +1,18 @@
 body {
     scrollbar-color: auto;
 }
-#document-viewer, #pdfDocumentViewer {
+#document-viewer,
+#pdfDocumentViewer,
+#imageDocumentViewer,
+#otherDocumentViewer {
     width: 100%;
     height: 70vh;
     overflow: auto;
 }
 
 #document-viewer #pdfDocumentViewer,
-#document-viewer #imageDocumentViewer {
+#document-viewer #imageDocumentViewer,
+#document-viewer #otherDocumentViewer {
     display: none;
 }
 
