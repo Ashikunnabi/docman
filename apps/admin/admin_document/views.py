@@ -9,6 +9,11 @@ def document_list(request):
     return render(request, "admin_document/document/list.html")
 
 
+@permission_required("document.view_document", raise_exception=True)
+def document_edit(request, uuid):
+    return render(request, "admin_document/document/edit.html", context={"uuid": uuid})
+
+
 @permission_required("document.add_document", raise_exception=True)
 def document_add(request):
     return render(request, "admin_document/document/add.html")

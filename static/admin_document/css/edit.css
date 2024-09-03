@@ -1,0 +1,22 @@
+#document-viewer {
+    width: 100%;
+    height: 70vh;
+}
+
+#documentEditMetadataForm .card-body {
+    height: 67vh;
+    overflow-y: auto;
+    color: #212529;
+}
+
+#documentEditMetadataForm .card-body #metadata-section {
+    font-size: small;
+}
+
+#documentEditMetadataForm .card-body #metadata-section legend {
+    font-size: medium;
+}
+
+#documentEditMetadataForm .card-body #metadata-section input {
+    font-size: small;
+}

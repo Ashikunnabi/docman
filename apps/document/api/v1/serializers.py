@@ -48,6 +48,7 @@ class DocumentSimpleOutputSerializer(serializers.ModelSerializer):
 
 class DocumentOutputSerializer(serializers.ModelSerializer):
     metadata_values = MetadataValueOutputSerializer(many=True)
+    category = serializers.SerializerMethodField()
 
     class Meta:
         model = Document
@@ -66,6 +67,14 @@ class DocumentOutputSerializer(serializers.ModelSerializer):
             "updated_by_name",
             "metadata_values",
         ]
+    
+    def get_category(self, obj):
+        return {
+            "uuid": obj.category.uuid,
+            "name": obj.category.name,
+            "code": obj.category.code,
+            "path": obj.category.path,
+        }
 
 
 class DocumentMetadataValueInputSerializer(serializers.ModelSerializer):
