@@ -1049,6 +1049,11 @@
     const pdf_viewer_url = "/document/viewer/{{ uuid }}/";
 </script>
 
+<!-- pdf js -->
+<script src="{% static 'base/vendor/pdfjs-v_4_6_82/js/pdf.mjs' %}?v={{JS_VERSION}}" type="module"></script>
+<script src="{% static 'base/vendor/pdfjs-v_4_6_82/js/viewer.mjs' %}?v={{JS_VERSION}}" type="module"></script>
+<script src="{% static 'base/vendor/pdfjs-v_4_6_82/js/pdf.worker.mjs' %}?v={{JS_VERSION}}" type="module"></script>
+
 <!-- Document JS -->
 <script src="{% static 'admin_document/js/edit.js' %}?v={{JS_VERSION}}"></script>
 

@@ -250,7 +250,7 @@ class Document {
             if (data.extension === 'folder') {
                 self.handleRowDoubleClick(data);
             } else {
-                window.location.href = "edit/" + data.uuid;
+                window.open(`${document_view_url}${data.uuid}/`, '_blank');
             }
         });
         self.renderBreadcrumb();
@@ -468,6 +468,18 @@ class Document {
         });
     }
 
+    viewFile = () => {
+        let self = this;
+        let datatable_row = null;
+
+        $(document).on('click', '.actionButtonViewFile', function () {
+            let row = $(this).parent().parent()
+            datatable_row = $('#documentDataTable').DataTable().row(row).data();
+            let url = `${document_view_url}${datatable_row.uuid}/`;
+            window.open(url, '_blank');
+        });
+    }
+
     main = () => {
         if (page === 'list') {
             // get category_uuid from url
@@ -487,6 +499,11 @@ class Document {
                 $('.actionButtonViewFolder').hide();
             } else {
                 this.viewFolder();
+            }
+            if (!hasPermission('document.view_document')) {
+                $('.actionButtonViewFile').hide();
+            } else {
+                this.viewFile();
             }
             if (!hasPermission('document.delete_document')) {
                 $('.actionButtonDeleteFolder').hide();
