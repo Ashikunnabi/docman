@@ -153,8 +153,8 @@ class Edit {
     renderOtherDocument = (_document) => {
         // gdrive iframe
         let iframe = document.createElement('iframe');
-        iframe.src = `https://docs.google.com/gview?url=https://www.cmu.edu/blackboard/files/evaluate/tests-example.xls&embedded=true`;
-        // iframe.src = `https://docs.google.com/gview?url=${window.location.origin}${_document.file}&embedded=true`;
+        // iframe.src = `https://docs.google.com/gview?url=https://www.cmu.edu/blackboard/files/evaluate/tests-example.xls&embedded=true`;
+        iframe.src = `https://docs.google.com/gview?url=${window.location.origin}${_document.file}&embedded=true`;
         iframe.style.width = '100%';
         iframe.style.height = '100%';
         iframe.style.border = 'none';
