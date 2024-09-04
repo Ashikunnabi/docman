@@ -46,7 +46,7 @@ class Document {
             "serverSide": true,
             "bDestroy": true,
             "bJQueryUI": true,
-            "dom": 'rtip',
+            "dom": 'frtip',
             "ordering": false,
             "buttons": [
                 {
@@ -137,8 +137,11 @@ class Document {
                     length: data.length,
                     search: data.search.value,
                     order: JSON.stringify(data.order),
-                    category_uuid: category_uuid
+                    category_uuid: category_uuid,
                 });
+                if (data.search.value) {
+                    queryParams += '&file_only=true';
+                }
                 let url = `${document_search_api_url}?${queryParams}`;
                 new AjaxService().getRequest(url, function (response) {
                     callback(response);
@@ -227,13 +230,13 @@ class Document {
                         // </a>`;
                         // }
                         if (row.extension === 'folder' && hasPermission('category.delete_category')) {
-                            html += `<i class="far fa-trash-alt actionButton actionButtonDeleteFolder" title="View Folder"></i>`;
+                            html += `<i class="far fa-trash-alt btn btn-outline-primary btn-sm actionButton actionButtonDeleteFolder" title="View Folder"></i>`;
                         }
                         if (row.extension === 'folder' && hasPermission('category.view_category')) {
                             html += `<button class="btn btn-outline-primary btn-sm actionButton actionButtonViewFolder" title="View Folder">></button>`;
                         }
                         if (row.extension !== 'folder' && hasPermission('document.delete_document')) {
-                            html += `<i class="far fa-trash-alt actionButton actionButton actionButtonDeleteFile" title="Delete File"></i>`;
+                            html += `<i class="far fa-trash-alt btn btn-outline-primary btn-sm actionButton actionButton actionButtonDeleteFile" title="Delete File"></i>`;
                         }
                         if (row.extension !== 'folder' && hasPermission('document.view_document')) {
                             html += `<button class="btn btn-outline-primary btn-sm actionButton actionButtonViewFile" title="View File">></button>`;

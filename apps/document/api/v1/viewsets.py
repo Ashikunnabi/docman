@@ -107,7 +107,11 @@ class DocumentSearchAPIView(BaseListAPIView):
 
     def list(self, request, *args, **kwargs):
         service = self.get_service(**{"user": request.user})
-        queryset = service.search(**request.query_params.dict())
+        query_params = request.query_params.dict()
+        if "search" in query_params:
+            if query_params["search"]:
+                query_params["name__icontains"] = query_params.pop("search")
+        queryset = service.search(**query_params)
 
         page = self.paginate_queryset(queryset)
         if page is not None:
