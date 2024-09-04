@@ -67,14 +67,17 @@ class DocumentOutputSerializer(serializers.ModelSerializer):
             "updated_by_name",
             "metadata_values",
         ]
-    
+
     def get_category(self, obj):
-        return {
-            "uuid": obj.category.uuid,
-            "name": obj.category.name,
-            "code": obj.category.code,
-            "path": obj.category.path,
-        }
+        data = {}
+        if obj.category:
+            data = {
+                "uuid": obj.category.uuid,
+                "name": obj.category.name,
+                "code": obj.category.code,
+                "path": obj.category.path,
+            }
+        return data
 
 
 class DocumentMetadataValueInputSerializer(serializers.ModelSerializer):
