@@ -195,6 +195,14 @@ class Edit {
         );
     }
 
+    downloadDocument = () => {
+        let self = this;
+        $("#download-document").on('click', function () {
+            let url = `${self.document.file}`;
+            window.open(url, 'download');
+        })
+    }
+
     main = () => {
         if (!hasPermission('document.view_document')) {
             $("#document-view").hide();
@@ -207,6 +215,7 @@ class Edit {
         } else {
             $("#documentEditMetadataForm").find("#category").hide();
         }
+        this.downloadDocument();
     }
 }
 

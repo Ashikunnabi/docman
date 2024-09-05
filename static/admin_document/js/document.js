@@ -229,17 +229,20 @@ class Document {
                         //     </button>
                         // </a>`;
                         // }
-                        if (row.extension === 'folder' && hasPermission('category.delete_category')) {
-                            html += `<i class="far fa-trash-alt btn btn-outline-primary btn-sm actionButton actionButtonDeleteFolder" title="View Folder"></i>`;
-                        }
-                        if (row.extension === 'folder' && hasPermission('category.view_category')) {
-                            html += `<button class="btn btn-outline-primary btn-sm actionButton actionButtonViewFolder" title="View Folder">></button>`;
-                        }
-                        if (row.extension !== 'folder' && hasPermission('document.delete_document')) {
-                            html += `<i class="far fa-trash-alt btn btn-outline-primary btn-sm actionButton actionButton actionButtonDeleteFile" title="Delete File"></i>`;
-                        }
-                        if (row.extension !== 'folder' && hasPermission('document.view_document')) {
-                            html += `<button class="btn btn-outline-primary btn-sm actionButton actionButtonViewFile" title="View File">></button>`;
+                        if (row.extension === 'folder') {
+                            if (hasPermission('category.delete_category')) {
+                                html += `<i class="far fa-trash-alt btn btn-outline-primary btn-sm actionButton actionButtonDeleteFolder" title="View Folder"></i>`;
+                            }
+                            if (hasPermission('category.view_category')) {
+                                html += `<button class="btn btn-outline-primary btn-sm actionButton actionButtonViewFolder" title="View Folder">></button>`;
+                            }
+                        } else {
+                            if (hasPermission('document.delete_document')) {
+                                html += `<i class="far fa-trash-alt btn btn-outline-primary btn-sm actionButton actionButton actionButtonDeleteFile" title="Delete File"></i>`;
+                            }
+                            if (hasPermission('document.view_document')) {
+                                html += `<button class="btn btn-outline-primary btn-sm actionButton actionButtonViewFile" title="View File">></button>`;
+                            }
                         }
                         return html;
                     }

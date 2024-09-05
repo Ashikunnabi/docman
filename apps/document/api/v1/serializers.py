@@ -28,6 +28,7 @@ class DocumentInputSerializer(serializers.ModelSerializer):
 
 
 class DocumentSimpleOutputSerializer(serializers.ModelSerializer):
+    permissions = serializers.SerializerMethodField()
 
     class Meta:
         model = Document
@@ -44,6 +45,9 @@ class DocumentSimpleOutputSerializer(serializers.ModelSerializer):
             "created_by_name",
             "updated_by_name",
         ]
+    
+    def get_permissions(self, obj):
+        obj.category.permissions
 
 
 class DocumentOutputSerializer(serializers.ModelSerializer):
