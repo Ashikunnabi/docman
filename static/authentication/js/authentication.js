@@ -16,7 +16,7 @@ class Login {
 
         // Check for saved credentials in localStorage
         if (localStorage.getItem('rememberMe') === 'true') {
-            $('input[type="email"]').val(localStorage.getItem('username'));
+            $('input[type="text"]').val(localStorage.getItem('username'));
             $('input[type="password"]').val(localStorage.getItem('password'));
             $('#rememberMe').prop('checked', true);
         }
@@ -31,7 +31,7 @@ class Login {
             let rememberMe = $('#rememberMe').is(':checked');
 
             let data = {
-                username: login_form_data.get('email'),
+                username: login_form_data.get('username'),
                 password: login_form_data.get('password')
             };
 
@@ -59,9 +59,7 @@ class Login {
                         self.permissions();
                     },
                     error: function (response) {
-                        $('.login-failed')
-                            .html(response.responseJSON.message)
-                            .css('display', 'block')
+                        notify(response.responseJSON.message, 'error');
                     }
                 });
             }
