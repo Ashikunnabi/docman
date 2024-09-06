@@ -4,26 +4,27 @@ class Edit {
     pdfDocumentViewer = $(this.document_viewer).find("#pdfDocumentViewer");
     imageDocumentViewer = $(this.document_viewer).find("#imageDocumentViewer");
     otherDocumentViewer = $(this.document_viewer).find("#otherDocumentViewer");
+    metadataForm = $("#documentEditMetadataForm");
     document = null;
 
     textField = (field) => {
         return `<div class="form-group">
             <label for="${field.uuid}">${field.name}${field.is_required ? '<span class="text-danger">*</span>' : ''}</label>
-            <input type="text" class="form-control" id="${field.uuid}" name="${field.uuid}" placeholder="${field.placeholder}" ${field.is_required ? 'required' : ''}>
+            <input type="text" class="form-control" id="${field.uuid}" name="${field.uuid}" data-field-type=${field.field_type} placeholder="${field.placeholder}" ${field.is_required ? 'required' : ''}>
         </div>`;
     }
 
     integerField = (field) => {
         return `<div class="form-group">
             <label for="${field.uuid}">${field.name}${field.is_required ? '<span class="text-danger">*</span>' : ''}</label>
-            <input type="number" class="form-control" id="${field.uuid}" name="${field.uuid}" placeholder="${field.placeholder}" ${field.is_required ? 'required' : ''}>
+            <input type="number" class="form-control" id="${field.uuid}" name="${field.uuid}" data-field-type=${field.field_type} placeholder="${field.placeholder}" ${field.is_required ? 'required' : ''}>
         </div>`;
     }
 
     emailField = (field) => {
         return `<div class="form-group">
             <label for="${field.uuid}">${field.name}${field.is_required ? '<span class="text-danger">*</span>' : ''}</label>
-            <input type="email" class="form-control" id="${field.uuid}" name="${field.uuid}" placeholder="${field.placeholder}" ${field.is_required ? 'required' : ''}>
+            <input type="email" class="form-control" id="${field.uuid}" name="${field.uuid}" data-field-type=${field.field_type} placeholder="${field.placeholder}" ${field.is_required ? 'required' : ''}>
         </div>`;
     }
 
@@ -203,6 +204,41 @@ class Edit {
         })
     }
 
+    metadataValueUpdate = () => {
+        let self = this;
+        self.metadataForm.on('submit', function (e) {
+            e.preventDefault();
+            self.metadataForm.parsley().validate();
+            if (!self.metadataForm.parsley().isValid()) {
+                return;
+            }
+            let url = `${document_api_url}${uuid}/metadata/`;
+            let data = $(this).serializeArray();
+            let metadata = [];
+            data.forEach((item) => {
+                if (item.name === '__category_uuid') {
+                    return;
+                }
+                let field_type = "value_" + $(`#${item.name}`).data('field-type');
+                metadata.push({
+                    field_uuid: item.name,
+                    [field_type]: item.value
+                });
+            });
+            new AjaxService().patchRequest(
+                url,
+                metadata,
+                function (response) {
+                    console.log('Metadata updated');
+                },
+                function (response) {
+                    console.log('Error updating metadata');
+                }
+            );
+
+        })
+    }
+
     main = () => {
         if (!hasPermission('document.view_document')) {
             $("#document-view").hide();
@@ -216,6 +252,7 @@ class Edit {
             $("#documentEditMetadataForm").find("#category").hide();
         }
         this.downloadDocument();
+        this.metadataValueUpdate();
     }
 }
 
