@@ -74,6 +74,23 @@ class Login {
         ajaxService.getRequest(permission_api_url,
             function success(response) {
                 setLocalWithExpiry('permissions', response.data, 86400000);
+                self.categoryPermissions();
+            },
+            function error(response) {
+                console.log('Error:', response);
+            }
+        );
+
+    };
+
+
+    categoryPermissions = () => {
+        let self = this;
+        const ajaxService = new AjaxService();
+
+        ajaxService.getRequest(category_permission_api_url,
+            function success(response) {
+                setLocalWithExpiry('category_permissions', response.data, 86400000);
                 window.location.reload();
             },
             function error(response) {

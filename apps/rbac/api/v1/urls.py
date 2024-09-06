@@ -53,6 +53,11 @@ urlpatterns = [
         PermissionListAPIView.as_view(),
         name="permission_list",
     ),
+    path(
+        "category-permissions/",
+        UserCategoryPermissionListAPIView.as_view(),
+        name="user_category_permission_list",
+    ),
     # path(
     #     'permisisons/<int:id>/',
     #     PermissionRetrieveUpdateDestroyAPIView.as_view(),

@@ -106,6 +106,14 @@ class UserPermissionListAPIView(BaseListAPIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
+class UserCategoryPermissionListAPIView(BaseListAPIView):
+    service_class = PermissionService
+
+    def list(self, request, *args, **kwargs):
+        permissions = request.user.get_category_permissions()
+        return Response(permissions, status=status.HTTP_200_OK)
+
+
 class StaffListAPIView(BaseListAPIView):
     service_class = UserService
     output_serializer_class = UserOutputSerializer
