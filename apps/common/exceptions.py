@@ -30,3 +30,8 @@ class ObjectNotFoundException(BaseException):
     code = "OBJECT_NOT_FOUND"
     status_code = status.HTTP_400_BAD_REQUEST
     message = "Object not found"
+
+class LimitExceededException(BaseException):
+    code = "LIMIT_EXCEEDED"
+    status_code = status.HTTP_400_BAD_REQUEST
+    message = "Limit exceeded. Can't add more. Please contact support for more information."

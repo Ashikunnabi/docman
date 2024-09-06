@@ -1,9 +1,12 @@
 import uuid
 from datetime import datetime
 
+from django.conf import settings
 from django.db import models
 
+from apps.common.exceptions import LimitExceededException
 from apps.common.models import BaseModel
+from apps.common.validators import ScreenMethodValidator
 
 
 def file_location(instance, filename):
@@ -13,6 +16,7 @@ def file_location(instance, filename):
 
 
 class Document(BaseModel):
+    validators = [ScreenMethodValidator]
     name = models.CharField(max_length=256)
     file = models.FileField(upload_to=file_location, null=True)
     extension = models.CharField(max_length=256)
@@ -28,6 +32,11 @@ class Document(BaseModel):
 
     def __str__(self):
         return self.name
+    
+    def screen_limit_check(self):
+        existing_objects_count = self.__class__.objects.count()
+        if existing_objects_count >= settings.MAX_DOCUMENT_COUNT:
+            raise LimitExceededException
 
     # @property
     # def category_wise_file_path(self):

@@ -78,7 +78,7 @@ TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
         "DIRS": [
-            os.path.join(BASE_DIR, 'templates'),
+            os.path.join(BASE_DIR, "templates"),
         ],
         "APP_DIRS": True,
         "OPTIONS": {
@@ -134,7 +134,7 @@ AUTH_PASSWORD_VALIDATORS = [
 REST_FRAMEWORK = {
     "DEFAULT_RENDERER_CLASSES": ("apps.common.rest_utils.renderers.APIJSONRenderer",),
     "DEFAULT_PERMISSION_CLASSES": (
-        "rest_framework.permissions.IsAuthenticated", 
+        "rest_framework.permissions.IsAuthenticated",
         "apps.common.permissions.DjangoModelPermissions",
     ),
     "DEFAULT_AUTHENTICATION_CLASSES": (
@@ -263,6 +263,13 @@ EMAIL_USE_TLS = int(os.getenv("EMAIL_USE_TLS"))
 
 # File Encryption key!
 ENCRYPTION_KEY = os.getenv("ENCRYPTION_KEY")
+
+# LIMIT CONFIGURATION
+UNLIMITED = 9999
+MAX_USER_COUNT = int(os.getenv("MAX_USER_COUNT", UNLIMITED))
+MAX_GROUP_COUNT = int(os.getenv("MAX_GROUP_COUNT", UNLIMITED))
+MAX_CATEGORY_COUNT = int(os.getenv("MAX_CATEGORY_COUNT", UNLIMITED))
+MAX_DOCUMENT_COUNT = int(os.getenv("MAX_DOCUMENT_COUNT", UNLIMITED))
 
 
 # place this at the end of the file for developer/local configuration

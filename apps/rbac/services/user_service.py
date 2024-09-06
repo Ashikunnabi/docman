@@ -1,5 +1,7 @@
+from django.conf import settings
 from django.contrib.auth.hashers import make_password
 
+from apps.common.exceptions import LimitExceededException
 from apps.common.service import BaseModelService
 from ..exceptions import UserDeletionNotAllowedException
 
@@ -13,9 +15,16 @@ class UserService(BaseModelService):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
+    def limit_check(self):
+        existing_objects_count = self.model.objects.count()
+        if existing_objects_count >= settings.MAX_USER_COUNT:
+            raise LimitExceededException
+
     def validated_data(self, **kwargs):
         m2m_data = {}
         m2m_keys = []
+
+        self.limit_check()
 
         remove_keys = ["groups", "user_permissions"]
         for key in remove_keys:

@@ -1,4 +1,6 @@
+from django.conf import settings
 from django.db import models
+from apps.common.exceptions import LimitExceededException
 from apps.common.utils.basic import random_hex_code
 from apps.common.validators import ScreenMethodValidator
 
@@ -37,6 +39,11 @@ class Category(BaseModel):
 
     def __str__(self):
         return f"{self.name}"
+    
+    def screen_limit_check(self):
+        existing_objects_count = self.__class__.objects.count()
+        if existing_objects_count >= settings.MAX_CATEGORY_COUNT:
+            raise LimitExceededException
 
     def screen_unique_name_and_parent(self):
         if (

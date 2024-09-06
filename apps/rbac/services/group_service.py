@@ -1,6 +1,7 @@
+from django.conf import settings
 from django.contrib.auth.models import Permission
 
-from apps.common.exceptions import ObjectAlreadyExistsException
+from apps.common.exceptions import LimitExceededException, ObjectAlreadyExistsException
 from apps.common.service import BaseModelService
 from apps.rbac.models.branch import User
 
@@ -14,9 +15,16 @@ class GroupService(BaseModelService):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
+    def limit_check(self):
+        existing_objects_count = self.model.objects.count()
+        if existing_objects_count >= settings.MAX_GROUP_COUNT:
+            raise LimitExceededException
+
     def validated_data(self, **kwargs):
         m2m_data = {}
         m2m_keys = ["permissions", "users"]
+
+        self.limit_check()
 
         for m2m_key in m2m_keys:
             if m2m_key in kwargs:
