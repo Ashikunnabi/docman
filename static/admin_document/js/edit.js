@@ -51,6 +51,7 @@ class Edit {
         let category_dropdown = documentEditform.find("#__category_uuid");
         let options = new Option(document.category.path, document.category.uuid, true, true);
         category_dropdown.append(options).trigger('change');
+        category_dropdown.attr('disabled', 'disabled');
 
         let metadata = document.metadata_values;
         metadata.forEach((value) => {
@@ -236,10 +237,11 @@ class Edit {
                 url,
                 metadata,
                 function (response) {
-                    console.log('Metadata updated');
+                    notify('success', 'success');
                 },
                 function (response) {
-                    console.log('Error updating metadata');
+                    notify(response.responseJSON.message, 'error');
+                    console.log(response);
                 }
             );
 
