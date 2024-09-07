@@ -20,6 +20,7 @@ class Upload {
         });
 
         dropzone.on("removedfile", function (file) {
+            console.log(file)
             let uuid = $(file.previewTemplate).find('.dz-remove').attr('data-uuid');
             if (!uuid) {
                 console.log('No uuid found');
@@ -208,7 +209,7 @@ class Upload {
                     // documentUploadform.trigger("reset");
                     documentUploadform.parsley().reset();
                     // documentUploadform.find("#metadata-section").empty();
-                    Dropzone.forElement(".dropzone").removeAllFiles(true);
+                    // Dropzone.forElement(".dropzone").removeAllFiles(true);
                 },
                 function (response) {
                     console.log('Error uploading document');

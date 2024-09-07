@@ -48,7 +48,9 @@ class DocumentSimpleOutputSerializer(serializers.ModelSerializer):
         ]
 
     def get_category(self, obj):
-        return obj.get("category")
+        if isinstance(obj, Document):
+            return obj.category.code if obj.category else None
+        return obj.get("category", None)
 
 
 class DocumentOutputSerializer(serializers.ModelSerializer):
