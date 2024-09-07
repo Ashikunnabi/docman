@@ -213,7 +213,7 @@ class Document {
                     "targets": 2,
                     "data": "modified",
                     "render": function (data, type, row, meta) {
-                        return moment(row.modified).format('YYYY-MM-DD hh:mm A');
+                        return moment(row.updated_at).format('YYYY-MM-DD hh:mm A');
                     }
 
                 },
