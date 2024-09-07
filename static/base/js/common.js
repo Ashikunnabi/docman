@@ -44,7 +44,7 @@ function hasPermission(codename) {
     return false;
 }
 
-function hasCategroryPermission(catgorycode, codename) {
+function hasCategoryPermission(catgorycode, codename) {
     const permissions = getLocalWithExpiry('category_permissions');
     // categrycode.codename
     let permission_code = `${catgorycode}.${codename}`

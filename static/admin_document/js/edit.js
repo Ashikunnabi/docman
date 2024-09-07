@@ -192,7 +192,7 @@ class Edit {
 
                 // set title of the page
                 document.title = "Docman | " + self.document.name;
-                if (hasCategroryPermission(self.document.category.code, 'download_document')) {
+                if (hasCategoryPermission(self.document.category.code, 'download_document')) {
                     $("#download-document").show();
                     self.downloadDocument();
                 }

@@ -28,6 +28,7 @@ class DocumentInputSerializer(serializers.ModelSerializer):
 
 
 class DocumentSimpleOutputSerializer(serializers.ModelSerializer):
+    category = serializers.SerializerMethodField()
 
     class Meta:
         model = Document
@@ -41,9 +42,13 @@ class DocumentSimpleOutputSerializer(serializers.ModelSerializer):
             "is_encrypted",
             "created_at",
             "updated_at",
+            "category",
             "created_by_name",
             "updated_by_name",
         ]
+
+    def get_category(self, obj):
+        return obj.get("category")
 
 
 class DocumentOutputSerializer(serializers.ModelSerializer):

@@ -237,7 +237,8 @@ class Document {
                                 html += `<button class="btn btn-outline-primary btn-sm actionButton actionButtonViewFolder" title="View Folder">></button>`;
                             }
                         } else {
-                            if (hasPermission('document.delete_document')) {
+                            let hasDeletePermission = hasPermission('document.delete_document') && hasCategoryPermission(row.category, 'delete_document');
+                            if (hasDeletePermission) {
                                 html += `<i class="far fa-trash-alt btn btn-outline-primary btn-sm actionButton actionButton actionButtonDeleteFile" title="Delete File"></i>`;
                             }
                             if (hasPermission('document.view_document')) {
