@@ -189,6 +189,13 @@ class Edit {
                     self.renderOtherDocument(self.document);
                 }
 
+                // set title of the page
+                document.title = "Docman | " + self.document.name;
+                if (hasCategroryPermission(self.document.category.code, 'download_document')) {
+                    $("#download-document").show();
+                    self.downloadDocument();
+                }
+
             },
             function (response) {
                 console.log('Error fetching document');
@@ -251,7 +258,6 @@ class Edit {
         } else {
             $("#documentEditMetadataForm").find("#category").hide();
         }
-        this.downloadDocument();
         this.metadataValueUpdate();
     }
 }

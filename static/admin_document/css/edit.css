@@ -12,7 +12,8 @@ body {
 
 #document-viewer #pdfDocumentViewer,
 #document-viewer #imageDocumentViewer,
-#document-viewer #otherDocumentViewer {
+#document-viewer #otherDocumentViewer,
+#download-document {
     display: none;
 }
 

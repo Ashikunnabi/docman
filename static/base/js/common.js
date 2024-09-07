@@ -44,6 +44,16 @@ function hasPermission(codename) {
     return false;
 }
 
+function hasCategroryPermission(catgorycode, codename) {
+    const permissions = getLocalWithExpiry('category_permissions');
+    // categrycode.codename
+    let permission_code = `${catgorycode}.${codename}`
+    if (permissions) {
+        return permissions.some(permission => permission === permission_code);
+    }
+    return false;
+}
+
 
 /*=============================================================================
                         notify js customize
