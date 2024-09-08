@@ -208,7 +208,13 @@ class Upload {
                     // documentUploadform.trigger("reset");
                     documentUploadform.parsley().reset();
                     // documentUploadform.find("#metadata-section").empty();
-                    // Dropzone.forElement(".dropzone").removeAllFiles(true);
+                    let dropzone = Dropzone.forElement(".dropzone");
+                    // remove uuids from dropzone files
+                    dropzone.files.forEach((file) => {
+                        $(file.previewTemplate).find('.dz-remove').attr('data-uuid', '');
+                    });
+                    // remove all files
+                    dropzone.removeAllFiles(true);
                 },
                 function (response) {
                     console.log('Error uploading document');
