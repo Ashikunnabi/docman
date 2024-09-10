@@ -52,7 +52,7 @@ class CategoryListCreateAPIView(BaseListCreateAPIView):
         serializer = self.get_input_serializer(data=data)
         serializer.is_valid(raise_exception=True)
 
-        service = self.service_class()
+        service = self.service_class(user=request.user)
         instance = service.create_category(**serializer.validated_data)
         serializer = self.get_output_serializer(instance)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -77,7 +77,7 @@ class CategoryRetrieveUpdateDestroyAPIView(BaseRetrieveUpdateDestroyAPIView):
         )
         serializer.is_valid(raise_exception=True)
 
-        service = self.service_class()
+        service = self.service_class(user=request.user)
         instance = service.update_category(
             instance=instance, **serializer.validated_data
         )
@@ -86,7 +86,7 @@ class CategoryRetrieveUpdateDestroyAPIView(BaseRetrieveUpdateDestroyAPIView):
 
     def destroy(self, request, *args, **kwargs):
         instance = self.get_object()
-        service = self.service_class()
+        service = self.service_class(user=request.user)
         service.delete(instance=instance)
         response = Response(status=status.HTTP_204_NO_CONTENT)
         response["Content-Length"] = 0
@@ -141,7 +141,7 @@ class CategoryGroupPermissionDeleteAPIView(BaseRetrieveUpdateDestroyAPIView):
 
     def destroy(self, request, *args, **kwargs):
         instance = self.get_object()
-        service = self.service_class()
+        service = self.service_class(user=request.user)
         service.delete(instance=instance)
         response = Response(status=status.HTTP_204_NO_CONTENT)
         response["Content-Length"] = 0

@@ -7,9 +7,8 @@ from apps.metadata.services.metadata_service import MetadataService
 class CategoryGroupPermissionService(BaseModelService):
     model = CategoryGroupPermission
 
-    def __init__(self, *args, user=None, **kwargs):
+    def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.user = user
 
     @property
     def group_service(self):

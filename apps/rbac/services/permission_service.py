@@ -7,9 +7,8 @@ class PermissionService(BaseModelService):
     model = Permission
     search_keywords = []
 
-    def __init__(self, *args, user=None, **kwargs):
+    def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.user = user
 
     def create_permission(self, **kwargs):
         remove_keys = []

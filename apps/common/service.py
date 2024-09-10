@@ -17,9 +17,12 @@ class BaseModelService:
     model = None
     search_keywords = []
 
-    def __init__(self, *args, **kwargs):
-        # super().__init__(*args, **kwargs)
-        pass
+    def __init__(self, user, *args, **kwargs):
+        if not user:
+            raise ValueError(
+                "User is required for service class: ", self.__class__.__name__
+            )
+        self.user = user
 
     def get_app_label(self):
         """

@@ -19,8 +19,9 @@ class UploadDocumentService(BaseModelService):
         self.data = data
         self.file_path = file_path
 
-    def get_document_service(self):
-        return DocumentService()
+    @property
+    def document_service(self):
+        return DocumentService(user=self.user)
 
     def save_file_in_storage(self, file):
         file_name = file.name
@@ -38,6 +39,5 @@ class UploadDocumentService(BaseModelService):
         final_path = default_storage.save(file_path, ContentFile(file_content))
 
         # save data into Document model
-        document_service = self.get_document_service()
-        document = document_service.create_document(**{"path": final_path})
+        document = self.document_service.create_document(**{"path": final_path})
         return document

@@ -12,7 +12,7 @@ class MetadataFieldService(BaseModelService):
 
     @property
     def metadata_service(self):
-        return MetadataService()
+        return MetadataService(user=self.user)
 
     def validated_data(self, **kwargs):
         m2m_data = {}

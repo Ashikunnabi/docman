@@ -3,6 +3,16 @@ from datetime import datetime
 from decimal import ROUND_DOWN, Decimal
 from urllib.parse import urlparse
 
+from django.contrib.auth import get_user_model
+
+
+def get_batch_user():
+    """
+    Get the batch user
+    """
+    User = get_user_model()
+    return User.objects.get(username="batch@user.com")
+
 
 def json_parameter_validation(json_data, required_params):
     """Check parameter is available in json or not

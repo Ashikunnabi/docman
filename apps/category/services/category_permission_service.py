@@ -12,18 +12,8 @@ from ..models.category_permission import CategoryPermission
 class CategoryPermissionService(BaseModelService):
     model = CategoryPermission
 
-    def __init__(self, *args, user=None, **kwargs):
+    def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self._user = user
-
-    @property
-    def user(self):
-        return self._user
-
-    @user.setter
-    def user(self, user):
-        self._user = user
-        return self._user
 
     @property
     def category_service(self):

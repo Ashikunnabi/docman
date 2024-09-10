@@ -14,11 +14,11 @@ class MetadataValueService(BaseModelService):
     def document_service(self):
         from apps.document.services import DocumentService
 
-        return DocumentService()
+        return DocumentService(user=self.user)
 
     @property
     def metadata_field_service(self):
-        return MetadataFieldService()
+        return MetadataFieldService(user=self.user)
 
     def reform_metadata_values(self, metadata_field: dict) -> list:
         metadata_values = []

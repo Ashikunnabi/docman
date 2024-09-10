@@ -31,7 +31,7 @@ class MetadataListCreateAPIView(BaseListCreateAPIView):
     search_fields = ["name"]
 
     def list(self, request, *args, **kwargs):
-        service = self.service_class()
+        service = self.service_class(user=request.user)
         queryset = service.list()
         queryset = self.filter_queryset(queryset)
 
@@ -49,7 +49,7 @@ class MetadataListCreateAPIView(BaseListCreateAPIView):
         serializer = self.get_input_serializer(data=data)
         serializer.is_valid(raise_exception=True)
 
-        service = self.service_class()
+        service = self.service_class(user=request.user)
         instance = service.create_metadata(**serializer.validated_data)
         serializer = self.get_output_serializer(instance)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -74,7 +74,7 @@ class MetadataRetrieveUpdateDestroyAPIView(BaseRetrieveUpdateDestroyAPIView):
         )
         serializer.is_valid(raise_exception=True)
 
-        service = self.service_class()
+        service = self.service_class(user=request.user)
         instance = service.update_metadata(
             instance=instance, **serializer.validated_data
         )
@@ -83,7 +83,7 @@ class MetadataRetrieveUpdateDestroyAPIView(BaseRetrieveUpdateDestroyAPIView):
 
     def destroy(self, request, *args, **kwargs):
         instance = self.get_object()
-        service = self.service_class()
+        service = self.service_class(user=request.user)
         service.delete(instance=instance)
         response = Response(status=status.HTTP_204_NO_CONTENT)
         response["Content-Length"] = 0
@@ -99,7 +99,7 @@ class MetadataFieldListCreateAPIView(BaseListCreateAPIView):
     search_fields = ["name"]
 
     def list(self, request, *args, **kwargs):
-        service = self.service_class()
+        service = self.service_class(user=request.user)
         queryset = service.list()
         queryset = self.filter_queryset(queryset)
 
@@ -117,7 +117,7 @@ class MetadataFieldListCreateAPIView(BaseListCreateAPIView):
         serializer = self.get_input_serializer(data=data)
         serializer.is_valid(raise_exception=True)
 
-        service = self.service_class()
+        service = self.service_class(user=request.user)
         validated_data = serializer.validated_data
         validated_data["metadata_uuid"] = kwargs["uuid"]
         instance = service.create_metadata_field(**serializer.validated_data)
@@ -144,7 +144,7 @@ class MetadataFieldRetrieveUpdateDestroyAPIView(BaseRetrieveUpdateDestroyAPIView
         )
         serializer.is_valid(raise_exception=True)
 
-        service = self.service_class()
+        service = self.service_class(user=request.user)
         instance = service.update_metadata_field(
             instance=instance, **serializer.validated_data
         )
@@ -153,7 +153,7 @@ class MetadataFieldRetrieveUpdateDestroyAPIView(BaseRetrieveUpdateDestroyAPIView
 
     def destroy(self, request, *args, **kwargs):
         instance = self.get_object()
-        service = self.service_class()
+        service = self.service_class(user=request.user)
         service.delete(instance=instance)
         response = Response(status=status.HTTP_204_NO_CONTENT)
         response["Content-Length"] = 0

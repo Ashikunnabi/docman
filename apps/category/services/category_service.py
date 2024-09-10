@@ -8,13 +8,12 @@ from ..models.category import Category, models
 class CategoryService(BaseModelService):
     model = Category
 
-    def __init__(self, *args, user=None, **kwargs):
+    def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.user = user
 
     @property
     def metadata_service(self):
-        return MetadataService()
+        return MetadataService(user=self.user)
 
     @property
     def category_permissions_service(self):

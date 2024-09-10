@@ -38,13 +38,12 @@ class DocumentService(BaseModelService):
         "csv",
     ]
 
-    def __init__(self, *args, user=None, **kwargs):
+    def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.user = user
 
     @property
     def metadata_value_service(self):
-        return MetadataValueService()
+        return MetadataValueService(user=self.user)
 
     @property
     def category_service(self):

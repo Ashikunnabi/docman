@@ -35,7 +35,7 @@ class UserListCreateAPIView(BaseListCreateAPIView):
     pagination_class = LargeResultsSetPagination
 
     def list(self, request, *args, **kwargs):
-        service = self.service_class()
+        service = self.service_class(user=request.user)
         search = {
             "search": request.GET.get("search[value]", request.GET.get("q", None))
         }
@@ -55,7 +55,7 @@ class UserListCreateAPIView(BaseListCreateAPIView):
         serializer = self.get_input_serializer(data=data)
         serializer.is_valid(raise_exception=True)
 
-        service = self.service_class()
+        service = self.service_class(user=request.user)
         user = service.create_user(**serializer.validated_data)
         serializer = self.get_output_serializer(user)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -80,14 +80,14 @@ class UserRetrieveUpdateDestroyAPIView(BaseRetrieveUpdateDestroyAPIView):
         )
         serializer.is_valid(raise_exception=True)
 
-        service = self.service_class()
+        service = self.service_class(user=request.user)
         user = service.update_user(user=instance, **serializer.validated_data)
         serializer = self.get_output_serializer(user)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def destroy(self, request, *args, **kwargs):
         instance = self.get_object()
-        service = self.service_class()
+        service = self.service_class(user=request.user)
         service.delete(instance=instance)
         return Response(
             {"detail": "User deleted successfully"}, status=status.HTTP_204_NO_CONTENT
@@ -101,7 +101,7 @@ class UserPermissionListAPIView(BaseListAPIView):
 
     def list(self, request, *args, **kwargs):
         instance = self.get_object()
-        permissions = self.service_class().get_user_permissions(user=instance)
+        permissions = self.service_class(user=request.user).get_user_permissions(user=instance)
         serializer = self.get_output_serializer(permissions, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -119,7 +119,7 @@ class StaffListAPIView(BaseListAPIView):
     output_serializer_class = UserOutputSerializer
 
     def list(self, request, *args, **kwargs):
-        service = self.service_class()
+        service = self.service_class(user=request.user)
         search = {
             "search": request.GET.get("search[value]", request.GET.get("q", None))
         }
@@ -356,7 +356,7 @@ class GroupListCreateAPIView(BaseListCreateAPIView):
     pagination_class = LargeResultsSetPagination
 
     def list(self, request, *args, **kwargs):
-        service = self.service_class()
+        service = self.service_class(user=request.user)
         search = {
             "search": request.GET.get("search[value]", request.GET.get("q", None))
         }
@@ -376,7 +376,7 @@ class GroupListCreateAPIView(BaseListCreateAPIView):
         serializer = self.get_input_serializer(data=data)
         serializer.is_valid(raise_exception=True)
 
-        service = self.service_class()
+        service = self.service_class(user=request.user)
         group = service.create_group(**serializer.validated_data)
         serializer = self.get_output_serializer(group)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -401,7 +401,7 @@ class GroupRetrieveUpdateDestroyAPIView(BaseRetrieveUpdateDestroyAPIView):
         serializer = self.get_serializer(instance, data=data, partial=True)
         serializer.is_valid(raise_exception=True)
 
-        service = self.service_class()
+        service = self.service_class(user=request.user)
         group = service.update_group(instance=instance, **serializer.validated_data)
         serializer = self.output_serializer_class(group)
         return Response(serializer.data, status=status.HTTP_200_OK)
@@ -422,17 +422,6 @@ class PermissionListAPIView(BaseListAPIView):
         queryset = service.get_user_permissions_dict()
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
-
-    def create(self, request, *args, **kwargs):
-        data = request.data
-
-        serializer = self.get_input_serializer(data=data)
-        serializer.is_valid(raise_exception=True)
-
-        service = self.service_class()
-        permission = service.create_permission(**serializer.validated_data)
-        serializer = self.get_output_serializer(permission)
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
 class PermissionRetrieveUpdateDestroyAPIView(BaseRetrieveUpdateDestroyAPIView):

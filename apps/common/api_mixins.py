@@ -79,7 +79,7 @@ class CreateAPIMixin:
             "or override the `perform_create()` method."
         )
 
-        service = self.service_class()
+        service = self.service_class(user=self.user)
 
         # TODO: remove this temporary fix to handle database error specially for uniqueness check that is
         # raised after serializer.is_valid()
@@ -139,7 +139,7 @@ class RetrieveAPIMixin(object):
         # if self.request.user:
         #     query_params["user"] = self.request.user
 
-        service = self.service_class()
+        service = self.service_class(user=self.request.user)
         if self.lookup_field == "id":
             pk = self.kwargs.get("id")
             return service.read_by_pk(pk_value=pk, **query_params)
@@ -196,7 +196,7 @@ class ListAPIMixin(object):
         query_params_dict = self.prepare_query_params_dict()
         if ignore_user:
             query_params_dict.pop("user")
-        service = self.service_class()
+        service = self.service_class(user=self.user)
 
         return service.list(**query_params_dict)
 

@@ -29,7 +29,7 @@ class DocumentListCreateAPIView(BaseListCreateAPIView):
     pagination_class = LargeResultsSetPagination
 
     def list(self, request, *args, **kwargs):
-        service = self.get_service()
+        service = self.get_service(user=request.user)
         # only list documents created by the user and does not have a category
         queryset = service.list(**{"created_by": request.user, "category": None})
         queryset = self.filter_queryset(queryset)
@@ -46,7 +46,7 @@ class DocumentListCreateAPIView(BaseListCreateAPIView):
         serializer = self.get_input_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         validated_data = serializer.validated_data
-        service = self.get_service()
+        service = self.get_service(user=request.user)
         document = service.create(**validated_data)
         output_serializer = self.get_output_serializer(document)
         return Response(output_serializer.data, status=status.HTTP_201_CREATED)
@@ -75,7 +75,7 @@ class DocumentRetrieveUpdateDestroyAPIView(BaseRetrieveUpdateDestroyAPIView):
 
     def destroy(self, request, *args, **kwargs):
         instance = self.get_object()
-        service = self.get_service()
+        service = self.get_service(user=request.user)
         service.delete(instance)
         response = Response(status=status.HTTP_204_NO_CONTENT)
         response["Content-Length"] = 0
@@ -92,7 +92,7 @@ class DocumentMetadataValueUpdateAPIView(BaseRetrieveUpdateAPIView):
         serializer = self.get_input_serializer(data=request.data, many=True)
         serializer.is_valid(raise_exception=True)
         metadata_values = serializer.validated_data
-        service = self.get_service()
+        service = self.get_service(user=request.user)
         document = service.update_metadata_values(instance, metadata_values)
         output_serializer = self.get_output_serializer(document)
         return Response(output_serializer.data, status=status.HTTP_200_OK)
@@ -106,7 +106,7 @@ class DocumentSearchAPIView(BaseListAPIView):
     pagination_class = LargeResultsSetPagination
 
     def list(self, request, *args, **kwargs):
-        service = self.get_service(**{"user": request.user})
+        service = self.get_service(user=request.user)
         query_params = request.query_params.dict()
         if "search" in query_params:
             if query_params["search"]:
@@ -131,7 +131,7 @@ class DocumentUploadAPIView(BaseCreateAPIView):
         serializer = self.get_input_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         validated_data = serializer.validated_data
-        service = self.get_service()
+        service = self.get_service(user=request.user)
         document = service.document_upload(**validated_data)
         output_serializer = self.get_output_serializer(document, many=True)
         return Response(output_serializer.data, status=status.HTTP_201_CREATED)
