@@ -3,7 +3,7 @@ from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.hashers import make_password
 from django.core.files.storage import default_storage
-from rest_framework import status
+from rest_framework import filters, status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
@@ -33,13 +33,13 @@ class UserListCreateAPIView(BaseListCreateAPIView):
     input_serializer_class = UserInputSerializer
     output_serializer_class = UserOutputSerializer
     pagination_class = LargeResultsSetPagination
+    filter_backends = [filters.SearchFilter]
+    search_fields = ["first_name", "last_name", "email", "phone", "username"]
 
     def list(self, request, *args, **kwargs):
         service = self.service_class(user=request.user)
-        search = {
-            "search": request.GET.get("search[value]", request.GET.get("q", None))
-        }
-        queryset = service.list(**search)
+        queryset = service.list()
+        queryset = self.filter_queryset(queryset)
 
         page = self.paginate_queryset(queryset)
         if page is not None:
@@ -120,10 +120,7 @@ class StaffListAPIView(BaseListAPIView):
 
     def list(self, request, *args, **kwargs):
         service = self.service_class(user=request.user)
-        search = {
-            "search": request.GET.get("search[value]", request.GET.get("q", None))
-        }
-        queryset = service.get_staffs(**search)
+        queryset = service.get_staffs()
 
         page = self.paginate_queryset(queryset)
         if page is not None:
@@ -349,10 +346,7 @@ class GroupListCreateAPIView(BaseListCreateAPIView):
 
     def list(self, request, *args, **kwargs):
         service = self.service_class(user=request.user)
-        search = {
-            "search": request.GET.get("search[value]", request.GET.get("q", None))
-        }
-        queryset = service.list(**search)
+        queryset = service.list()
 
         page = self.paginate_queryset(queryset)
         if page is not None:
