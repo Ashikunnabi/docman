@@ -250,13 +250,6 @@ class UserActivityLogViewSet(BaseListCreateAPIView, BaseRetrieveUpdateDestroyAPI
     # serializer_class = UserActivityLogSerializer
     lookup_field = "uuid"  # Individual object will be found by this field
     http_method_names = ["get"]
-    search_keywords = [
-        "store_json",
-        "description",
-        "ip_address",
-        "browser_details",
-        "updated_at",
-    ]
 
     def list(self, request, *args, **kwargs):
         queryset = self.get_queryset().order_by("-id")
@@ -278,7 +271,6 @@ class DealerViewSet(BaseListCreateAPIView, BaseRetrieveUpdateDestroyAPIView):
     model = User
     serializer_class = UserInputSerializer
     lookup_field = "uuid"  # Individual object will be found by this field
-    search_keywords = ["name", "email", "phone", "company_name", "company_email"]
     http_method_names = ["get"]
 
     def list(self, request, *args, **kwargs):

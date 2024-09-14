@@ -10,7 +10,6 @@ from ..models import Group
 
 class GroupService(BaseModelService):
     model = Group
-    search_keywords = ["name"]
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

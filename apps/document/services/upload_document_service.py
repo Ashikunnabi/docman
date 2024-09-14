@@ -12,7 +12,6 @@ from .document_service import DocumentService
 
 class UploadDocumentService(BaseModelService):
     model = None
-    search_keywords = []
 
     def __init__(self, data=None, file_path=None, *args, **kwargs):
         super().__init__(*args, **kwargs)

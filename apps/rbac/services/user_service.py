@@ -10,7 +10,6 @@ from ..models import User
 
 class UserService(BaseModelService):
     model = User
-    search_keywords = ["username", "name", "email", "phone"]
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

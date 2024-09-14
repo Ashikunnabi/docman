@@ -5,7 +5,6 @@ from ..models import Permission
 
 class PermissionService(BaseModelService):
     model = Permission
-    search_keywords = []
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

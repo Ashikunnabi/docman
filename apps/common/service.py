@@ -15,7 +15,6 @@ class BaseModelService:
     """
 
     model = None
-    search_keywords = []
 
     def __init__(self, user, *args, **kwargs):
         if not user:
@@ -244,19 +243,6 @@ class BaseModelService:
 
         return queryset
 
-    def search_queryset(self, queryset, **kwargs):
-        search_logic = []
-        search_value = kwargs.get("search", None)
-        if not search_value:
-            return queryset
-
-        for keyword in self.search_keywords:
-            search_logic.append(Q(**{keyword + "__icontains": search_value}))
-
-        if search_logic:
-            queryset = queryset.filter(reduce(operator.or_, search_logic))
-        return queryset
-
     def list(self, **query_params):
         """
         Retrieves the list of instances of a model. Results will be filtered by given query parameters. If the subclass
@@ -302,7 +288,6 @@ class BaseModelService:
             queryset = queryset.exclude(**not_query_params)
 
         queryset = self._sort_queryset(queryset=queryset, query_params=query_params)
-        queryset = self.search_queryset(queryset=queryset, **query_params)
 
         if query_params.get("order_by", 1):
             if hasattr(self.model, "sort_order"):

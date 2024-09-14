@@ -18,7 +18,6 @@ from ..models import Document
 
 class DocumentService(BaseModelService):
     model = Document
-    search_keywords = []
     FILE_SIZE_IN_MB = 500
     FILE_SIZE_IN_KB = FILE_SIZE_IN_MB * 1000
     FILE_SIZE_IN_BYTES = FILE_SIZE_IN_KB * 1000
