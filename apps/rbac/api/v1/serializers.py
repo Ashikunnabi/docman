@@ -87,3 +87,9 @@ class UserPermissionOutputSerializer(serializers.ModelSerializer):
             "name",
             "codename",
         ]
+
+
+class UserChangePasswordInputSerializer(serializers.Serializer):
+    current_password = serializers.CharField()
+    new_password = serializers.CharField()
+    confirm_password = serializers.CharField()

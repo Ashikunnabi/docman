@@ -26,7 +26,6 @@
         </div>
         <div class="card-body">
             <form id="user_edit" data-parsley-validate enctype="multipart/form-data" autocomplete="off">
-                {% csrf_token %}
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">
@@ -92,6 +91,46 @@
         </div>
     </div>
 
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Change Password</h6>
+        </div>
+        <div class="card-body">
+            <form id="user_change_password" data-parsley-validate autocomplete="off">
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="current_password">Current Password: <span class="text-danger">*</span></label>
+                            <input type="password" class="form-control" id="current_password" name="current_password"
+                                placeholder="Type your current password here." required>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="new_password">New Password: <span class="text-danger">*</span></label>
+                            <input type="password" class="form-control" id="new_password" name="new_password"
+                                data-parsley-notequalto="#current_password"
+                                data-parsley-notequalto-message="New password can't be same as current password."
+                                data-parsley-pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$"
+                                data-parsley-pattern-message="Password must contain at least one uppercase letter, one lowercase letter, one number and one special character with minimum 8 characters."
+                                placeholder="Type your new password here." required>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="confirm_password">Re-type New Password: <span class="text-danger">*</span></label>
+                            <input type="password" class="form-control" id="confirm_password" name="confirm_password"
+                                data-parsley-equalto="#new_password" data-parsley-equalto-message="Password doesn't matched"
+                                placeholder="Re-type your new password here." required>
+                        </div>
+                    </div>
+                </div>
+                <input type="submit" class="btn btn-primary float-right">
+            </form>
+
+        </div>
+    </div>
+
     <!-- <div class="card shadow mb-4">
         <div class="card-header py-3">
             <h6 class="m-0 font-weight-bold text-primary">Actions</h6>
@@ -124,6 +163,7 @@
     const account_activation_email_send_api_url = "{% url 'apps:send_email:api:v1:send_account_activation_email_to_user' %}";
     const last_account_activation_sent_at_api_url = "{% url 'apps:rbac:api:v1:last_account_activation_email_sent_at' %}";
     const uuid = "{{ uuid }}";
+    const user_change_password_api_url = "/api/v1/rbac/users/{{ uuid }}/change-password/";
 </script>
 
 <!-- user JS -->

@@ -223,7 +223,7 @@ class User {
                     user_add_form_data,
                     function (resp) {
                         // Display a success message
-                        notify("User has been created successfully.", "success");
+                        notify("Success", "success");
 
                         // Delay the page refresh for 2 seconds (2000 milliseconds)
                         setTimeout(function () {
@@ -316,7 +316,7 @@ class User {
                     user_edit_form_data,
                     function (resp) {
                         // Display a success message
-                        notify("User has been updated successfully.", "success");
+                        notify("Success", "success");
                     },
                     function (response) {
                         $('#user_edit').parsley().destroy();
@@ -341,107 +341,47 @@ class User {
 
     /*
     * =========================================================================
-    *                    User account activation email
+    *                    User Password Change
     * =========================================================================
     **/
 
-    send_account_activation_email = () => {
-        // edit user
-        $(document).on('click', '#send_account_activation_email', function (e) {
+    change_password = () => {
+        $(document).on('submit', '#user_change_password', function (e) {
             e.preventDefault();
-            // submit an ajax request to the api endpoint
-            Swal.fire({
-                title: 'Are you sure?',
-                text: "You are going to send an activation email!",
-                icon: 'question',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, send it!'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    $.ajax({
-                        url: account_activation_email_send_api_url,
-                        type: "POST",
-                        data: { id: uuid },
-                        success: function (resp) {
-                            window.location.reload();
-                        },
-                        error: function (response) {
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Oops...',
-                                text: response.responseJSON.data
-                            })
+            const change_password_form = $('#user_change_password').parsley();
+            let change_password_form_data = new FormData($('#user_change_password')[0]);
+
+            if (change_password_form.isValid()) {
+
+                // submit an ajax request to the api endpoint
+                new AjaxService().patchRequestWithFile(
+                    user_change_password_api_url,
+                    change_password_form_data,
+                    function (resp) {
+                        // Display a success message
+                        notify("Success", "success");
+                    },
+                    function (response) {
+                        $('#user_change_password').parsley().destroy();
+                        let response_json = response.responseJSON
+                        if (response_json.code === "NOT_ALLOWED") {
+                            notify("You are not allowed to add a new user.", "error");
                         }
-                    });
-                }
-            });
-        });
-    };
 
-    /*
-    * =========================================================================
-    *                User account activation email last sent at
-    * =========================================================================
-    **/
-
-    last_account_activation_sent_at = () => {
-        // show last account activation email sent at
-        // submit an ajax request to the api endpoint
-        $.ajax({
-            url: last_account_activation_sent_at_api_url,
-            type: "GET",
-            data: { id: uuid },
-            success: function (response) {
-                if (response.data !== "") {
-                    let text = `Last sent at: ${response.data}`;
-                    $('#last_email_sent_at').html(text)
-                }
-            },
-            error: function (response) {
-                let response_json = response.responseJSON
-                for (var field in response_json.error) {
-                    if (response_json.error.hasOwnProperty(field)) {
-                        var errorMessages = response_json.error[field];
-                        for (var i = 0; i < errorMessages.length; i++) {
-                            notify(`${field.toUpperCase()}: ${errorMessages[i]}`, 'error');
+                        if (response_json.code === "INVALID_INPUT") {
+                            for (var fieldName in response_json.error) {
+                                $.each(response_json.error[fieldName], function (index, message) {
+                                    let field = $('[name="' + fieldName + '"]');
+                                    field.parsley().addError('server', { message: message });
+                                })
+                            }
+                        } else {
+                            notify(response_json.message, 'error');
                         }
                     }
-                }
+                );
             }
         });
-    };
-
-    sales_reps = () => {
-        // set sales reps at user edit dropdown
-        $.ajax({
-            url: sales_reps_api_url + `?user=${uuid}`,
-            type: "get",
-            success: function (response) {
-                $(document).ready(function () {
-                    $('#sales_reps').select2({ data: response.detail });
-                });
-            },
-            error: function (response) { }
-        });
-
-        $('#sales_reps_save_btn').on('click', function (e) {
-            $.ajax({
-                url: sales_reps_add_update_api_url + `?user=${uuid}`,
-                data: JSON.stringify({ sales_reps: $('#sales_reps').val() }),
-                dataType: 'json',
-                contentType: "application/json",
-                type: "post",
-                success: function (response) {
-                    window.location.reload();
-                },
-                error: function (response) {
-                    console.log(response)
-                }
-            });
-        });
-
     };
 
     /*
@@ -462,6 +402,7 @@ class User {
         if (page === 'edit') {
             this.edit_form_value_set();
             this.edit();
+            this.change_password();
         }
         // this.send_account_activation_email();
         // this.last_account_activation_sent_at();

@@ -13,12 +13,14 @@ from apps.common.custom_viewset import (
     BaseListCreateAPIView,
     BaseRetrieveAPIView,
     BaseRetrieveUpdateDestroyAPIView,
+    BaseUpdateAPIView,
 )
 from apps.common.utils.basic import *
 from apps.rbac.api.v1.serializers import (  # UserActivityLogSerializer,
     GroupOutputSerializer,
     GroupInputSerializer,
     PermissionSerializer,
+    UserChangePasswordInputSerializer,
     UserInputSerializer,
     UserOutputSerializer,
     UserPermissionOutputSerializer,
@@ -94,6 +96,32 @@ class UserRetrieveUpdateDestroyAPIView(BaseRetrieveUpdateDestroyAPIView):
         )
 
 
+class UserChangePasswordAPIView(BaseUpdateAPIView):
+    service_class = UserService
+    input_serializer_class = UserChangePasswordInputSerializer
+    output_serializer_class = UserOutputSerializer
+
+    def get_object(self):
+        service = self.service_class(user=self.request.user)
+        return service.read_by_uuid(uuid_value=self.kwargs.get("uuid"))
+
+    def update(self, request, *args, **kwargs):
+        data = request.data
+        instance = self.get_object()
+
+        serializer = self.get_input_serializer(data=data)
+        serializer.is_valid(raise_exception=True)
+
+        service = self.service_class(user=request.user)
+        service.change_password(user=instance, **serializer.validated_data)
+        return Response(
+            {
+                "detail": "Password changed successfully",
+            },
+            status=status.HTTP_200_OK,
+        )
+
+
 class UserPermissionListAPIView(BaseListAPIView):
     service_class = UserService
     input_serializer_class = UserInputSerializer
@@ -101,7 +129,9 @@ class UserPermissionListAPIView(BaseListAPIView):
 
     def list(self, request, *args, **kwargs):
         instance = self.get_object()
-        permissions = self.service_class(user=request.user).get_user_permissions(user=instance)
+        permissions = self.service_class(user=request.user).get_user_permissions(
+            user=instance
+        )
         serializer = self.get_output_serializer(permissions, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 

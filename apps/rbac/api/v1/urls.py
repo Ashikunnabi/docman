@@ -30,6 +30,11 @@ urlpatterns = [
                     name="user_retrieve_update_delete",
                 ),
                 path(
+                    "<uuid:uuid>/change-password/",
+                    UserChangePasswordAPIView.as_view(),
+                    name="user_change_password",
+                ),
+                path(
                     "<uuid:uuid>/permissions/",
                     UserPermissionListAPIView.as_view(),
                     name="user_permission_list",

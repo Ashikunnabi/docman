@@ -3,7 +3,11 @@ from django.contrib.auth.hashers import make_password
 
 from apps.common.exceptions import LimitExceededException
 from apps.common.service import BaseModelService
-from ..exceptions import UserDeletionNotAllowedException
+from ..exceptions import (
+    UserCurrentPasswordIncorrectException,
+    UserDeletionNotAllowedException,
+    UserNewPasswordNotMatchedException,
+)
 
 from ..models import User
 
@@ -51,6 +55,23 @@ class UserService(BaseModelService):
         kwargs, m2m_data = self.validated_data(**kwargs)
         instance = self.update_model_instance(user, **kwargs)
         return instance
+
+    def change_password(self, user, **kwargs):
+        current_password, new_password, confirm_password = (
+            kwargs.get("current_password"),
+            kwargs.get("new_password"),
+            kwargs.get("confirm_password"),
+        )
+
+        if not user.check_password(current_password):
+            raise UserCurrentPasswordIncorrectException
+
+        if new_password != confirm_password:
+            raise UserNewPasswordNotMatchedException
+
+        user.set_password(kwargs.get("password"))
+        user.save()
+        return user
 
     def get_user_or_create(self, username, first_name, last_name, email):
         user_default_data = dict(
