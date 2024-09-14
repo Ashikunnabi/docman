@@ -42,7 +42,7 @@ class CategoryPermissionService(BaseModelService):
 
         category_codes = (
             permission[:-suffix_length]
-            for permission in self.user.get_category_permissions()
+            for permission in self.user.get_category_permission_codes()
             if permission.endswith(permission_suffix)
         )
 

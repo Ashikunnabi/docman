@@ -110,7 +110,7 @@ class UserCategoryPermissionListAPIView(BaseListAPIView):
     service_class = PermissionService
 
     def list(self, request, *args, **kwargs):
-        permissions = request.user.get_category_permissions()
+        permissions = request.user.get_category_permission_codes()
         return Response(permissions, status=status.HTTP_200_OK)
 
 

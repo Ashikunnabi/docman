@@ -37,7 +37,7 @@ class User(AbstractUser):
     def name(self):
         return f"{self.first_name} {self.last_name}"
 
-    def get_category_permissions(self):
+    def get_category_permission_codes(self):
         """List of category permission codes for the user."""
         # superuser has all permissions by default and can access all categories
         # users with add_category permission can access all categories
@@ -52,9 +52,19 @@ class User(AbstractUser):
         return list(permission_codes)
 
     def has_category_permission(self, permission_code):
-        return permission_code in self.get_category_permissions()
+        return permission_code in self.get_category_permission_codes()
 
     def get_permitted_category_uuids(self):
+        """List of category permission codes for the user."""
+        # superuser has all permissions by default and can access all categories
+        # users with add_category permission can access all categories
+        if self.has_perm("category.add_category"):
+            return (
+                CategoryPermission.objects.values_list("category__uuid", flat=True)
+                .distinct()
+                .prefetch_related("category")
+            )
+
         category_uuids = (
             CategoryGroupPermission.objects.filter(group__in=self.groups.all())
             .values_list("permission__category__uuid", flat=True)
