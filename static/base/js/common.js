@@ -315,10 +315,16 @@ class AjaxService {
                     setTimeout(() => {
                         window.location.href = '/logout/';
                     }, 2000);
+                    return;
                 }
                 if (response.status === 403) {
                     // Unauthorized error
                     notify('Permission denied.', 'error');
+                    return;
+                }
+                if (response.responseJSON.code === "LIMIT_EXCEEDED") {
+                    notify(response.responseJSON.message, 'error');
+                    return;
                 }
                 if (typeof this.errorCallback === 'function') {
                     this.errorCallback(response);

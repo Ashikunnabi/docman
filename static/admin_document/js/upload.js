@@ -16,6 +16,7 @@ class Upload {
         dropzone.on("error", function (file, response) {
             if (response.message) {
                 $(file.previewTemplate).find('.dz-error-message').text(response.message);
+                notify(response.message, 'error');
             }
         });
 
