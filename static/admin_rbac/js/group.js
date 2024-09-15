@@ -399,6 +399,8 @@ class GroupActivityLog {
                         console.log(response_json)
                         if (response_json.code === "NOT_ALLOWED") {
                             notify("You are not allowed to add a new group.", "error");
+                        } else if (response_json.code === "OBJECT_ALREADY_EXISTS") {
+                            notify("Group with this name already exists.", "error");
                         }
                     }
                 );
@@ -423,6 +425,8 @@ class GroupActivityLog {
                         console.log(response_json)
                         if (response_json.code === "NOT_ALLOWED") {
                             notify("You are not allowed to add a new group.", "error");
+                        } else if (response_json.code === "OBJECT_ALREADY_EXISTS") {
+                            notify("Group with this name already exists.", "error");
                         }
                     }
                 );

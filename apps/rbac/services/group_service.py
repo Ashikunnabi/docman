@@ -68,6 +68,13 @@ class GroupService(BaseModelService):
 
     def update_group(self, instance, **kwargs):
         kwargs, m2m_data = self.validated_data(**kwargs)
+        try:
+            self.does_object_already_exists(exclude_id=instance.id, **kwargs)
+        except ObjectAlreadyExistsException as ex:
+            raise ObjectAlreadyExistsException(
+                errors={"name": ["Group with this name already exists"]}
+            ) from ex
+
         instance = self.update_model_instance(instance, **kwargs)
 
         if "permissions" in m2m_data:

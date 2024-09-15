@@ -367,10 +367,13 @@ class BaseModelService:
             instance = None
         return instance
 
-    def does_object_already_exists(self, *args, **kwargs):
+    def does_object_already_exists(self, *args, exclude_id=None, **kwargs):
         instance = None
         try:
-            instance = self.model.objects.get(**kwargs)
+            if exclude_id:
+                instance = self.model.objects.exclude(id=exclude_id).get(**kwargs)
+            else:
+                instance = self.model.objects.get(**kwargs)
         except self.model.MultipleObjectsReturned as ex:
             raise ObjectAlreadyExistsException from ex
         except self.model.DoesNotExist:
