@@ -177,7 +177,11 @@ class Edit {
                 }, 2000);
 
                 if (self.document.extension !== 'pdf') {
-                    PDFViewerApplication.close();
+                    try {
+                        PDFViewerApplication.close();
+                    } catch (e) {
+                        console.log('PDFViewerApplication not found');
+                    }
                 }
                 if (self.document.extension === 'pdf') {
                     self.pdfDocumentViewer.show();
