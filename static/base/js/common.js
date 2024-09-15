@@ -316,6 +316,10 @@ class AjaxService {
                         window.location.href = '/logout/';
                     }, 2000);
                 }
+                if (response.status === 403) {
+                    // Unauthorized error
+                    notify('Permission denied.', 'error');
+                }
                 if (typeof this.errorCallback === 'function') {
                     this.errorCallback(response);
                 }

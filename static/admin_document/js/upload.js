@@ -218,6 +218,11 @@ class Upload {
                 },
                 function (response) {
                     console.log('Error uploading document');
+                    if (document_uuids.length < 1) {
+                        notify('Please upload a document', 'error');
+                    } else {
+                        notify('Error uploading document', 'error');
+                    }
                 }
             );
             return false;

@@ -440,6 +440,7 @@ class Document {
                         self.list(self.breadcrumbTrail[self.breadcrumbTrail.length - 1].uuid);
                     }
                     modal.modal('hide');
+                    notify("Success", "success");
                 },
                 function (response) {
                     let response_json = response.responseJSON
