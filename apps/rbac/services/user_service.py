@@ -69,7 +69,7 @@ class UserService(BaseModelService):
         if new_password != confirm_password:
             raise UserNewPasswordNotMatchedException
 
-        user.set_password(kwargs.get("password"))
+        user.set_password(new_password)
         user.save()
         return user
 
