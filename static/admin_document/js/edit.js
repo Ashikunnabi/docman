@@ -186,7 +186,7 @@ class Edit {
                 if (self.document.extension === 'pdf') {
                     self.pdfDocumentViewer.show();
                     self.renderPDF(self.document);
-                } else if (self.document.extension === 'png') {
+                } else if (['jpg', 'jpeg', 'png', 'gif'].includes(self.document.extension.toLowerCase())) {
                     self.imageDocumentViewer.show();
                     self.renderImage(self.document);
                 } else {
