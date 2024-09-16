@@ -9,7 +9,6 @@ from apps.common.custom_viewset import (
 )
 from apps.common.utils.basic import *
 from apps.metadata.services.metadata_field_service import MetadataFieldService
-from apps.metadata.services.metadata_value_service import MetadataValueService
 
 from ...services import MetadataService
 from .serializers import (

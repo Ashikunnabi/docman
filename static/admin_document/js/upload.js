@@ -2,6 +2,7 @@ class Upload {
     generate = () => {
         let self = this;
         const dropzone = new Dropzone(".dropzone", {
+            maxFiles: 1,
             url: document_api_url,
             headers: {
                 "Authorization": `JWT ${getLocalWithExpiry("access")}`
@@ -54,6 +55,7 @@ class Upload {
                     dropzone.emit("addedfile", mockFile);
                     dropzone.emit("thumbnail", mockFile, document.file);
                     dropzone.emit("complete", mockFile);
+                    dropzone.files.push(mockFile);
                     $(mockFile.previewTemplate).find('.dz-remove').attr('data-uuid', document.uuid);
                 });
             },
@@ -102,6 +104,23 @@ class Upload {
         return formFields;
     }
 
+    addButtonToReadDocumentName = () => {
+        let documentUploadform = $("#documentUploadMetadataForm")
+        let document_name = documentUploadform.find("#__document_name");
+        let button = `<button type="button" class="btn btn-primary btn-sm float-right mt-2" id="read-document-name">Read from document</button>`;
+        document_name.after(button);
+        documentUploadform.on('click', '#read-document-name', function () {
+            let files = Dropzone.forElement(".dropzone").files;
+            if (files.length < 1) {
+                notify('Please upload a document', 'error');
+                return;
+            }
+            let file = files[0];
+            let document_name = file.name.split('.').slice(0, -1).join('.');
+            documentUploadform.find("#__document_name").val(document_name);
+        });
+    }
+
 
     fetchAndRenderMetadata = (category_uuid) => {
         let self = this;
@@ -116,14 +135,36 @@ class Upload {
         new AjaxService().getRequest(
             url,
             function (response) {
-                let metadata = response.data.metadata;
-                $.each(metadata, function (index, fields) {
-                    metadata_html += self.dynamicFormFields(fields);
+                let static_metadata = {
+                    "uuid": null,
+                    "name": "Document Information",
+                    "is_active": true,
+                    "fields": [
+                        {
+                            "uuid": "__document_name",
+                            "name": "Document Name",
+                            "placeholder": "Document Name",
+                            "field_type": "text",
+                            "is_required": true,
+                            "is_unique": false,
+                            "is_active": true
+                        }
+                    ]
+                }
+                metadata_html += self.dynamicFormFields(static_metadata);
+
+
+                let metadatas = response.data.metadata;
+                $.each(metadatas, function (index, metadata) {
+                    metadata_html += self.dynamicFormFields(metadata);
                 });
                 metadata_section.html(metadata_html);
 
                 // restart parsley validation
                 documentUploadform.parsley().reset();
+
+                // add button to read document name
+                self.addButtonToReadDocumentName();
 
             },
             function (response) {
@@ -189,7 +230,7 @@ class Upload {
             });
 
             data.forEach((field) => {
-                if (field.name === '__category_uuid') {
+                if (field.name.startsWith('__')) {
                     return;
                 }
                 metadata[field.name] = field.value;
@@ -200,6 +241,13 @@ class Upload {
                 document_uuids: Array.from(document_uuids),
                 category_uuid: documentUploadform.find("#__category_uuid").val()
             };
+
+            data.forEach((field) => {
+                if (field.name.startsWith('__')) {
+                    let field_name = field.name.replace("__", "");
+                    upload_data[field_name] = $(`#${field.name}`).val();
+                }
+            });
 
             if (document_uuids.length < 1) {
                 notify('Please upload a document', 'error');

@@ -1,6 +1,7 @@
 class CustomDropzone {
     generate = () => {
         const dropzone = new Dropzone(".dropzone", {
+            maxFiles: 1,
             url: document_api_url,
             headers: {
                 "Authorization": `JWT ${getLocalWithExpiry("access")}`

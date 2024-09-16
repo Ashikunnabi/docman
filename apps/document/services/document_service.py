@@ -98,12 +98,13 @@ class DocumentService(BaseModelService):
     def document_upload(self, **kwargs):
         """This is a method to attach temporary files with category and metadata values"""
         category_uuid = kwargs.pop("category_uuid")
+        document_name = kwargs.pop("document_name")
         document_uuids = kwargs.pop("document_uuids")
         metadata = kwargs.pop("metadata")
 
         category = self.category_service.read_by_uuid(category_uuid)
         documents = self.list(uuid__in=",".join(map(str, document_uuids)))
-        documents.update(category=category)
+        documents.update(category=category, name=document_name)
 
         if metadata:
             self.category_service.validate_category_metadata_fields(

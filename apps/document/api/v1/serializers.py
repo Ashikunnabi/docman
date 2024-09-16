@@ -124,5 +124,6 @@ class DocumentMetadataValueInputSerializer(serializers.ModelSerializer):
 
 class DocumentUploadInputSerializer(serializers.Serializer):
     document_uuids = serializers.ListField(child=serializers.UUIDField(), required=True)
+    document_name = serializers.CharField(required=True)
     category_uuid = serializers.UUIDField(required=True)
     metadata = serializers.DictField(required=False)
