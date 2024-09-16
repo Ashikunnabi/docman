@@ -201,6 +201,11 @@ class Upload {
                 category_uuid: documentUploadform.find("#__category_uuid").val()
             };
 
+            if (document_uuids.length < 1) {
+                notify('Please upload a document', 'error');
+                return
+            }
+
             new AjaxService().postRequest(
                 url,
                 upload_data,

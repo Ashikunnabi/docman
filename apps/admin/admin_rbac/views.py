@@ -32,17 +32,17 @@ def user_edit(request, uuid):
 """
 
 
-@permission_required('rbac.view_group', raise_exception=True)
+@permission_required('auth.view_group', raise_exception=True)
 def group_list(request):
     return render(request, "admin_rbac/group/list.html")
 
 
-@permission_required('rbac.add_group', raise_exception=True)
+@permission_required('auth.add_group', raise_exception=True)
 def group_add(request):
     return render(request, "admin_rbac/group/add.html")
 
 
-@permission_required('rbac.change_group', raise_exception=True)
+@permission_required('auth.change_group', raise_exception=True)
 def group_edit(request, id):
     context = {"id": id}
     return render(request, "admin_rbac/group/edit.html", context)

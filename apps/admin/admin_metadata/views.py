@@ -14,7 +14,7 @@ def metadata_add(request):
     return render(request, "admin_metadata/metadata/add.html")
 
 
-@permission_required("metadata.edit_metadata", raise_exception=True)
+@permission_required("metadata.view_metadata", raise_exception=True)
 def metadata_edit(request, uuid):
     return render(request, "admin_metadata/metadata/edit.html", context={"uuid": uuid})
 

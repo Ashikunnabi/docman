@@ -164,7 +164,7 @@ class DocumentService(BaseModelService):
             self.category_permission_service.category_code_permissions()
         )
         no_document_viewable_category_codes = (
-            self.get_no_document_viewable_category_codes(viewable_category_codes)
+            self.get_non_viewable_parent_category_codes(viewable_category_codes)
         )
 
         if not viewable_category_codes:
@@ -184,13 +184,18 @@ class DocumentService(BaseModelService):
 
         return self.response_list(queryset)
 
-    def get_no_document_viewable_category_codes(self, viewable_category_codes):
-        no_document_viewable_category_codes = []
+    def get_non_viewable_parent_category_codes(self, viewable_category_codes):
+        """This method is used to get the parent category codes of the viewable categories"""
+        non_viewable_parent_codes = set()
+
         for category_code in viewable_category_codes:
             category = self.category_service.read_by_code(category_code)
-            if category.parent and category.parent.code not in viewable_category_codes:
-                no_document_viewable_category_codes.append(category.parent.code)
-        return no_document_viewable_category_codes
+            parent = category.parent
+            while parent:
+                if parent.code not in viewable_category_codes:
+                    non_viewable_parent_codes.add(parent.code)
+                parent = parent.parent
+        return list(non_viewable_parent_codes)
 
     def get_file_only_queryset(self, category_uuid, viewable_category_codes, **kwargs):
         filter_kwargs = {"category__code__in": ",".join(viewable_category_codes)}
