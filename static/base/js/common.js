@@ -424,8 +424,14 @@ class Sidebar {
                         requiredPermissions: ['document.add_document'],
                         url: '/document/upload/'
                     },
+                    {
+                        name: 'Metadata',
+                        code: 'add_metadata',
+                        requiredPermissions: ['metadata.view_metadata'],
+                        url: '/metadata/'
+                    },
                 ]
-            }
+            },
         ];
     }
 

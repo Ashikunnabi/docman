@@ -1,0 +1,48 @@
+{% extends 'base/base.html' %}
+{% load static %}
+{% block css %}
+{% endblock %}
+
+{% block content %}
+{% csrf_token %}
+<div class="container-fluid">
+
+    <!-- Page Heading -->
+    <!-- <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Group</h1>
+        <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
+                class="fas fa-download fa-sm text-white-50"></i> Generate
+            Report</a>
+    </div>
+    <p class="mb-4">
+        Groups are important for making user cluster.
+        Assign permissions on group of people
+    </p> -->
+
+
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Metadata List</h6>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover row-select" id="metadataDataTable">
+                </table>
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}
+
+
+{% block js %}
+<script>
+    const metadata_api_urls = '/api/v1/metadata/';
+    const metadata_add_url = "{% url 'admin:admin_metadata:metadata_add' %}";
+    const page = "list";
+</script>
+
+<!-- Metadata JS -->
+<script src="{% static 'admin_metadata/js/metadata.js' %}?v={{JS_VERSION}}"></script>
+{% endblock %}

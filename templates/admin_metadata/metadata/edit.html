@@ -1,0 +1,112 @@
+{% extends 'base/base.html' %}
+{% load static %}
+{% block css %}
+<style>
+    .card-body .ms-container {
+        width: 100%
+    }
+
+    .card-body .ms-container .search-input {
+        width: 100%;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+    <div class="container-fluid">
+
+        <!-- Page Heading -->
+        <div class="d-sm-flex align-items-center justify-content-between mb-4">
+            <h1 class="h3 mb-0 text-gray-800">Metadata</h1>
+            {#        <a href="#"#}
+            {#           class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i#}
+            {#                class="fas fa-download fa-sm text-white-50"></i> Generate#}
+            {#            Report</a>#}
+        </div>
+        <!-- <p class="mb-4">
+            Groups are important for making user cluster.
+            Assign permissions on group of people
+        </p> -->
+
+
+
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Metadata Edit</h6>
+        </div>
+
+        <div class="card-body">
+            <nav>
+                <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                    <a class="nav-item nav-link active" id="nav-info-tab" data-toggle="tab" href="#nav-info" role="tab"
+                        aria-controls="nav-info" aria-selected="true">Info</a>
+                    <a class="nav-item nav-link" id="nav-members-tab" data-toggle="tab" href="#nav-fields" role="tab"
+                        aria-controls="nav-members" aria-selected="false">Fields</a>
+                    <!-- <a class="nav-item nav-link" id="nav-permissions-tab" data-toggle="tab" href="#nav-permissions"
+                        role="tab" aria-controls="nav-permissions" aria-selected="false">Permissions</a> -->
+                </div>
+            </nav>
+            <div class="tab-content" id="nav-tabContent">
+                <div class="tab-pane fade show active" id="nav-info" role="tabpanel" aria-labelledby="nav-info-tab">
+                    <br>  
+                    <form id="group_edit" data-parsley-validate enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="name">Name: <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" id="name" name="name"
+                                        data-parsley-maxlength="100" placeholder="Enter name here (max 100 chars)."
+                                        required>
+                                </div>
+                            </div>
+                        </div>
+                        <input type="submit" class="submit_btn btn btn-primary float-right">
+                    </form>
+                </div>
+                <div class="tab-pane fade" id="nav-fields" role="tabpanel" aria-labelledby="nav-members-tab">  
+                    <!-- <div class="card shadow mb-4">
+                        <div class="card-header py-3">
+                            <h6 class="m-0 font-weight-bold text-primary">Feild List</h6>
+                        </div> -->
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover row-select" id="fieldDataTable">
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- <div class="tab-pane fade" id="nav-permissions" role="tabpanel" aria-labelledby="nav-permissions-tab">
+                    <br>  
+                    <select id="permissions_list" multiple="multiple"></select>
+                    <br>  
+                    <input type="submit" class="submit_btn btn btn-primary float-right">
+                </div> -->
+            </div>
+        </div>
+    </div>
+
+    </div>
+{% endblock %}
+
+
+{% block js %}
+    <script>
+        const metadata_api_urls = '/api/v1/metadata/';
+        const fieldlist_api_urls = '/api/v1/metadata/95ec7178-f835-4ff0-94f1-83c65a17336f/fields/';        
+        const metadata_list_url = "{% url 'admin:admin_metadata:metadata_list' %}";
+        const uuid = "{{ id }}";
+        const page = "edit";
+    </script>
+    <script>
+        const fields_add_url = '/templates/admin_metadata/fields/add.html';
+        
+    </script>
+
+<!-- Metadata JS -->
+<script src="{% static 'admin_metadata/js/metadata.js' %}?v={{JS_VERSION}}"></script>
+
+<!-- Metadata Field JS -->
+<script src="{% static 'admin_metadata/js/metadata_field.js' %}?v={{JS_VERSION}}"></script>
+{% endblock %}
