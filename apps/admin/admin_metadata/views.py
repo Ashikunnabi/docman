@@ -19,6 +19,24 @@ def metadata_edit(request, uuid):
     return render(request, "admin_metadata/metadata/edit.html", context={"uuid": uuid})
 
 
+@permission_required("metadata.add_metadatafield", raise_exception=True)
+def metadata_field_add(request, metadata_uuid):
+    return render(
+        request,
+        "admin_metadata/fields/add.html",
+        context={"metadata_uuid": metadata_uuid},
+    )
+
+
+@permission_required("metadata.view_metadatafield", raise_exception=True)
+def metadata_field_edit(request, uuid, metadata_uuid):
+    return render(
+        request,
+        "admin_metadata/fields/edit.html",
+        context={"uuid": uuid, "metadata_uuid": metadata_uuid},
+    )
+
+
 # @permission_required('rbac.add_user', raise_exception=True)
 # def user_add(request):
 #     return render(request, "admin_rbac/user/add.html")

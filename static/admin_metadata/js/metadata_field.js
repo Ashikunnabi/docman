@@ -5,15 +5,6 @@
 **/
 
 class Field {
-    /*
-    * =========================================================================
-    *                       Active sidebar option
-    * =========================================================================
-    **/
-    select_sidebar_option = () => {
-        $('#sidebar_option_user_management_a').click();
-        $('#sidebar_option_user_management_group').addClass('active');
-    };
 
     /*
     * =========================================================================
@@ -49,7 +40,7 @@ class Field {
                 {
                     text: 'Delete',
                     attr: {
-                        title: 'Delete F',
+                        title: 'Delete Field',
                         id: 'deleteFieldButton',
                         class: 'btn btn-danger'
                     },
@@ -71,10 +62,9 @@ class Field {
                             confirmButtonText: 'Yes, delete it!'
                         }).then((result) => {
                             if (result.isConfirmed) {
-                                let csrf_token = $('[name="csrfmiddlewaretoken"]').attr('value');
                                 // do ajax request to delete
                                 new AjaxService().deleteRequest(
-                                    fieldlist_api_urls + data[0].uuid + '/',
+                                    field_list_api_urls + data[0].uuid + '/',
                                     function (resp) {
                                         Swal.fire(
                                             'Deleted!',
@@ -132,7 +122,7 @@ class Field {
                     order: JSON.stringify(data.order),
                     // Add any additional parameters here
                 });
-                let url = `${fieldlist_api_urls}?${queryParams}`;
+                let url = `${field_list_api_urls}?${queryParams}`;
                 new AjaxService().getRequest(url, function (response) {
                     callback(response);
                 }, function (response) {
@@ -155,17 +145,10 @@ class Field {
                     }
                 },
                 {
-                    targets: 1,
-                    render: function (data, type, row, meta) {
-                        // let count = row.user.length
-                        return `${data}`;
-                    }
-                },
-                {
                     "targets": -1,
                     "data": null,
                     "render": function (data, type, row, meta) {
-                        return `<a href="edit/${row.uuid}">
+                        return `<a href="/metadata/${uuid}/fields/edit/${row.uuid}">
                             <button class="btn btn-outline-primary btn-sm actionButtonEdit" title="Edit">
                             >
                             </button>
@@ -174,6 +157,11 @@ class Field {
 
                 }
             ],
+        });
+
+        // Adjust the DataTable on tab change
+        $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+            table.columns.adjust().responsive.recalc();
         });
 
         // Single click row select the row and mark a different color
@@ -189,7 +177,7 @@ class Field {
         // double click row will redirect to edit selected row
         $('#fieldDataTable tbody').on('dblclick', 'tr', function () {
             let data = table.row(this).data();
-            window.location = 'edit/' + data.uuid;
+            window.location = `/metadata/${uuid}/fields/edit/${data.uuid}`;
         });
     };
 
@@ -202,24 +190,19 @@ class Field {
     edit_form_value_set = () => {
         // edit group form value setup
         new AjaxService().getRequest(
-            fieldlist_api_urls + uuid + '/',
+            field_list_api_urls + uuid + '/',
             function (response) {
                 function populate(form, data) {
                     $.each(data, function (key, value) {
-                        if (key === 'field_edit') {
-                            let uuids = value.map(function (v) { return v.uuid });
-                            $('#members_list').multiSelect('select', uuids.map(String))
+                        if (key === "is_unique" || key === "is_required" || key === "is_active") {
+                            $('[name=' + key + ']', form).prop('checked', value);
+                            return;
                         }
-                        if (key === 'permissions') {
-                            let codenames = value.map(function (v) { return v.codename });
-                            $('#permissions_list').multiSelect('select', codenames.map(String))
-                        }
-                        else $('[name=' + key + ']', form).val(value);
+                        $('[name=' + key + ']', form).val(value);
+
                     });
                 }
-                setTimeout(function (e) {
-                    populate($('#group_edit'), response.data);
-                }, 3000)
+                populate($('#field_edit'), response.data);
             },
             function (response) {
                 let response_json = response.responseJSON
@@ -245,54 +228,48 @@ class Field {
         let self = this;
         $(document).on('click', '.submit_btn', function (e) {
             e.preventDefault();
-            if ($('#name').val() == "") {
-                notify('Field name required!', 'error', 5000);
-                return;
+            let form = $(this).closest('form');
+            form.parsley().validate();
+            if (!form.parsley().isValid()) {
+                return false;
             }
+
             let data = {
                 name: $('#name').val(),
+                field_type: $('#field_type').val(),
+                placeholder: $('#placeholder').val(),
+                order: $('#order').val(),
+                is_unique: $('#is_unique').is(':checked'),
+                is_required: $('#is_required').is(':checked'),
                 is_active: $('#is_active').is(':checked'),
-                users: $('#members_list').val(),
-                permissions: $('#permissions_list').val(),
             }
-            let url = fieldlist_api_urls
+            let url = field_list_api_urls
 
-            if (page === "add") {
+            if (page === "field_add") {
                 new AjaxService().postRequest(
                     url,
                     data,
                     function (response) {
                         notify('Success', 'success', 3000);
-                        if (page === "add") {
-                            setTimeout(function (e) {
-                                window.location.href = metadata_list_url;
-                            }, 4000)
-                        }
+                        setTimeout(function (e) {
+                            window.location.href = fields_list_url;
+                        }, 4000)
 
                     },
                     function (response) {
                         let response_json = response.responseJSON
-                        console.log(response_json)
-                        if (response_json.code === "NOT_ALLOWED") {
-                            notify("You are not allowed to add a new field.", "error");
-                        }
+                        notify(response_json.message, "error");
                     }
                 );
             }
 
-            if (page === "edit") {
-                url = fieldlist_api_urls + uuid + "/"
+            if (page === "field_edit") {
+                url = field_list_api_urls + uuid + "/"
                 new AjaxService().patchRequest(
                     url,
                     data,
                     function (response) {
                         notify('Success', 'success', 3000);
-                        if (page === "add") {
-                            setTimeout(function (e) {
-                                window.location.href = metadata_list_url;
-                            }, 4000)
-                        }
-
                     },
                     function (response) {
                         let response_json = response.responseJSON
@@ -314,14 +291,14 @@ class Field {
 
     main = () => {
         // call this function to execute all operations of this class
-        this.select_sidebar_option()
         this.list()
-        this.members()
-        this.permissions()
-        if (page === "edit") {
+        if (page === "field_edit") {
             this.edit_form_value_set();
+            this.save()
         }
-        this.save()
+        if (page === "field_add") {
+            this.save()
+        }
     }
 }
 

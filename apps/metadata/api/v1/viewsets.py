@@ -99,7 +99,7 @@ class MetadataFieldListCreateAPIView(BaseListCreateAPIView):
 
     def list(self, request, *args, **kwargs):
         service = self.service_class(user=request.user)
-        queryset = service.list()
+        queryset = service.list(metadata__uuid=kwargs["uuid"])
         queryset = self.filter_queryset(queryset)
 
         page = self.paginate_queryset(queryset)
@@ -128,6 +128,12 @@ class MetadataFieldRetrieveUpdateDestroyAPIView(BaseRetrieveUpdateDestroyAPIView
     service_class = MetadataFieldService
     input_serializer_class = MetadataFieldInputSerializer
     output_serializer_class = MetadataFieldOutputSerializer
+
+    def get_object(self):
+        metadata_uuid = self.kwargs["uuid"]
+        field_uuid = self.kwargs["field_uuid"]
+        service = self.service_class(user=self.request.user)
+        return service.list(metadata_uuid=metadata_uuid, field_uuid=field_uuid).first()
 
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()

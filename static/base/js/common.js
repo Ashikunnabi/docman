@@ -419,16 +419,16 @@ class Sidebar {
                         url: '/document/'
                     },
                     {
-                        name: 'Upload',
-                        code: 'add_document',
-                        requiredPermissions: ['document.add_document'],
-                        url: '/document/upload/'
-                    },
-                    {
                         name: 'Metadata',
                         code: 'add_metadata',
                         requiredPermissions: ['metadata.view_metadata'],
                         url: '/metadata/'
+                    },
+                    {
+                        name: 'Upload',
+                        code: 'add_document',
+                        requiredPermissions: ['document.add_document'],
+                        url: '/document/upload/'
                     },
                 ]
             },

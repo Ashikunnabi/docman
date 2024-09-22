@@ -2,13 +2,6 @@
 {% load static %}
 {% block css %}
 <style>
-    .card-body .ms-container {
-        width: 100%
-    }
-
-    .card-body .ms-container .search-input {
-        width: 100%;
-    }
 </style>
 {% endblock %}
 
@@ -16,13 +9,13 @@
 <div class="container-fluid">
 
     <!-- Page Heading -->
-    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <!-- <div class="d-sm-flex align-items-center justify-content-between mb-4">
         <h1 class="h3 mb-0 text-gray-800">Metadata Field</h1>
-        {# <a href="#" #} {# class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">#}
-            {#<i class="fas fa-download fa-sm text-white-50"></i> Generate bReport#}
+        <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">
+            <i class="fas fa-download fa-sm text-white-50"></i> Generate bReport
 
-            {#</a>#}
-    </div>
+        </a>
+    </div> -->
     <!-- <p class="mb-4">
         Groups are important for making user cluster.
         Assign permissions on group of people
@@ -35,51 +28,59 @@
         </div>
 
         <div class="card-body">
-            <nav>
-                <div class="nav nav-tabs" id="nav-tab" role="tablist">
-                    <a class="nav-item nav-link active" id="nav-info-tab" data-toggle="tab" href="#nav-info" role="tab"
-                        aria-controls="nav-info" aria-selected="true">Info</a>
-                    <!-- <a class="nav-item nav-link" id="nav-members-tab" data-toggle="tab" href="#nav-members" role="tab"
-                        aria-controls="nav-members" aria-selected="false">Members</a>
-                    <a class="nav-item nav-link" id="nav-permissions-tab" data-toggle="tab" href="#nav-permissions"
-                        role="tab" aria-controls="nav-permissions" aria-selected="false">Permissions</a> -->
-                </div>
-            </nav>
-            <div class="tab-content" id="nav-tabContent">
-                <div class="tab-pane fade show active" id="nav-info" role="tabpanel" aria-labelledby="nav-info-tab">
-                    <br>  
-                    <form id="field_add" data-parsley-validate enctype="multipart/form-data">
-                        {% csrf_token %}
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="name">Name: <span class="text-danger">*</span></label>
-                                    <input type="text" class="form-control" id="name" name="name"
-                                        data-parsley-maxlength="100" placeholder="Enter name here (max 100 chars)."
-                                        required>
-                                </div>
-                            </div>
+            <form id="field_add" data-parsley-validate enctype="multipart/form-data">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="name">Name: <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="name" name="name" data-parsley-maxlength="100"
+                                placeholder="Enter name here (max 100 chars)." required>
                         </div>
-                        <input type="button" value="Submit" class="submit_btn btn btn-primary float-right">
-                    </form>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="field_type">Type: <span class="text-danger">*</span></label>
+                            <select class="form-control" id="field_type" name="field_type" required>
+                                <option value="text">Text</option>
+                                <option value="integer">Digit</option>
+                                <option value="email">Email</option>
+                            </select>
+                        </div>
+                    </div>
                 </div>
-                <div class="tab-pane fade" id="nav-members" role="tabpanel" aria-labelledby="nav-members-tab">  
-                    <br>  
-                    <h3>Assign staffs to this group </h3> 
-                    <br>  
-                    <select id="members_list" multiple="multiple"></select>
-                    <br>  
-                    <input type="button" value="Submit" class="submit_btn btn btn-primary float-right">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="placeholder">Placeholder:</label>
+                            <input type="text" class="form-control" id="placeholder" name="placeholder"
+                                data-parsley-maxlength="100" placeholder="Enter placeholder here (max 100 chars).">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="order">Order: <span class="text-danger">*</span></label>
+                            <input type="number" class="form-control" id="order" name="order" value="9999"
+                                data-parsley-maxlength="100" placeholder="Enter order here (max 100 chars)." required>
+                        </div>
+                    </div>
                 </div>
-                <div class="tab-pane fade" id="nav-permissions" role="tabpanel" aria-labelledby="nav-permissions-tab">
-                    <br>  
-                    <h3>Assign permissions to this group </h3> 
-                    <br>  
-                    <select id="permissions_list" multiple="multiple"></select>
-                    <br>  
-                    <input type="button" value="Submit" class="submit_btn btn btn-primary float-right">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="is_unique">
+                                <input type="checkbox" id="is_unique" name="is_unique"> Unique
+                            </label> <br>
+                            <label for="is_required">
+                                <input type="checkbox" id="is_required" name="is_required" checked> Required
+                            </label> <br>
+                            <label for="is_active">
+                                <input type="checkbox" id="is_active" name="is_active" checked> Active
+                            </label> <br>
+                        </div>
+                    </div>
                 </div>
-            </div>
+                <input type="button" value="Submit" class="submit_btn btn btn-primary float-right">
+            </form>
         </div>
     </div>
 
@@ -89,9 +90,9 @@
 
 {% block js %}
 <script>
-    const fieldlist_api_urls = '/api/v1/metadata/95ec7178-f835-4ff0-94f1-83c65a17336f/fields/';
-    const fields_list_url = "/list.html";
-    const page = "add";
+    const field_list_api_urls = '/api/v1/metadata/{{metadata_uuid}}/fields/';
+    const fields_list_url = "/metadata/edit/{{metadata_uuid}}/";
+    const page = "field_add";
 </script>
 
 <!-- Metadata Field JS -->

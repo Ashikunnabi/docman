@@ -25,105 +25,72 @@
             <h6 class="m-0 font-weight-bold text-primary">Metadata Field Edit</h6>
         </div>
         <div class="card-body">
-            <form id="user_edit" data-parsley-validate enctype="multipart/form-data" autocomplete="off">
-                {% csrf_token %}
+            <form id="field_edit" data-parsley-validate enctype="multipart/form-data">
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label for="name">Username: <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control" id="username" name="username"
-                                data-parsley-maxlength="256" placeholder="Enter username here (max 256 chars)."
-                                disabled>
+                            <label for="name">Name: <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="name" name="name" data-parsley-maxlength="100"
+                                placeholder="Enter name here (max 100 chars)." required>
                         </div>
-
-                        <div class="form-group">
-                            <label for="name">First Name: <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control" id="first_name" name="first_name"
-                                data-parsley-maxlength="256" placeholder="Enter first name here (max 256 chars)."
-                                required>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="name">Last Name: <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control" id="last_name" name="last_name"
-                                data-parsley-maxlength="256" placeholder="Enter last name here (max 256 chars)."
-                                required>
-                        </div>
-
-                        <!-- <div class="form-group">
-                            <label for="password">Password: <span class="text-danger">*</span></label>
-                            <input type="password" class="form-control" id="password" name="password"
-                                placeholder="Enter password here." required>
-                        </div> -->
                     </div>
                     <div class="col-md-6">
-
                         <div class="form-group">
-                            <label for="email">Email: <span class="text-danger">*</span></label>
-                            <input type="email" class="form-control" id="email" name="email"
-                                placeholder="Enter email address here." required>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="phone">Phone: </label>
-                            <input type="number" class="form-control" id="phone" name="phone"
-                                data-parsley-maxlength="11" placeholder="11 digit mobile number. Example: 01789000000.">
+                            <label for="field_type">Type: <span class="text-danger">*</span></label>
+                            <select class="form-control" id="field_type" name="field_type" required>
+                                <option value="text">Text</option>
+                                <option value="integer">Digit</option>
+                                <option value="email">Email</option>
+                            </select>
                         </div>
                     </div>
                 </div>
-                <!-- <div class="form-group">
-                    <div class="custom-control custom-checkbox small">
-                        <input type="checkbox" class="custom-control-input" id="is_staff" name="is_staff">
-                        <label class="custom-control-label" for="is_staff">Staff (can access admin panel)</label>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="placeholder">Placeholder:</label>
+                            <input type="text" class="form-control" id="placeholder" name="placeholder"
+                                data-parsley-maxlength="100" placeholder="Enter placeholder here (max 100 chars).">
+                        </div>
                     </div>
-                </div> -->
-
-                <div class="form-group">
-                    <div class="custom-control custom-checkbox small">
-                        <input type="checkbox" class="custom-control-input" id="is_active" name="is_active">
-                        <label class="custom-control-label" for="is_active">Active (can access the system)</label>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="order">Order: <span class="text-danger">*</span></label>
+                            <input type="number" class="form-control" id="order" name="order" value="9999"
+                                data-parsley-maxlength="100" placeholder="Enter order here (max 100 chars)." required>
+                        </div>
                     </div>
                 </div>
-
-                <div class="failed"></div>
-
-                <input type="submit" class="btn btn-primary float-right">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="is_unique">
+                                <input type="checkbox" id="is_unique" name="is_unique"> Unique
+                            </label> <br>
+                            <label for="is_required">
+                                <input type="checkbox" id="is_required" name="is_required"> Required
+                            </label> <br>
+                            <label for="is_active">
+                                <input type="checkbox" id="is_active" name="is_active"> Active
+                            </label> <br>
+                        </div>
+                    </div>
+                </div>
+                <input type="button" value="Submit" class="submit_btn btn btn-primary float-right">
             </form>
         </div>
     </div>
-
-    <!-- <div class="card shadow mb-4">
-        <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-primary">Actions</h6>
-        </div>
-        <div class="card-body">
-            <button id="send_account_activation_email" class="btn btn-success btn-icon-split">
-                <span class="icon text-white-50">
-                    <i class="fas fa-envelope"></i>
-                </span>
-                <span class="text">Send Account Activation Email</span>
-            </button>
-            <span class="text" id="last_email_sent_at"></span>
-            <br>
-            <br> -->
-    <!-- <label for="sales_reps">Sales Reps</label>
-            <select id="sales_reps" name="sales_reps" multiple="multiple" style="width: 200px">
-            </select>
-            <button id="sales_reps_save_btn" class="btn btn-dark">Save</button> -->
-    <!-- </div>
-    </div> -->
 </div>
 {% endblock %}
 
 
 {% block js %}
 <script>
-    const page = "edit";
-    const user_api_url = "{% url 'apps:rbac:api:v1:user_retrieve_update_delete' uuid %}";
-    const user_list_url = "{% url 'admin:admin_rbac:user_list' %}";
-    const account_activation_email_send_api_url = "{% url 'apps:send_email:api:v1:send_account_activation_email_to_user' %}";
-    const last_account_activation_sent_at_api_url = "{% url 'apps:rbac:api:v1:last_account_activation_email_sent_at' %}";
+    const page = "field_edit";
+    const field_list_api_urls = '/api/v1/metadata/{{metadata_uuid}}/fields/';
+    const fields_list_url = "/metadata/edit/{{metadata_uuid}}/";
     const uuid = "{{ uuid }}";
+    const metadata_uuid = "{{ metadata_uuid }}";
 </script>
 
 <!-- Metadata Field JS -->

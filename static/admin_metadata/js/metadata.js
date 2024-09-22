@@ -5,15 +5,6 @@
 **/
 
 class Metadata {
-    /*
-    * =========================================================================
-    *                       Active sidebar option
-    * =========================================================================
-    **/
-    select_sidebar_option = () => {
-        $('#sidebar_option_user_management_a').click();
-        $('#sidebar_option_user_management_group').addClass('active');
-    };
 
     /*
     * =========================================================================
@@ -206,20 +197,10 @@ class Metadata {
             function (response) {
                 function populate(form, data) {
                     $.each(data, function (key, value) {
-                        if (key === 'metadata_edit') {
-                            let uuids = value.map(function (v) { return v.uuid });
-                            $('#members_list').multiSelect('select', uuids.map(String))
-                        }
-                        if (key === 'permissions') {
-                            let codenames = value.map(function (v) { return v.codename });
-                            $('#permissions_list').multiSelect('select', codenames.map(String))
-                        }
-                        else $('[name=' + key + ']', form).val(value);
+                        $('[name=' + key + ']', form).val(value);
                     });
                 }
-                setTimeout(function (e) {
-                    populate($('#group_edit'), response.data);
-                }, 3000)
+                populate($('#metadata_edit'), response.data);
             },
             function (response) {
                 let response_json = response.responseJSON
@@ -245,16 +226,16 @@ class Metadata {
         let self = this;
         $(document).on('click', '.submit_btn', function (e) {
             e.preventDefault();
-            if ($('#name').val() == "") {
-                notify('Metadata name required!', 'error', 5000);
+            let form = $(this).closest('form');
+            form.parsley().validate();
+            if (!form.parsley().isValid()) {
                 return;
             }
+
             let data = {
                 name: $('#name').val(),
-                is_active: $('#is_active').is(':checked'),
-                users: $('#members_list').val(),
-                permissions: $('#permissions_list').val(),
             }
+
             let url = metadata_api_urls
 
             if (page === "add") {
@@ -314,10 +295,7 @@ class Metadata {
 
     main = () => {
         // call this function to execute all operations of this class
-        this.select_sidebar_option()
         this.list()
-        this.members()
-        this.permissions()
         if (page === "edit") {
             this.edit_form_value_set();
         }
