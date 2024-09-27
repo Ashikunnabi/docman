@@ -18,5 +18,6 @@ jobs:
           password: ${{ secrets.DO_PASSWORD }}  # Store your SSH password in GitHub Secrets
           script: |
             cd /root/docman
+            docker-compose down
             git pull https://${{ secrets.G_USERNAME }}:${{ secrets.G_TOKEN }}@github.com/Ashikunnabi/docman.git
             docker-compose up -d --build
