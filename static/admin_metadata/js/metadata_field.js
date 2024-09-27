@@ -135,6 +135,7 @@ class Field {
             "columns": [
                 { "title": "SL", "data": "" },
                 { "title": "Name", "data": "name" },
+                { "title": "Type", "data": "field_type" },
                 { "title": "Action", "data": "" },
             ],
             "columnDefs": [

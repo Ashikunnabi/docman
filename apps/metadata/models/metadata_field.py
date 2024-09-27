@@ -49,7 +49,7 @@ class MetadataField(BaseModel):
     class Meta:
         constraints = [
             models.UniqueConstraint(
-                fields=["name", "field_type"], name="unique_metadata_name_field_type"
+                fields=["metadata", "name", "field_type"], name="unique_metadata_name_field_type"
             )
         ]
 
@@ -58,7 +58,7 @@ class MetadataField(BaseModel):
 
     def screen_unique_name_and_field_type(self):
         if (
-            self.__class__.objects.filter(name=self.name, field_type=self.field_type)
+            self.__class__.objects.filter(metadata=self.metadata, name=self.name, field_type=self.field_type)
             .exclude(id=self.id)
             .exists()
         ):
