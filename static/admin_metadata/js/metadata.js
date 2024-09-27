@@ -253,10 +253,7 @@ class Metadata {
                     },
                     function (response) {
                         let response_json = response.responseJSON
-                        console.log(response_json)
-                        if (response_json.code === "NOT_ALLOWED") {
-                            notify("You are not allowed to add a new metadata.", "error");
-                        }
+                        notify(response_json.message, "error");
                     }
                 );
             }
@@ -277,10 +274,7 @@ class Metadata {
                     },
                     function (response) {
                         let response_json = response.responseJSON
-                        console.log(response_json)
-                        if (response_json.code === "NOT_ALLOWED") {
-                            notify("You are not allowed to add a new metadata.", "error");
-                        }
+                        notify(response_json.message, "error");
                     }
                 );
             }
