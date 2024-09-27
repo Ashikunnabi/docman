@@ -1,6 +1,5 @@
 class Category {
-
-
+    category = null;
     setFormData = (form_id, data) => {
         let self = this;
         let form = $(form_id);
@@ -47,6 +46,7 @@ class Category {
             category_api_url + uuid + '/',
             function (response) {
                 let category = response.data;
+                self.category = category;
                 self.setFormData('#categoryBasicInformationForm', category);
                 $('#categoryBasicInformationForm').find('#path').html(self.pathGenerator(category));
             },
@@ -218,6 +218,83 @@ class Category {
         });
     }
 
+    metadata = () => {
+        let self = this;
+        new AjaxService().getRequest(
+            metadata_api_url,
+            function (response) {
+                let category_metadata_uuids = self.category.metadata ? Object.values(self.category.metadata).map(item => item.uuid) : [];
+                let metadata = response.data;
+                let metadataTable = $('#metadataTable');
+                let table_head = metadataTable.find('thead');
+                let table_body = metadataTable.find('tbody');
+                table_body.html('');
+
+                let table_headers = ["Name", "Connected"]
+                $.each(table_headers, function (key, value) {
+                    table_head.append(`<th>${value}</th>`);
+                });
+
+
+                $.each(metadata, function (key, value) {
+                    let tr = `<tr>
+                        <td>${value.name}</td>
+                        <td>
+                            <input type="checkbox" 
+                            class="actionButtonAddDeleteMetadata"
+                            data-uuid="${value.uuid}"
+                                ${category_metadata_uuids.includes(value.uuid) ? 'checked' : ''}
+                            >
+                        </td>
+                    </tr>`;
+                    table_body.append(tr);
+                });
+            },
+            function (response) {
+                let response_json = response.responseJSON;
+                if (response_json.code === "NOT_FOUND") {
+                    $('#editCategoryBasicInformationFormError').html(
+                        `<div class="alert alert-danger">
+                            <strong>Error:</strong> ${response_json.message}
+                        </div>`
+                    );
+                }
+            }
+        );
+    }
+
+    addDeleteMetadata = () => {
+        let self = this;
+        $(document).on('change', '.actionButtonAddDeleteMetadata', function (e) {
+            let current_checkbox = $(this);
+            let checked_metadata_uuids = $('.actionButtonAddDeleteMetadata:checked').map(function () {
+                return $(this).data('uuid');
+            }).get();
+            let payload = {
+                metadata_uuids: checked_metadata_uuids
+            }
+
+            new AjaxService().patchRequest(
+                category_api_url + uuid + '/',
+                payload,
+                function (response) {
+                    notify('Success', 'success');
+                },
+                function (response) {
+                    current_checkbox.removeAttr('disabled');
+                    let response_json = response.responseJSON;
+                    if (response_json.code === "BAD_REQUEST") {
+                        $('#editCategoryBasicInformationFormError').html(
+                            `<div class="alert alert-danger">
+                            <strong>Error:</strong> ${response_json.message}
+                        </div>`
+                        );
+                    }
+                }
+            );
+        });
+    }
+
 
     main = () => {
         if (page === 'edit') {
@@ -240,6 +317,12 @@ class Category {
                 $('.actionButtonAddDeleteGroupPermission').hide();
             } else {
                 this.addDeleteGroupPermission();
+            }
+            if (!hasPermission('category.change_category')) {
+                $('#metadataTable').parent().parent().parent().parent().hide();
+            } else {
+                this.metadata();
+                this.addDeleteMetadata()
             }
         }
     }

@@ -93,6 +93,20 @@
                 </div>
             </div>
         </div>
+
+        <div class="col-md-8">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Metadata</h6>
+                </div>
+                <div class="card-body">
+                    <table class="table table-bordered" id="metadataTable" width="100%" cellspacing="0">
+                        <thead></thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
     </div>
 
     <div class="row">
@@ -122,6 +136,7 @@
     const document_api_url = "/api/v1/documents/";
     const document_search_api_url = "/api/v1/documents/search/";
     const category_group_permission_api_url = "/api/v1/categories/{{uuid}}/groups/";
+    const metadata_api_url = "/api/v1/metadata/";
 </script>
 
 <!-- Document JS -->
