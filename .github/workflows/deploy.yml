@@ -1,12 +1,9 @@
 name: Deploy to DigitalOcean
 
-name: Deploy to DigitalOcean
-name: Deploy to DigitalOcean
-
 on:
   push:
     branches:
-      - master
+      - master  # Ensure this matches your actual branch name
 
 jobs:
   deploy:
@@ -16,9 +13,9 @@ jobs:
       - name: Deploy to DigitalOcean via SSH
         uses: appleboy/ssh-action@v0.1.9
         with:
-          host: ${{ secrets.DO_SERVER_IP }}
-          username: ${{ secrets.DO_USERNAME }}
-          password: ${{ secrets.DO_PASSWORD }}
+          host: ${{ secrets.DO_SERVER_IP }}  # Store your DigitalOcean IP in GitHub Secrets
+          username: ${{ secrets.DO_USERNAME }}  # Store your SSH username in GitHub Secrets (e.g., ubuntu)
+          password: ${{ secrets.DO_PASSWORD }}  # Store your SSH password in GitHub Secrets
           script: |
             cd /root/docman
             git pull https://${{ secrets.G_USERNAME }}:${{ secrets.G_TOKEN }}@github.com/Ashikunnabi/docman.git
