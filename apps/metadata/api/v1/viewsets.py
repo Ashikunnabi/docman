@@ -133,7 +133,7 @@ class MetadataFieldRetrieveUpdateDestroyAPIView(BaseRetrieveUpdateDestroyAPIView
         metadata_uuid = self.kwargs["uuid"]
         field_uuid = self.kwargs["field_uuid"]
         service = self.service_class(user=self.request.user)
-        return service.list(metadata_uuid=metadata_uuid, field_uuid=field_uuid).first()
+        return service.list(metadata__uuid=metadata_uuid, uuid=field_uuid).first()
 
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()

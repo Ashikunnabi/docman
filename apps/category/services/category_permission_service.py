@@ -24,7 +24,6 @@ class CategoryPermissionService(BaseModelService):
             code = f"{category.code}.{key}_document"
             name = f"Can {key} document of {category.code}"
             self.model.objects.get_or_create(code=code, name=name, category=category)
-            print(code)
 
     def category_code_permissions(self, permission_type="view"):
         valid_permissions = {choice[0] for choice in CategoryPermissionType.CHOICES}

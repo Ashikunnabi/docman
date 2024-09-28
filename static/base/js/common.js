@@ -97,7 +97,7 @@ notify = (message, message_type, duration, global_position = 'top right', elemen
 
 
 /*=============================================================================
-                        Search product
+                        Search
 =============================================================================*/
 
 class Search {
@@ -535,3 +535,4 @@ class Sidebar {
 }
 
 new Sidebar().readPermissionsAndSetSidebar();
+

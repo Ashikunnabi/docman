@@ -67,7 +67,7 @@ class DocumentService(BaseModelService):
 
     def validate_file_extension(self, file):
         extension = Path(file.name).suffix[1:]
-        if extension not in self.FILE_EXTENSIONS:
+        if extension.lower() not in self.FILE_EXTENSIONS:
             message = f"File format not allowed. Allowed formats are {', '.join(self.FILE_EXTENSIONS)}."
             raise FileExtensionNotAllowedException(message=message)
 
