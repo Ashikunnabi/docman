@@ -101,98 +101,40 @@ notify = (message, message_type, duration, global_position = 'top right', elemen
 =============================================================================*/
 
 class Search {
+    search_input = $('#globalQuickSearch');
+    searchbar_submit_button = $('#actionButtonGlobalQuickSearch');
 
     basic_search = () => {
         let self = this;
-        let search_input = $('#searchbar-input-box');
-        let searchbar_submit_button = $('#searchbar-submit-button');
-        let search_result_div = $('#search_result');
+        // add search input if url has search query
+        let urlParams = new URLSearchParams(window.location.search);
+        let search = urlParams.get('search');
+        if (search) {
+            self.search_input.val(search);
+        }
 
-        // hide search result if click outside of the div
-        $(document).click(function (e) {
-            if ($(e.target).parent().parent().attr('id') !== "search_result") {
-                if ($(e.target).siblings("div").attr('id') !== "search_result") {
-                    if ($(e.target).parent().siblings("div").attr('id') !== "search_result") {
-                        search_result_div.fadeOut(300);
-                    }
-                }
-            }
-        });
-
-
-        search_input.on('keyup', function (e) {
-            if (search_input.val() !== '') {
-                if (e.keyCode == 13) {
-                    self.quick_search()
-                } else {
-                    self.do_search()
-                }
-            } else {
-                search_result_div.fadeOut(1000);
-            }
-        });
-
-        searchbar_submit_button.on('click', function (e) {
-            if (search_input.val() !== '') {
+        self.searchbar_submit_button.on('click', function (e) {
+            if (self.search_input.val() !== '') {
                 self.quick_search()
-            } else {
-                search_result_div.fadeOut(1000);
             }
         });
-    };
-
-    do_search = () => {
-        let timeout = null;
-        let search_input = $('#searchbar-input-box');
-        let searchbar_submit_button = $('#searchbar-submit-button');
-        let search_result_div = $('#search_result');
-
-        if (search_result_div.css('display') === 'none') {
-            search_result_div.children('ul').empty().append('<li>Searching...</li>');
-            search_result_div.css('display', 'block');
-        }
-
-        // ajax search
-        if (timeout) {
-            clearTimeout(timeout);
-        }
-        timeout = setTimeout(function (e) {
-            $.ajax({
-                url: product_search_api_url + `?q=${search_input.val()}`,
-                type: "GET",
-                success: function (resp) {
-                    search_result_div.children('ul').empty();
-                    if (resp.data.length === 0) {
-                        search_result_div.children('ul').append(`<li>No result found</li>`);
-                    } else {
-                        $.map(resp.data, function (value, index) {
-                            let image_url = value.image_url ? value.image_url : '/static/base/img/no_image.png';
-                            search_result_div.children('ul').append(
-                                `<li>
-                                    <a href="/product-details/${value.uuid}/" style="display: grid; grid-template-columns: 20% 70%; grid-column-gap: 20px;">
-                                        <img width="100%" src="${image_url}">
-                                        ${value.description}
-                                    </a>
-                                </li>`
-                            );
-                        });
-                    }
-
-                },
-                error: function (response) {
-                    console.log(response)
-                }
-            });
-        }, 1000);
     };
 
     quick_search = () => {
         let self = this;
-        let search_input = $('#searchbar-input-box');
-
-        if (search_input.val() !== '') {
-            window.location.href = `/product-list/?q=${search_input.val()}`
+        let search_keyword = self.search_input.val();
+        let redirect_url = `/document/?search=${search_keyword}`;
+        if (window.location.pathname !== '/document/') {
+            window.location.href = redirect_url;
         }
+
+        // add query param to the url if not exist
+        if (window.location.search != search_keyword) {
+            window.history.pushState({}, null, redirect_url);
+        }
+
+        let dataTable = $('#documentDataTable').DataTable();
+        dataTable.search(search_keyword).draw();
     };
 
     advanced_search = () => {
@@ -254,18 +196,18 @@ class Search {
 
     main = () => {
         this.basic_search();
-        if (
-            !window.location.pathname.startsWith("/admin/") &&
-            !window.location.pathname.startsWith("/login/") &&
-            !window.location.pathname.startsWith("/registration/")
-        ) {
-            this.advanced_search();
-        }
+        // if (
+        //     !window.location.pathname.startsWith("/admin/") &&
+        //     !window.location.pathname.startsWith("/login/") &&
+        //     !window.location.pathname.startsWith("/registration/")
+        // ) {
+        //     this.advanced_search();
+        // }
 
     }
 }
 
-// new Search().main();
+new Search().main();
 
 
 /*=============================================================================
