@@ -3978,7 +3978,7 @@ body.wait::before{
   background-color:var(--toolbar-icon-hover-bg-color);
 }
 
-#sidebarToggle::before{
+#pdfJSSidebarToggle::before{
   -webkit-mask-image:var(--toolbarButton-sidebarToggle-icon);
           mask-image:var(--toolbarButton-sidebarToggle-icon);
   transform:scaleX(var(--dir-factor));
