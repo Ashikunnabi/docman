@@ -44,6 +44,25 @@ services:
     networks:
       - docman_network
 
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.15.2
+    container_name: docman_elasticsearch
+    restart: unless-stopped
+    environment:
+      - discovery.type=single-node
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - xpack.security.enabled=false
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - docman_esdata01:/usr/share/elasticsearch/data
+    ports:
+      - "9200:9200"
+    networks:
+      - docman_network
+
 networks:
     docman_network:
         driver: bridge
@@ -51,3 +70,4 @@ networks:
 volumes:
   docman_postgres_data: {}
   docman_postgres_data_dbback: {}
+  docman_esdata01: {}

@@ -36,6 +36,7 @@ THIRD_PARTY_APPS = [
     "django_extensions",
     "auditlog",  # https://django-auditlog.readthedocs.io/en/latest/installation.html
     "django_filters",  # https://django-filter.readthedocs.io/en/stable/guide/install.html
+    "django_elasticsearch_dsl",  # https://django-elasticsearch-dsl.readthedocs.io/en/latest/quickstart.html
 ]
 
 LOCAL_APPS = [
@@ -46,6 +47,7 @@ LOCAL_APPS = [
     "apps.email",
     "apps.category",
     "apps.metadata",
+    "apps.search",
     # admin
     "apps.admin.admin_base",
     "apps.admin.admin_rbac",
@@ -224,6 +226,13 @@ LOGGING = {
     },
 }
 
+# Elasticsearch Configuration
+ELASTICSEARCH_DSL={
+    'default': {
+        'hosts': 'localhost:9200',
+        'http_auth': ('username', 'password')
+    }
+}
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.1/topics/i18n/

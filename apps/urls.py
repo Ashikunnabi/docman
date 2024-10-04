@@ -12,6 +12,7 @@ dashboard_urlpatterns = [
     path("", include("apps.email.urls")),
     path("", include("apps.category.urls")),
     path("", include("apps.metadata.urls")),
+    path("", include("apps.search.urls")),
 ]
 
 urlpatterns = fe_urlpatterns + dashboard_urlpatterns
