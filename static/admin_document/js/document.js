@@ -136,9 +136,15 @@ class Document {
                 data.search.value = data.search.value || queryParamSearchKeyword;
                 $('#documentDataTable_filter input').val(data.search.value);
                 // update browser url also
-                let _url = new URL(window.location.href);
-                _url.searchParams.set('search', data.search.value);
-                window.history.replaceState({}, '', _url);
+                if (data.search.value) {
+                    let _url = new URL(window.location.href);
+                    _url.searchParams.set('search', data.search.value);
+                    window.history.replaceState({}, '', _url);
+                } else {
+                    let _url = new URL(window.location.href);
+                    _url.searchParams.delete('search');
+                    window.history.replaceState({}, '', _url);
+                }
 
                 let queryParams = $.param({
                     draw: data.draw,
