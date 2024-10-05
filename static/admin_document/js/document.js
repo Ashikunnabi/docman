@@ -157,7 +157,8 @@ class Document {
                 if (data.search.value) {
                     queryParams += '&file_only=true';
                 }
-                let url = `${document_search_api_url}?${queryParams}`;
+                // let url = `${document_search_api_url}?${queryParams}`;
+                let url = `/api/v1/search/documents/?${queryParams}`;
                 new AjaxService().getRequest(url, function (response) {
                     callback(response);
                 }, function (response) {
