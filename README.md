@@ -1,1 +1,2 @@
 # docman.
+Simplified document management
