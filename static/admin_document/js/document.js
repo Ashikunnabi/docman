@@ -46,7 +46,7 @@ class Document {
             "serverSide": true,
             "bDestroy": true,
             "bJQueryUI": true,
-            "dom": 'frtip',
+            "dom": 'rtip',
             "ordering": false,
             "buttons": [
                 {
@@ -134,17 +134,6 @@ class Document {
                 let urlParams = new URLSearchParams(window.location.search);
                 let queryParamSearchKeyword = urlParams.get('search');
                 data.search.value = data.search.value || queryParamSearchKeyword;
-                $('#documentDataTable_filter input').val(data.search.value);
-                // update browser url also
-                if (data.search.value) {
-                    let _url = new URL(window.location.href);
-                    _url.searchParams.set('search', data.search.value);
-                    window.history.replaceState({}, '', _url);
-                } else {
-                    let _url = new URL(window.location.href);
-                    _url.searchParams.delete('search');
-                    window.history.replaceState({}, '', _url);
-                }
 
                 let queryParams = $.param({
                     draw: data.draw,
@@ -154,11 +143,12 @@ class Document {
                     order: JSON.stringify(data.order),
                     category_uuid: category_uuid,
                 });
+
+                let url = `${document_search_api_url}?${queryParams}`;
                 if (data.search.value) {
                     queryParams += '&file_only=true';
+                    url = `/api/v1/search/documents/?${queryParams}`;
                 }
-                // let url = `${document_search_api_url}?${queryParams}`;
-                let url = `/api/v1/search/documents/?${queryParams}`;
                 new AjaxService().getRequest(url, function (response) {
                     callback(response);
                 }, function (response) {

@@ -114,9 +114,7 @@ class Search {
         }
 
         self.searchbar_submit_button.on('click', function (e) {
-            if (self.search_input.val() !== '') {
-                self.quick_search()
-            }
+            self.quick_search()
         });
     };
 
