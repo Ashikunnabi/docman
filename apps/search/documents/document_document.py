@@ -10,6 +10,7 @@ from django_elasticsearch_dsl.registries import registry
 @registry.register_document
 class DocumentDocument(Document):
     name = fields.TextField()
+
     category = fields.ObjectField(
         properties={
             "uuid": fields.KeywordField(),
@@ -18,6 +19,7 @@ class DocumentDocument(Document):
             "parent": fields.KeywordField(),
         }
     )
+
     metadata = fields.NestedField(
         properties={
             "uuid": fields.KeywordField(),
@@ -43,13 +45,14 @@ class DocumentDocument(Document):
             "name": instance.category.name,
             "code": instance.category.code,
             "parent": (
-                instance.category.parent.uuid if instance.category.parent else None
+                str(instance.category.parent.uuid) if instance.category.parent else None
             ),
         }
 
     def prepare_metadata(self, instance):
         if not instance.category:
             return None
+
         data = [
             {
                 "uuid": str(metadata.uuid),
@@ -108,7 +111,9 @@ class DocumentDocument(Document):
         if isinstance(related_instance, Category):
             return related_instance.documents.all()
         elif isinstance(related_instance, Metadata):
-            return related_instance.categories.documents.all()
+            categories = related_instance.categories.all()
+            documents = Document.objects.filter(category__in=categories)
+            return documents
         elif isinstance(related_instance, MetadataField):
             return related_instance.metadata.categories.documents.all()
         elif isinstance(related_instance, MetadataValue):

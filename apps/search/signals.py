@@ -33,7 +33,6 @@ def update_base_document_on_related_change(sender, instance, **kwargs):
 @receiver(pre_delete, sender=MetadataField)
 @receiver(pre_delete, sender=MetadataValue)
 def delete_base_document_on_related_delete(sender, instance, **kwargs):
-    # Assuming YourBaseModel can be retrieved based on some relation
     base_instances = get_instance(instance)
     for base_instance in base_instances:
         DocumentDocument().delete(base_instance)
