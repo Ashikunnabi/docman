@@ -49,9 +49,12 @@ class Edit {
     setFormFieldValues = (document) => {
         let documentEditform = $("#documentEditMetadataForm");
         let category_dropdown = documentEditform.find("#__category_uuid");
+        let document_name = documentEditform.find("#__document_name");
         let options = new Option(document.category.path, document.category.uuid, true, true);
         category_dropdown.append(options).trigger('change');
         category_dropdown.attr('disabled', 'disabled');
+        document_name.val(document.name);
+        document_name.attr('disabled', 'disabled');
 
         let metadata = document.metadata_values;
         metadata.forEach((value) => {
@@ -76,6 +79,24 @@ class Edit {
         new AjaxService().getRequest(
             url,
             function (response) {
+                let static_metadata = {
+                    "uuid": null,
+                    "name": "Document Information",
+                    "is_active": true,
+                    "fields": [
+                        {
+                            "uuid": "__document_name",
+                            "name": "Document Name",
+                            "placeholder": "Document Name",
+                            "field_type": "text",
+                            "is_required": true,
+                            "is_unique": false,
+                            "is_active": true
+                        }
+                    ]
+                }
+                metadata_html += self.dynamicFormFields(static_metadata);
+
                 let metadata = response.data.metadata;
                 $.each(metadata, function (index, fields) {
                     metadata_html += self.dynamicFormFields(fields);
@@ -228,7 +249,7 @@ class Edit {
             let data = $(this).serializeArray();
             let metadata = [];
             data.forEach((item) => {
-                if (item.name === '__category_uuid') {
+                if (item.name === '__category_uuid' || item.name === '__document_name') {
                     return;
                 }
                 let field_type = "value_" + $(`#${item.name}`).data('field-type');

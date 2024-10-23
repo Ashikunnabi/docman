@@ -153,7 +153,6 @@ class Upload {
                 }
                 metadata_html += self.dynamicFormFields(static_metadata);
 
-
                 let metadatas = response.data.metadata;
                 $.each(metadatas, function (index, metadata) {
                     metadata_html += self.dynamicFormFields(metadata);
