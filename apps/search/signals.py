@@ -13,7 +13,9 @@ def get_instance(related_instance):
     if isinstance(related_instance, Category):
         return related_instance.documents.all()
     elif isinstance(related_instance, Metadata):
-        return related_instance.categories.documents.all()
+        categories = related_instance.categories.all()
+        documents = Document.objects.filter(category__in=categories)
+        return documents
     elif isinstance(related_instance, MetadataField):
         return related_instance.metadata.categories.documents.all()
     elif isinstance(related_instance, MetadataValue):
