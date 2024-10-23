@@ -97,8 +97,6 @@ class DocumentDocument(Document):
             "updated_at",
         ]
 
-    related_models = [Category, Metadata, MetadataField, MetadataValue]
-
     def get_queryset(self):
         return (
             super()
@@ -106,15 +104,3 @@ class DocumentDocument(Document):
             .select_related("category")
             .prefetch_related("category__metadata__fields__values")
         )
-
-    def get_instances_from_related(self, related_instance):
-        if isinstance(related_instance, Category):
-            return related_instance.documents.all()
-        elif isinstance(related_instance, Metadata):
-            categories = related_instance.categories.all()
-            documents = Document.objects.filter(category__in=categories)
-            return documents
-        elif isinstance(related_instance, MetadataField):
-            return related_instance.metadata.categories.documents.all()
-        elif isinstance(related_instance, MetadataValue):
-            return related_instance.document

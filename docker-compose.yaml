@@ -58,8 +58,6 @@ services:
         hard: -1
     volumes:
       - docman_esdata01:/usr/share/elasticsearch/data
-    ports:
-      - "9200:9200"
     networks:
       - docman_network
 
