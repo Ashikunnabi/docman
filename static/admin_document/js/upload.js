@@ -90,8 +90,8 @@ class Upload {
         return `<div class="form-group">
             <label for="${field.uuid}">${field.name}${field.is_required ? '<span class="text-danger">*</span>' : ''}</label>
             <select class="form-control" id="${field.uuid}" name="${field.uuid}" data-field-type=${field.field_type} ${field.is_required ? 'required' : ''}>
-                <option value="true">True</option>
-                <option value="false">False</option>
+                <option value="true">Yes</option>
+                <option value="false">No</option>
             </select>
         </div>`;
     }

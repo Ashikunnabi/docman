@@ -146,6 +146,20 @@ class Field {
                     }
                 },
                 {
+                    "targets": 1,
+                    "data": "name",
+                    "render": function (data, type, row, meta) {
+                        let html = `<div>${data}`;
+                        if (row.is_active) {
+                            html += ` &nbsp;<span class="badge badge-success">Active</span>`;
+                        } else {
+                            html += ` &nbsp;<span class="badge badge-danger">Inactive</span>`;
+                        }
+                        html += `</div>`;
+                        return html;
+                    }
+                },
+                {
                     "targets": -1,
                     "data": null,
                     "render": function (data, type, row, meta) {

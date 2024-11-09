@@ -62,7 +62,7 @@ class DocumentDocument(Document):
                         "uuid": str(field.uuid),
                         "name": field.name,
                         "value": (
-                            field.values.get(document=instance).get_value()
+                            str(field.values.get(document=instance).get_value())
                             if field.values.filter(document=instance).exists()
                             else ""
                         ),

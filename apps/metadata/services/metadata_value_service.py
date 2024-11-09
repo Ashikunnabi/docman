@@ -40,7 +40,7 @@ class MetadataValueService(BaseModelService):
 
         return metadata_values
 
-    def validate_value(self, **kwargs):
+    def validated_value(self, **kwargs):
         try:
             if "value_integer" in kwargs:
                 kwargs["value_integer"] = int(kwargs["value_integer"])
@@ -53,13 +53,14 @@ class MetadataValueService(BaseModelService):
             if "value_datetime" in kwargs:
                 kwargs["value_datetime"] = kwargs["value_datetime"]
             if "value_time" in kwargs:
-                kwargs["value_time"] = kwargs["value_time"]
+                kwargs["value_time"] = str(kwargs["value_time"])
             if "value_url" in kwargs:
                 kwargs["value_url"] = kwargs["value_url"]
             if "value_email" in kwargs:
                 kwargs["value_email"] = kwargs["value_email"]
         except Exception as ex:
-            raise InvalidFieldValuesException("Invalid value")
+            raise InvalidFieldValuesException("Invalid Input")
+        return kwargs
 
     def validated_data(self, **kwargs):
         m2m_data = {}
@@ -81,7 +82,7 @@ class MetadataValueService(BaseModelService):
             ).id
             del kwargs["field_uuid"]
 
-        self.validate_value(**kwargs)
+        kwargs = self.validated_value(**kwargs)
 
         return kwargs, m2m_data
 

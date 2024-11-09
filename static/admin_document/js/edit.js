@@ -32,8 +32,8 @@ class Edit {
         return `<div class="form-group">
             <label for="${field.uuid}">${field.name}${field.is_required ? '<span class="text-danger">*</span>' : ''}</label>
             <select class="form-control" id="${field.uuid}" name="${field.uuid}" data-field-type=${field.field_type} ${field.is_required ? 'required' : ''}>
-                <option value="true">True</option>
-                <option value="false">False</option>
+                <option value="true">Yes</option>
+                <option value="false">No</option>
             </select>
         </div>`;
     }
@@ -127,7 +127,15 @@ class Edit {
             let fieldElement = documentEditform.find(`#${value.field.uuid}`);
             if (fieldElement.length) {
                 let value_type = `value_${value.field.field_type}`;
-                fieldElement.val(value[value_type]);
+                if (value.field.field_type === 'boolean') {
+                    fieldElement.val(value[value_type] ? 'true' : 'false');
+                } else if (value.field.field_type === 'datetime') {
+                    let date = new Date(value[value_type]);
+                    let formatted_date = date.toISOString().slice(0, 16);
+                    fieldElement.val(formatted_date);
+                } else {
+                    fieldElement.val(value[value_type]);
+                }
             }
         });
     }
