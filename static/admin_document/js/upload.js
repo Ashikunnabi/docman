@@ -79,10 +79,62 @@ class Upload {
         </div>`;
     }
 
+    decimalField = (field) => {
+        return `<div class="form-group">
+            <label for="${field.uuid}">${field.name}${field.is_required ? '<span class="text-danger">*</span>' : ''}</label>
+            <input type="number" class="form-control" id="${field.uuid}" name="${field.uuid}" data-field-type=${field.field_type} placeholder="${field.placeholder}" ${field.is_required ? 'required' : ''}>
+        </div>`;
+    }
+
+    booleanField = (field) => {
+        return `<div class="form-group">
+            <label for="${field.uuid}">${field.name}${field.is_required ? '<span class="text-danger">*</span>' : ''}</label>
+            <select class="form-control" id="${field.uuid}" name="${field.uuid}" data-field-type=${field.field_type} ${field.is_required ? 'required' : ''}>
+                <option value="true">True</option>
+                <option value="false">False</option>
+            </select>
+        </div>`;
+    }
+
+    dateField = (field) => {
+        return `<div class="form-group">
+            <label for="${field.uuid}">${field.name}${field.is_required ? '<span class="text-danger">*</span>' : ''}</label>
+            <input type="date" class="form-control" id="${field.uuid}" name="${field.uuid}" data-field-type=${field.field_type} placeholder="${field.placeholder}" ${field.is_required ? 'required' : ''}>
+        </div>`;
+    }
+
+    timeField = (field) => {
+        return `<div class="form-group">
+            <label for="${field.uuid}">${field.name}${field.is_required ? '<span class="text-danger">*</span>' : ''}</label>
+            <input type="time" class="form-control" id="${field.uuid}" name="${field.uuid}" data-field-type=${field.field_type} placeholder="${field.placeholder}" ${field.is_required ? 'required' : ''}>
+        </div>`;
+    }
+
+    datetimeField = (field) => {
+        return `<div class="form-group">
+            <label for="${field.uuid}">${field.name}${field.is_required ? '<span class="text-danger">*</span>' : ''}</label>
+            <input type="datetime-local" class="form-control" id="${field.uuid}" name="${field.uuid}" data-field-type=${field.field_type} placeholder="${field.placeholder}" ${field.is_required ? 'required' : ''}>
+        </div>`;
+    }
+
     emailField = (field) => {
         return `<div class="form-group">
             <label for="${field.uuid}">${field.name}${field.is_required ? '<span class="text-danger">*</span>' : ''}</label>
             <input type="email" class="form-control" id="${field.uuid}" name="${field.uuid}" placeholder="${field.placeholder}" ${field.is_required ? 'required' : ''}>
+        </div>`;
+    }
+
+    urlField = (field) => {
+        return `<div class="form-group">
+            <label for="${field.uuid}">${field.name}${field.is_required ? '<span class="text-danger">*</span>' : ''}</label>
+            <input type="url" class="form-control" id="${field.uuid}" name="${field.uuid}" data-field-type=${field.field_type} placeholder="${field.placeholder}" ${field.is_required ? 'required' : ''}>
+        </div>`;
+    }
+
+    phoneField = (field) => {
+        return `<div class="form-group">
+            <label for="${field.uuid}">${field.name}${field.is_required ? '<span class="text-danger">*</span>' : ''}</label>
+            <input type="tel" class="form-control" id="${field.uuid}" name="${field.uuid}" data-field-type=${field.field_type} placeholder="${field.placeholder}" ${field.is_required ? 'required' : ''}>
         </div>`;
     }
 
@@ -96,6 +148,20 @@ class Upload {
                 formFields += this.integerField(field);
             } else if (field.field_type === 'email') {
                 formFields += this.emailField(field);
+            } else if (field.field_type === 'decimal') {
+                formFields += this.decimalField(field);
+            } else if (field.field_type === 'boolean') {
+                formFields += this.booleanField(field);
+            } else if (field.field_type === 'date') {
+                formFields += this.dateField(field);
+            } else if (field.field_type === 'time') {
+                formFields += this.timeField(field);
+            } else if (field.field_type === 'datetime') {
+                formFields += this.datetimeField(field);
+            } else if (field.field_type === 'url') {
+                formFields += this.urlField(field);
+            } else if (field.field_type === 'phone') {
+                formFields += this.phoneField(field);
             } else {
                 formFields += this.textField(field);
             }

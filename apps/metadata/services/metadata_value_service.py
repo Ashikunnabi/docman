@@ -1,4 +1,6 @@
+from decimal import Decimal
 from apps.common.service import BaseModelService
+from apps.metadata.exceptions import InvalidFieldValuesException
 
 from ..models import MetadataValue
 from ..services.metadata_field_service import MetadataFieldService
@@ -38,6 +40,27 @@ class MetadataValueService(BaseModelService):
 
         return metadata_values
 
+    def validate_value(self, **kwargs):
+        try:
+            if "value_integer" in kwargs:
+                kwargs["value_integer"] = int(kwargs["value_integer"])
+            if "value_decimal" in kwargs:
+                kwargs["value_decimal"] = Decimal(kwargs["value_decimal"])
+            if "value_boolean" in kwargs:
+                kwargs["value_boolean"] = bool(kwargs["value_boolean"])
+            if "value_date" in kwargs:
+                kwargs["value_date"] = kwargs["value_date"]
+            if "value_datetime" in kwargs:
+                kwargs["value_datetime"] = kwargs["value_datetime"]
+            if "value_time" in kwargs:
+                kwargs["value_time"] = kwargs["value_time"]
+            if "value_url" in kwargs:
+                kwargs["value_url"] = kwargs["value_url"]
+            if "value_email" in kwargs:
+                kwargs["value_email"] = kwargs["value_email"]
+        except Exception as ex:
+            raise InvalidFieldValuesException("Invalid value")
+
     def validated_data(self, **kwargs):
         m2m_data = {}
         m2m_keys = []
@@ -57,6 +80,8 @@ class MetadataValueService(BaseModelService):
                 uuid_value=kwargs["field_uuid"]
             ).id
             del kwargs["field_uuid"]
+
+        self.validate_value(**kwargs)
 
         return kwargs, m2m_data
 
